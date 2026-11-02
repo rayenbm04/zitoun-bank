@@ -1,0 +1,52 @@
+<div class="page-header">
+  <div>
+    <h1>Ventes</h1>
+    <p>Chaque vente met à jour automatiquement le stock d’huile.</p>
+  </div>
+</div>
+
+<div class="grid grid-4">
+  <div class="card kpi accent"><span class="label">Revenus</span><span class="value">{{ data.revenus() | number: '1.0-0' }} DT</span></div>
+  <div class="card kpi accent"><span class="label">Huile vendue</span><span class="value">{{ data.huileVendueL() | number }} L</span></div>
+  <div class="card kpi accent"><span class="label">Stock disponible</span><span class="value">{{ data.stockHuileL() | number }} L</span></div>
+</div>
+
+<div class="card section">
+  <h2>Nouvelle vente</h2>
+  @if (message(); as m) { <div class="alert" [class.error]="m.type === 'error'" [class.success]="m.type === 'success'">{{ m.texte }}</div> }
+  <form class="inline" [formGroup]="form" (ngSubmit)="enregistrer()">
+    <div class="field"><label for="date">Date</label><input id="date" type="date" formControlName="date" /></div>
+    <div class="field">
+      <label for="ach">Acheteur</label>
+      <input id="ach" formControlName="acheteur" list="acheteurs" />
+      <datalist id="acheteurs">
+        @for (o of data.offres(); track o.id) { <option [value]="o.acheteur"></option> }
+      </datalist>
+    </div>
+    <div class="field"><label for="qte">Quantité (L)</label><input id="qte" type="number" formControlName="quantiteL" /></div>
+    <div class="field"><label for="prix">Prix (DT/L)</label><input id="prix" type="number" step="0.1" formControlName="prixParL" /></div>
+    <button class="btn" type="submit">Enregistrer · {{ total() | number: '1.0-2' }} DT</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Historique des ventes</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Date</th><th>Acheteur</th><th>Quantité</th><th>Prix</th><th>Montant</th></tr></thead>
+      <tbody>
+        @for (v of triees(); track v.id) {
+          <tr>
+            <td>{{ v.date | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ v.acheteur }}</td>
+            <td>{{ v.quantiteL | number }} L</td>
+            <td>{{ v.prixParL | number: '1.2-2' }} DT/L</td>
+            <td><strong>{{ v.quantiteL * v.prixParL | number: '1.0-2' }} DT</strong></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="empty">Aucune vente.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

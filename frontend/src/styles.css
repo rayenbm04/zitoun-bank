@@ -1,0 +1,110 @@
+/* ===== Thème Zitoun Bank : olivier et Méditerranée ===== */
+:root {
+  --olive-900: #2f3a17;
+  --olive-700: #3f4a1e;
+  --olive-500: #7c8b4f;
+  --sauge: #9aab89;
+  --sauge-clair: #e9eddf;
+  --or: #c9a227;
+  --or-fonce: #8a6a0e;
+  --creme: #f6f1e4;
+  --carte: #fdfbf5;
+  --bordure: #e3dcc8;
+  --texte: #2f3a17;
+  --texte-doux: #5e624e;
+  --danger: #b3261e;
+  --succes: #2e7d32;
+  --rayon: 16px;
+  --ombre: 0 4px 16px rgba(47, 58, 23, 0.08);
+}
+
+html.dark {
+  --creme: #1b2010;
+  --carte: #252c17;
+  --bordure: #3a4426;
+  --sauge-clair: #2f3a1d;
+  --texte: #eef0e4;
+  --texte-doux: #b9c0a6;
+  --olive-900: #e9eddf;
+  --or-fonce: #e2c35a;
+  --ombre: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'DM Sans', Arial, sans-serif;
+  background: var(--creme);
+  color: var(--texte);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+h1, h2, h3 { margin: 0; color: var(--olive-900); }
+h1 { font-family: 'Playfair Display', Georgia, serif; font-size: 28px; }
+h2 { font-size: 18px; }
+a { color: var(--or-fonce); }
+
+/* ===== En-tête de page ===== */
+.page-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+.page-header p { margin: 4px 0 0; color: var(--texte-doux); }
+
+/* ===== Cartes et grilles ===== */
+.card { background: var(--carte); border: 1px solid var(--bordure); border-radius: var(--rayon); padding: 20px; box-shadow: var(--ombre); }
+.card + .card { margin-top: 20px; }
+.grid > .card + .card { margin-top: 0; }
+.card h2 { margin-bottom: 14px; }
+.grid { display: grid; gap: 16px; }
+.grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.grid-2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.section { margin-top: 20px; }
+
+.kpi { display: flex; flex-direction: column; gap: 4px; }
+.kpi .label { color: var(--texte-doux); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+.kpi .value { font-size: 26px; font-weight: 700; color: var(--olive-900); }
+.kpi .hint { color: var(--texte-doux); font-size: 13px; }
+.kpi.accent { border-top: 4px solid var(--or); }
+
+/* ===== Tableaux ===== */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: start; padding: 10px 12px; border-bottom: 1px solid var(--bordure); white-space: nowrap; }
+th { font-size: 13px; color: var(--texte-doux); font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; }
+tr.best td { background: var(--sauge-clair); font-weight: 700; }
+.empty { color: var(--texte-doux); padding: 16px 0; }
+
+/* ===== Badges ===== */
+.badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: var(--sauge-clair); color: var(--olive-700); }
+.badge.or { background: #f3e6b5; color: #6b5209; }
+.badge.rouge { background: #f6dcd9; color: var(--danger); }
+html.dark .badge { color: var(--texte); }
+
+/* ===== Formulaires ===== */
+form.inline { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; align-items: end; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 13px; color: var(--texte-doux); }
+input, select {
+  font: inherit; color: var(--texte); background: var(--carte);
+  border: 1px solid var(--bordure); border-radius: 10px; padding: 10px 12px; width: 100%;
+}
+input:focus, select:focus { outline: 2px solid var(--sauge); border-color: var(--sauge); }
+
+.btn {
+  display: inline-block; text-decoration: none;
+  font: inherit; font-weight: 500; cursor: pointer; border: none; border-radius: 10px;
+  padding: 10px 18px; background: var(--olive-700); color: #fff;
+}
+.btn:hover { background: var(--olive-900); }
+html.dark .btn { background: var(--olive-500); }
+.btn.or { background: var(--or); color: #2f3a17; }
+.btn.ghost { background: transparent; color: var(--texte); border: 1px solid var(--bordure); }
+.btn.small { padding: 6px 12px; font-size: 13px; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.alert { padding: 12px 16px; border-radius: 10px; margin-bottom: 16px; }
+.alert.error { background: #f6dcd9; color: var(--danger); }
+.alert.success { background: #dcefd9; color: var(--succes); }
+.alert.info { background: var(--sauge-clair); color: var(--texte); }
+.muted { color: var(--texte-doux); }
+.note { font-size: 13px; color: var(--texte-doux); margin-top: 12px; }

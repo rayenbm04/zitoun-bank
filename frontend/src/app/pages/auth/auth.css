@@ -1,0 +1,16 @@
+:host { display: flex; min-height: 100vh; }
+.side {
+  flex: 1; background: #2f3a17; color: #f6f1e4; padding: 56px;
+  display: flex; flex-direction: column; justify-content: center; gap: 20px;
+}
+.side h1 { color: #f6f1e4; font-size: 48px; }
+.side h1 span { color: #e2c35a; }
+.side p { color: #d9dccb; font-size: 18px; max-width: 420px; margin: 0; }
+.form-zone { flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px; }
+.box { width: 100%; max-width: 420px; }
+.box h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 28px; margin-bottom: 6px; }
+.box form { display: flex; flex-direction: column; gap: 14px; margin-top: 24px; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.error-text { color: var(--danger); font-size: 12px; }
+.switch { margin-top: 20px; text-align: center; color: var(--texte-doux); }
+@media (max-width: 800px) { .side { display: none; } }

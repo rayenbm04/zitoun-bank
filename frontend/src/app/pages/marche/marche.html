@@ -1,0 +1,59 @@
+<div class="page-header">
+  <div>
+    <h1>Marché et comparateur de prix</h1>
+    <p>Comparez les offres des acheteurs avant de vendre votre huile.</p>
+  </div>
+</div>
+
+@if (data.meilleureOffre(); as best) {
+  <div class="card kpi accent">
+    <span class="label">Meilleure offre</span>
+    <span class="value">{{ best.prixParL | number: '1.2-2' }} DT/L · {{ best.acheteur }}</span>
+    <span class="hint">
+      {{ ecart(best.prixParL) | number: '1.0-0' }} % au-dessus du prix moyen.
+      Pour vos {{ data.stockHuileL() | number }} L en stock : {{ gain(best.prixParL) | number: '1.0-0' }} DT de plus qu’au prix moyen.
+    </span>
+  </div>
+}
+
+<div class="card section">
+  <div class="page-header">
+    <h2>Offres des acheteurs</h2>
+    <div class="grid" style="grid-template-columns: 1fr 1fr">
+      <select [value]="region()" (change)="region.set($any($event.target).value)" aria-label="Filtrer par région">
+        @for (r of regions(); track r) { <option [value]="r">{{ r }}</option> }
+      </select>
+      <select [value]="tri()" (change)="tri.set($any($event.target).value)" aria-label="Trier">
+        <option value="prix">Trier par prix</option>
+        <option value="date">Trier par date</option>
+      </select>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Acheteur</th><th>Type</th><th>Région</th><th>Qualité exigée</th><th>Prix</th><th>Écart / moyenne</th><th>Date</th><th></th></tr></thead>
+      <tbody>
+        @for (o of offres(); track o.id) {
+          <tr [class.best]="o.id === meilleureId()">
+            <td>{{ o.acheteur }} @if (o.id === meilleureId()) { <span class="badge or">Meilleure offre</span> }</td>
+            <td>{{ o.type }}</td>
+            <td>{{ o.region }}</td>
+            <td>{{ o.qualiteMin }}</td>
+            <td>{{ o.prixParL | number: '1.2-2' }} DT/L</td>
+            <td [style.color]="ecart(o.prixParL) >= 0 ? 'var(--succes)' : 'var(--danger)'">
+              {{ ecart(o.prixParL) >= 0 ? '+' : '' }}{{ ecart(o.prixParL) | number: '1.0-0' }} %
+            </td>
+            <td>{{ o.date | date: 'dd/MM/yyyy' }}</td>
+            <td><a class="btn small or" routerLink="/ventes" [queryParams]="{ offre: o.id }">Vendre</a></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Prix moyen des offres : {{ data.prixMoyenMarche() | number: '1.2-2' }} DT/L. Offres fictives de démonstration.</p>
+</div>
+
+<div class="card">
+  <h2>Évolution du prix moyen (DT/L)</h2>
+  <app-line-chart [data]="data.historiquePrix()" label="Évolution du prix moyen de l’huile" />
+</div>

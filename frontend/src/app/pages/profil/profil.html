@@ -1,0 +1,43 @@
+<div class="page-header">
+  <div>
+    <h1>Profil et paramètres</h1>
+    <p>Vos informations et vos préférences d’affichage.</p>
+  </div>
+</div>
+
+<div class="grid grid-2">
+  <div class="card">
+    <h2>Mon compte</h2>
+    @if (auth.user(); as u) {
+      <table>
+        <tbody>
+          <tr><th>Nom</th><td>{{ u.prenom }} {{ u.nom }}</td></tr>
+          <tr><th>E-mail</th><td>{{ u.email }}</td></tr>
+          <tr><th>Téléphone</th><td>{{ u.telephone || '—' }}</td></tr>
+          <tr><th>Région</th><td>{{ u.region || '—' }}</td></tr>
+          <tr><th>Inscrit le</th><td>{{ u.createdAt | date: 'dd/MM/yyyy' }}</td></tr>
+        </tbody>
+      </table>
+    }
+    <button class="btn ghost section" (click)="auth.logout()">Se déconnecter</button>
+  </div>
+
+  <div class="card">
+    <h2>Préférences</h2>
+    <div class="field">
+      <label for="langue">Langue de l’interface (menu)</label>
+      <select id="langue" [value]="prefs.langue()" (change)="prefs.langue.set($any($event.target).value)">
+        <option value="fr">Français</option>
+        <option value="ar">العربية</option>
+      </select>
+    </div>
+    <div class="field section">
+      <label for="theme">Thème</label>
+      <select id="theme" [value]="prefs.sombre() ? 'sombre' : 'clair'" (change)="prefs.sombre.set($any($event.target).value === 'sombre')">
+        <option value="clair">Clair</option>
+        <option value="sombre">Sombre</option>
+      </select>
+    </div>
+    <p class="note">Préférences enregistrées dans ce navigateur.</p>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+<aside class="sidebar">
+  <a class="logo" routerLink="/tableau-de-bord">Zitoun <span>Bank</span></a>
+  <nav>
+    @for (l of liens; track l.path) {
+      <a [routerLink]="l.path" routerLinkActive="active">{{ prefs.t(l.cle) }}</a>
+    }
+  </nav>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <span>{{ prefs.t('bonjour') }}, <strong>{{ auth.user()?.prenom }}</strong></span>
+    <div class="actions">
+      <button class="btn ghost small" (click)="prefs.langue.set(prefs.langue() === 'fr' ? 'ar' : 'fr')">
+        {{ prefs.langue() === 'fr' ? 'العربية' : 'Français' }}
+      </button>
+      <button class="btn ghost small" (click)="prefs.sombre.set(!prefs.sombre())">
+        {{ prefs.sombre() ? 'Mode clair' : 'Mode sombre' }}
+      </button>
+      <button class="btn small" (click)="auth.logout()">{{ prefs.t('deconnexion') }}</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <router-outlet />
+  </main>
+</div>

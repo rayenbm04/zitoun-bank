@@ -1,0 +1,65 @@
+<div class="page-header">
+  <div>
+    <h1>Tableau de bord</h1>
+    <p>Vue d’ensemble de votre exploitation{{ auth.user()?.region ? ' à ' + auth.user()?.region : '' }}.</p>
+  </div>
+</div>
+
+<div class="grid grid-4">
+  <div class="card kpi accent">
+    <span class="label">Oliviers</span>
+    <span class="value">{{ data.totalOliviers() }}</span>
+    <span class="hint">{{ data.parcelles().length }} parcelles</span>
+  </div>
+  <div class="card kpi accent">
+    <span class="label">Stock d’olives</span>
+    <span class="value">{{ data.stockOlivesKg() | number: '1.0-0' }} kg</span>
+    <span class="hint">en attente du moulin</span>
+  </div>
+  <div class="card kpi accent">
+    <span class="label">Stock d’huile</span>
+    <span class="value">{{ data.stockHuileL() | number: '1.0-0' }} L</span>
+    <span class="hint">disponible à la vente</span>
+  </div>
+  <div class="card kpi accent">
+    <span class="label">Revenus de la saison</span>
+    <span class="value">{{ data.revenus() | number: '1.0-0' }} DT</span>
+    <span class="hint">{{ data.ventes().length }} ventes</span>
+  </div>
+</div>
+
+<div class="grid grid-2 section">
+  <div class="card">
+    <h2>Évolution du prix moyen de l’huile (DT/L)</h2>
+    <app-line-chart [data]="data.historiquePrix()" label="Évolution du prix moyen de l’huile" />
+    <p class="note">Données fictives de démonstration.</p>
+  </div>
+
+  <div class="card">
+    <h2>Alertes</h2>
+    @for (a of data.alertes(); track a) {
+      <div class="alert info">{{ a }}</div>
+    } @empty {
+      <p class="empty">Aucune alerte pour le moment.</p>
+    }
+  </div>
+</div>
+
+<div class="grid grid-2 section">
+  <div class="card">
+    <h2>Production</h2>
+    <p>Huile produite : <strong>{{ data.huileProduiteL() | number: '1.0-0' }} L</strong></p>
+    <p>Rendement moyen : <strong>{{ data.rendementMoyen() | number: '1.1-1' }} L pour 100 kg d’olives</strong></p>
+    <a routerLink="/production">Voir les passages au moulin</a>
+  </div>
+
+  <div class="card">
+    <h2>Meilleure offre du marché</h2>
+    @if (data.meilleureOffre(); as o) {
+      <p><strong>{{ o.acheteur }}</strong> ({{ o.type }}, {{ o.region }})</p>
+      <p class="kpi"><span class="value">{{ o.prixParL | number: '1.2-2' }} DT/L</span></p>
+      <p class="muted">Prix moyen des offres : {{ data.prixMoyenMarche() | number: '1.2-2' }} DT/L</p>
+      <a routerLink="/marche">Comparer les offres</a>
+    }
+  </div>
+</div>

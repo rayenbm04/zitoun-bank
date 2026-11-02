@@ -1,0 +1,83 @@
+<section class="side">
+  <h1>Zitoun <span>Bank</span></h1>
+  <p>Suivez votre production, gérez vos stocks et vendez votre huile au meilleur prix.</p>
+</section>
+
+<section class="form-zone">
+  <div class="box">
+    <h2>Créer un compte</h2>
+    <p class="muted">Inscription gratuite pour les agriculteurs.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      @if (error()) {
+        <div class="alert error">{{ error() }}</div>
+      }
+
+      <div class="row">
+        <div class="field">
+          <label for="prenom">Prénom</label>
+          <input id="prenom" formControlName="prenom" />
+          @if (form.controls.prenom.touched && form.controls.prenom.invalid) {
+            <span class="error-text">Prénom requis.</span>
+          }
+        </div>
+        <div class="field">
+          <label for="nom">Nom</label>
+          <input id="nom" formControlName="nom" />
+          @if (form.controls.nom.touched && form.controls.nom.invalid) {
+            <span class="error-text">Nom requis.</span>
+          }
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="email">Adresse e-mail</label>
+        <input id="email" type="email" formControlName="email" autocomplete="email" />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <span class="error-text">Adresse e-mail valide requise.</span>
+        }
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="telephone">Téléphone (facultatif)</label>
+          <input id="telephone" formControlName="telephone" placeholder="98 123 456" />
+          @if (form.controls.telephone.touched && form.controls.telephone.invalid) {
+            <span class="error-text">Numéro invalide.</span>
+          }
+        </div>
+        <div class="field">
+          <label for="region">Région</label>
+          <select id="region" formControlName="region">
+            <option value="">Choisir…</option>
+            @for (r of regions; track r) {
+              <option [value]="r">{{ r }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="password">Mot de passe (8 caractères minimum)</label>
+        <input id="password" type="password" formControlName="password" autocomplete="new-password" />
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <span class="error-text">Au moins 8 caractères.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="confirm">Confirmer le mot de passe</label>
+        <input id="confirm" type="password" formControlName="confirm" autocomplete="new-password" />
+        @if (form.controls.confirm.touched && form.hasError('mismatch')) {
+          <span class="error-text">Les mots de passe ne correspondent pas.</span>
+        }
+      </div>
+
+      <button class="btn" type="submit" [disabled]="loading()">
+        {{ loading() ? 'Création…' : 'Créer mon compte' }}
+      </button>
+    </form>
+
+    <p class="switch">Déjà inscrit ? <a routerLink="/connexion">Se connecter</a></p>
+  </div>
+</section>

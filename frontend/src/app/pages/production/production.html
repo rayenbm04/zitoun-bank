@@ -1,0 +1,51 @@
+<div class="page-header">
+  <div>
+    <h1>Production d’huile</h1>
+    <p>Passages au moulin, rendement et qualité de l’huile.</p>
+  </div>
+</div>
+
+<div class="grid grid-4">
+  <div class="card kpi"><span class="label">Huile produite</span><span class="value">{{ data.huileProduiteL() | number: '1.0-0' }} L</span></div>
+  <div class="card kpi"><span class="label">Olives pressées</span><span class="value">{{ data.olivesPresseesKg() | number: '1.0-0' }} kg</span></div>
+  <div class="card kpi"><span class="label">Rendement moyen</span><span class="value">{{ data.rendementMoyen() | number: '1.1-1' }} L</span><span class="hint">pour 100 kg d’olives</span></div>
+  <div class="card kpi"><span class="label">Olives disponibles</span><span class="value">{{ data.stockOlivesKg() | number: '1.0-0' }} kg</span></div>
+</div>
+
+<div class="card section">
+  <h2>Enregistrer un passage au moulin</h2>
+  @if (erreur()) { <div class="alert error">{{ erreur() }}</div> }
+  <form class="inline" [formGroup]="form" (ngSubmit)="ajouter()">
+    <div class="field"><label for="date">Date</label><input id="date" type="date" formControlName="date" /></div>
+    <div class="field"><label for="moulin">Moulin</label><input id="moulin" formControlName="moulin" placeholder="Huilerie…" /></div>
+    <div class="field"><label for="ol">Olives apportées (kg)</label><input id="ol" type="number" formControlName="olivesKg" /></div>
+    <div class="field"><label for="hu">Huile obtenue (L)</label><input id="hu" type="number" formControlName="huileL" /></div>
+    <div class="field"><label for="ac">Acidité (%)</label><input id="ac" type="number" step="0.1" formControlName="acidite" /></div>
+    <button class="btn" type="submit">Enregistrer</button>
+  </form>
+  <p class="note">Qualité calculée selon l’acidité : extra vierge ≤ 0,8 % · vierge ≤ 2 % · ordinaire au-delà.</p>
+</div>
+
+<div class="card">
+  <h2>Historique des passages au moulin</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Date</th><th>Moulin</th><th>Olives</th><th>Huile</th><th>Rendement</th><th>Acidité</th><th>Qualité</th></tr></thead>
+      <tbody>
+        @for (p of triees(); track p.id) {
+          <tr>
+            <td>{{ p.date | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ p.moulin }}</td>
+            <td>{{ p.olivesKg | number }} kg</td>
+            <td>{{ p.huileL | number }} L</td>
+            <td>{{ rendement(p.olivesKg, p.huileL) | number: '1.1-1' }} L/100 kg</td>
+            <td>{{ p.acidite }} %</td>
+            <td><span [class]="badge(data.qualite(p.acidite))">{{ data.qualite(p.acidite) }}</span></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="7" class="empty">Aucun passage au moulin.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

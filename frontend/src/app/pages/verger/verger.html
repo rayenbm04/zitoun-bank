@@ -1,0 +1,60 @@
+<div class="page-header">
+  <div>
+    <h1>Gestion du verger</h1>
+    <p>{{ data.parcelles().length }} parcelles · {{ data.totalOliviers() }} oliviers</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Mes parcelles</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Parcelle</th><th>Localisation</th><th>Superficie</th><th>Variété</th><th>Oliviers</th><th>Âge moyen</th><th>État</th><th></th></tr>
+      </thead>
+      <tbody>
+        @for (p of data.parcelles(); track p.id) {
+          <tr>
+            <td><strong>{{ p.nom }}</strong></td>
+            <td>{{ p.localisation }}</td>
+            <td>{{ p.superficieHa }} ha</td>
+            <td>{{ p.variete }}</td>
+            <td>{{ p.nbOliviers }}</td>
+            <td>{{ p.ageMoyen }} ans</td>
+            <td><span class="badge" [class]="'badge ' + badge(p.etat)">{{ p.etat }}</span></td>
+            <td><button class="btn ghost small" (click)="data.supprimerParcelle(p.id)">Supprimer</button></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="8" class="empty">Aucune parcelle enregistrée.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Ajouter une parcelle</h2>
+  <form class="inline" [formGroup]="form" (ngSubmit)="ajouter()">
+    <div class="field"><label for="nom">Nom</label><input id="nom" formControlName="nom" /></div>
+    <div class="field"><label for="loc">Localisation</label><input id="loc" formControlName="localisation" placeholder="Sfax" /></div>
+    <div class="field"><label for="sup">Superficie (ha)</label><input id="sup" type="number" step="0.1" formControlName="superficieHa" /></div>
+    <div class="field">
+      <label for="var">Variété</label>
+      <select id="var" formControlName="variete">
+        @for (v of varietes; track v) { <option [value]="v">{{ v }}</option> }
+      </select>
+    </div>
+    <div class="field"><label for="nb">Nombre d’oliviers</label><input id="nb" type="number" formControlName="nbOliviers" /></div>
+    <div class="field"><label for="age">Âge moyen (ans)</label><input id="age" type="number" formControlName="ageMoyen" /></div>
+    <div class="field">
+      <label for="etat">État</label>
+      <select id="etat" formControlName="etat">
+        @for (e of etats; track e) { <option [value]="e">{{ e }}</option> }
+      </select>
+    </div>
+    <button class="btn" type="submit">Ajouter</button>
+  </form>
+  @if (form.touched && form.invalid) {
+    <p class="note">Remplissez tous les champs (valeurs positives).</p>
+  }
+</div>

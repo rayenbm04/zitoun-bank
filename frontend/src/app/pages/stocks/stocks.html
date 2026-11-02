@@ -1,0 +1,45 @@
+<div class="page-header">
+  <div>
+    <h1>Gestion des stocks</h1>
+    <p>Mis à jour automatiquement à chaque récolte, passage au moulin et vente.</p>
+  </div>
+</div>
+
+<div class="grid grid-4">
+  <div class="card kpi accent">
+    <span class="label">Olives en stock</span>
+    <span class="value">{{ data.stockOlivesKg() | number: '1.0-0' }} kg</span>
+    <span class="hint">{{ data.totalRecolteKg() | number }} kg récoltés − {{ data.olivesPresseesKg() | number }} kg pressés</span>
+  </div>
+  <div class="card kpi accent">
+    <span class="label">Huile en stock</span>
+    <span class="value">{{ data.stockHuileL() | number: '1.0-0' }} L</span>
+    <span class="hint">{{ data.huileProduiteL() | number }} L produits − {{ data.huileVendueL() | number }} L vendus</span>
+  </div>
+  <div class="card kpi accent">
+    <span class="label">Valeur estimée du stock</span>
+    <span class="value">{{ valeurStock() | number: '1.0-0' }} DT</span>
+    <span class="hint">au prix moyen des offres ({{ data.prixMoyenMarche() | number: '1.2-2' }} DT/L)</span>
+  </div>
+</div>
+
+<div class="card section">
+  <h2>Mouvements de stock</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Date</th><th>Produit</th><th>Mouvement</th><th>Quantité</th></tr></thead>
+      <tbody>
+        @for (m of mouvements(); track $index) {
+          <tr>
+            <td>{{ m.date | date: 'dd/MM/yyyy' }}</td>
+            <td><span class="badge" [class.or]="m.produit === 'Huile'">{{ m.produit }}</span></td>
+            <td>{{ m.libelle }}</td>
+            <td [style.color]="m.quantite < 0 ? 'var(--danger)' : 'var(--succes)'">
+              {{ m.quantite > 0 ? '+' : '' }}{{ m.quantite | number }} {{ m.unite }} ({{ m.quantite > 0 ? 'entrée' : 'sortie' }})
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

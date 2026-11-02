@@ -1,0 +1,57 @@
+<div class="page-header">
+  <div>
+    <h1>Suivi des récoltes</h1>
+    <p>Total récolté cette saison : <strong>{{ data.totalRecolteKg() | number: '1.0-0' }} kg</strong> d’olives</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Enregistrer une récolte</h2>
+  <form class="inline" [formGroup]="form" (ngSubmit)="ajouter()">
+    <div class="field"><label for="date">Date</label><input id="date" type="date" formControlName="date" /></div>
+    <div class="field">
+      <label for="parc">Parcelle</label>
+      <select id="parc" formControlName="parcelleId">
+        <option [value]="0" disabled>Choisir…</option>
+        @for (p of data.parcelles(); track p.id) { <option [value]="p.id">{{ p.nom }}</option> }
+      </select>
+    </div>
+    <div class="field"><label for="qte">Quantité (kg)</label><input id="qte" type="number" formControlName="quantiteKg" /></div>
+    <button class="btn" type="submit">Enregistrer</button>
+  </form>
+  @if (form.touched && form.invalid) {
+    <p class="note">Choisissez une parcelle et une quantité positive.</p>
+  }
+</div>
+
+<div class="grid grid-2 section">
+  <div class="card">
+    <h2>Historique</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Parcelle</th><th>Quantité</th></tr></thead>
+        <tbody>
+          @for (r of triees(); track r.id) {
+            <tr><td>{{ r.date | date: 'dd/MM/yyyy' }}</td><td>{{ data.nomParcelle(r.parcelleId) }}</td><td>{{ r.quantiteKg | number }} kg</td></tr>
+          } @empty {
+            <tr><td colspan="3" class="empty">Aucune récolte.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Rendement par parcelle</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Parcelle</th><th>Récolté</th><th>kg / olivier</th></tr></thead>
+        <tbody>
+          @for (p of parParcelle(); track p.nom) {
+            <tr><td>{{ p.nom }}</td><td>{{ p.kg | number }} kg</td><td>{{ p.kgParArbre | number: '1.1-1' }}</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
