@@ -7,6 +7,7 @@ import { Logo } from '../shared/ui/brand';
 
 export const LIENS = [
   { path: '/tableau-de-bord', cle: 'nav.dashboard', icone: 'grille' },
+  { path: '/marche', cle: 'nav.marche', icone: 'etiquette' },
 ];
 
 @Component({

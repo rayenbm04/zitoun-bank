@@ -13,6 +13,7 @@ export const routes: Routes = [
     loadComponent: () => import('./layout/shell').then(m => m.Shell),
     children: [
       { path: 'tableau-de-bord', title: t('Tableau de bord'), data: { titre: 'nav.dashboard' }, loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard) },
+      { path: 'marche', title: t('Marché et prix'), data: { titre: 'nav.marche' }, loadComponent: () => import('./pages/marche/marche').then(m => m.Marche) },
     ],
   },
   { path: '**', redirectTo: '' },
