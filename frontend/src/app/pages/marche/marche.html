@@ -1,0 +1,127 @@
+<div class="page-head">
+  <p>Les offres des acheteurs du jour, comparées par qualité. Vendez en un clic : le formulaire de vente s’ouvre déjà rempli.</p>
+</div>
+
+<div class="filtres card" role="search" aria-label="Filtrer les offres">
+  <div class="f">
+    <label for="f-region" class="field-label">Région</label>
+    <select id="f-region" class="input" [value]="region()" (change)="region.set($any($event.target).value)">
+      <option value="toutes">Toutes les régions</option>
+      @for (r of regions; track r) { <option [value]="r">{{ r }}</option> }
+    </select>
+  </div>
+  <div class="f grow">
+    <span class="field-label" id="f-qualite">Qualité</span>
+    <div class="chips" role="group" aria-labelledby="f-qualite">
+      <button type="button" class="chip" [attr.aria-pressed]="qualite() === 'toutes'" (click)="qualite.set('toutes')">Toutes</button>
+      @for (q of qualites; track q) {
+        <button type="button" class="chip" [attr.aria-pressed]="qualite() === q" (click)="qualite.set(q)">{{ q }}</button>
+      }
+    </div>
+  </div>
+  <div class="f">
+    <label for="f-tri" class="field-label">Trier par</label>
+    <select id="f-tri" class="input" [value]="tri()" (change)="tri.set($any($event.target).value)">
+      <option value="prix">Prix le plus élevé</option>
+      <option value="date">Offres les plus récentes</option>
+    </select>
+  </div>
+</div>
+
+@if (data.chargement()) {
+  <div class="grid-main" style="margin-top: 24px">
+    <span class="skeleton" style="height: 300px; border-radius: 28px"></span>
+    <span class="skeleton" style="height: 300px; border-radius: 20px"></span>
+  </div>
+} @else if (meilleure(); as m) {
+  <div class="grid-main" style="margin-top: 24px">
+    <section class="meilleure" aria-labelledby="t-best">
+      <div class="m-haut">
+        <span class="m-etiquette"><app-icon name="etoile" />Meilleure offre</span>
+        <app-badge [valeur]="m.qualite" />
+      </div>
+      <h2 id="t-best">{{ m.acheteur }}</h2>
+      <p class="m-qui"><app-icon name="lieu" />{{ m.type }} à {{ m.region }}, jusqu’à {{ p.nombre(m.quantiteMaxL) }} L</p>
+      <p class="m-prix"><span class="num">{{ p.nombre(m.prixParL, 2) }}</span> TND/L</p>
+      <p class="m-ecart">
+        @if (ecartMeilleure() > 0.5) { <app-icon name="hausse" />{{ p.nombre(ecartMeilleure(), 0) }} % au-dessus du prix moyen {{ m.qualite.toLowerCase() }} }
+        @else { Au prix moyen du marché pour cette qualité }
+      </p>
+      <div class="m-bas">
+        <p>
+          @if (gain().litres > 0) {
+            Avec vos {{ p.nombre(gain().litres) }} L disponibles : <strong>{{ p.nombre(gain().montant, 0) }} TND</strong>
+          } @else {
+            Vous n’avez pas d’huile {{ m.qualite.toLowerCase() }} en stock pour cette offre.
+          }
+        </p>
+        <a class="btn btn-primary" routerLink="/ventes" [queryParams]="{ offre: m.id }"
+           [attr.aria-disabled]="gain().litres <= 0 ? 'true' : null" [class.inactif]="gain().litres <= 0">
+          Vendre à {{ m.acheteur }}
+        </a>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="t-courbe">
+      <div class="card-head">
+        <div><h2 id="t-courbe">Prix moyen : {{ courbeQualite().toLowerCase() }}</h2><p>Six derniers mois, en TND par litre</p></div>
+      </div>
+      <app-line-chart [etiquettes]="mois()" [series]="series()" [label]="'Prix moyen de l’huile ' + courbeQualite()" unite="TND/L" [decimales]="2" [hauteur]="300" />
+    </section>
+  </div>
+}
+
+<section class="card card-flush" style="margin-top: 24px" aria-labelledby="t-offres">
+  <div class="card-head">
+    <div><h2 id="t-offres">Offres des acheteurs</h2><p>{{ offres().length }} offres correspondent à vos filtres</p></div>
+  </div>
+  <div style="padding: 0 24px 20px">
+    @if (data.chargement()) {
+      @for (i of [1, 2, 3, 4]; track i) { <span class="skeleton" style="height: 52px; margin-bottom: 10px"></span> }
+    } @else if (offres().length) {
+      <div class="table-wrap">
+        <table class="table stack">
+          <thead>
+            <tr>
+              <th scope="col">Acheteur</th><th scope="col">Région</th><th scope="col">Qualité</th>
+              <th scope="col" class="t-num">Quantité max.</th><th scope="col" class="t-num">Prix</th>
+              <th scope="col" class="t-num">Écart</th><th scope="col" class="t-actions"><span class="sr-only">Action</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (o of offres(); track o.id) {
+              <tr [class.is-best]="o.id === meilleure()?.id">
+                <td class="t-main" data-label="Acheteur">
+                  {{ o.acheteur }}
+                  <span class="t-sub">{{ o.type }}, offre du {{ p.date(o.date) }}</span>
+                </td>
+                <td data-label="Région">{{ o.region }}</td>
+                <td data-label="Qualité"><app-badge [valeur]="o.qualite" /></td>
+                <td data-label="Quantité max." class="t-num">{{ p.nombre(o.quantiteMaxL) }} L</td>
+                <td data-label="Prix" class="t-num"><span class="price">{{ p.nombre(o.prixParL, 2) }} TND/L</span></td>
+                <td data-label="Écart" class="t-num">
+                  @let e = ecart(o.prixParL, o.qualite);
+                  @if (e > -0.5 && e < 0.5) {
+                    <span class="ecart nul">au prix moyen</span>
+                  } @else {
+                    <span class="ecart" [class.neg]="e < 0">
+                      <app-icon [name]="e < 0 ? 'baisse' : 'hausse'" />{{ e > 0 ? '+' : '−' }}{{ p.nombre(e < 0 ? -e : e, 0) }} %
+                    </span>
+                  }
+                </td>
+                <td class="t-actions">
+                  <a class="btn btn-outline btn-sm" routerLink="/ventes" [queryParams]="{ offre: o.id }" [attr.aria-label]="'Vendre à ' + o.acheteur">Vendre</a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="note" style="margin-top: 12px">L’écart compare chaque prix à la moyenne des offres de la même qualité. Offres de démonstration.</p>
+    } @else {
+      <app-empty title="Aucune offre pour ces filtres" text="Essayez une autre région ou une autre qualité." icon="etiquette">
+        <button type="button" class="btn btn-outline" (click)="reinitialiser()">Réinitialiser les filtres</button>
+      </app-empty>
+    }
+  </div>
+</section>

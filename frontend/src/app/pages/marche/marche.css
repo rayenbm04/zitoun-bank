@@ -1,0 +1,52 @@
+.filtres { display: flex; gap: 20px 28px; align-items: flex-end; flex-wrap: wrap; padding: 18px 24px; }
+.f { display: flex; flex-direction: column; gap: 8px; min-width: 200px; }
+.f.grow { flex: 1; }
+.f .input { min-height: 40px; padding-block: 8px; }
+
+.meilleure {
+  position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 10px;
+  background: var(--olive-900); color: #e9eddf; border-radius: var(--r-xl); padding: 32px;
+  box-shadow: var(--shadow-2);
+}
+.meilleure::after {
+  content: ''; position: absolute; inset-block-start: -80px; inset-inline-end: -80px; width: 260px; height: 260px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 162, 39, 0.28), transparent 70%); pointer-events: none;
+}
+:host-context(html.dark) .meilleure { background: #252e15; border: 1px solid #3a4426; }
+.m-haut { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.m-etiquette {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px 4px 10px; border-radius: 999px;
+  background: rgba(201, 162, 39, 0.18); color: var(--or-clair); font-weight: 700; font-size: var(--fs-sm);
+}
+.m-etiquette app-icon { width: 16px; height: 16px; }
+.meilleure h2 { color: #fdfbf5; font-size: 2rem; margin-top: 6px; }
+.m-qui { display: inline-flex; align-items: center; gap: 6px; color: #c9cfb7; }
+.m-qui app-icon { width: 18px; height: 18px; }
+.m-prix { font-size: 1.25rem; font-weight: 700; color: var(--or-clair); margin-top: 8px; }
+.m-prix .num { font-size: 4rem; line-height: 1; letter-spacing: -0.03em; margin-inline-end: 6px; }
+.m-ecart { display: inline-flex; align-items: center; gap: 6px; color: #d5ddc2; font-weight: 600; }
+.m-ecart app-icon { width: 18px; height: 18px; color: var(--or-clair); }
+.m-bas {
+  margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(233, 237, 223, 0.14);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.m-bas strong { color: #fdfbf5; font-size: 1.125rem; }
+.meilleure .btn-primary:focus-visible { box-shadow: 0 0 0 2px var(--olive-900), 0 0 0 4px var(--or-clair); }
+.inactif { pointer-events: none; --_bg: rgba(233, 237, 223, 0.12) !important; --_fg: #c9cfb7 !important; --_bd: transparent !important; }
+
+.ecart {
+  display: inline-flex; align-items: center; gap: 4px; font-weight: 700; font-size: var(--fs-sm);
+  color: var(--ok-fg); background: var(--ok-bg); padding: 2px 8px 2px 6px; border-radius: 999px;
+}
+.ecart.neg { color: var(--danger-fg); background: var(--danger-bg); }
+.ecart.nul { color: var(--text-muted); background: var(--surface-2); font-weight: 600; padding-inline: 8px; }
+.ecart app-icon { width: 14px; height: 14px; }
+
+@media (max-width: 720px) {
+  .filtres { padding: 16px; gap: 14px; }
+  .f { min-width: 0; width: 100%; }
+  .meilleure { padding: 24px 20px; border-radius: 22px; }
+  .meilleure h2 { font-size: 1.5rem; }
+  .m-prix .num { font-size: 3rem; }
+  .m-bas .btn { width: 100%; }
+}
