@@ -68,6 +68,7 @@ export class Shell {
   readonly raccourcis = [
     { path: '/tableau-de-bord', cle: 'nav.dashboard', icone: 'grille' },
     { path: '/marche', cle: 'nav.marche', icone: 'etiquette' },
+    { path: '/ventes', cle: 'nav.ventes', icone: 'billet' },
   ];
 
   readonly titre = toSignal(
