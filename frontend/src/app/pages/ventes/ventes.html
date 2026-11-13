@@ -1,0 +1,99 @@
+<div class="page-head">
+  <p>Chaque vente validée baisse aussitôt le stock d’huile de la qualité vendue.</p>
+</div>
+
+<section class="kpi-grid cols-3" aria-label="Chiffres des ventes">
+  <app-kpi label="Revenus de la saison" [value]="p.nombre(data.revenus())" unit="TND" [hint]="data.ventes().length + ' ventes'" icon="billet" [featured]="true" [loading]="data.chargement()" />
+  <app-kpi label="Huile vendue" [value]="p.nombre(huileVendue())" unit="L" hint="toutes qualités" icon="goutte" [loading]="data.chargement()" />
+  <app-kpi label="Huile disponible" [value]="p.nombre(data.stockHuileL())" unit="L" hint="prête à vendre" icon="caisse" [loading]="data.chargement()" />
+</section>
+
+<section class="card vente" style="margin-top: 24px" aria-labelledby="t-form">
+  <div class="card-head"><h2 id="t-form">Nouvelle vente</h2></div>
+
+  @if (offreChoisie(); as o) {
+    <app-alert tone="info" icon="etiquette" [title]="'Offre de ' + o.acheteur + ' pré-remplie'" [stacked]="true" style="margin-bottom: 20px">
+      {{ o.qualite }} à {{ p.nombre(o.prixParL, 2) }} TND/L, jusqu’à {{ p.nombre(o.quantiteMaxL) }} L. Vérifiez la quantité puis validez.
+      <button slot="action" type="button" class="btn btn-ghost btn-sm" (click)="oublierOffre()"><app-icon name="fermer" />Effacer</button>
+    </app-alert>
+  }
+  @if (erreurStock()) {
+    <app-alert tone="danger" title="Vente non enregistrée" style="margin-bottom: 16px">{{ erreurStock() }}</app-alert>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="enregistrer()" novalidate class="vente-form">
+    <div class="champs">
+      <app-field label="Acheteur" for="v-ach" [error]="erreur('acheteur')" class="large">
+        <input id="v-ach" formControlName="acheteur" list="acheteurs" placeholder="Nom de l’acheteur" aria-describedby="v-ach-msg" />
+        <datalist id="acheteurs">@for (o of data.offres(); track o.id) { <option [value]="o.acheteur"></option> }</datalist>
+      </app-field>
+      <app-field label="Qualité" for="v-qualite" [hint]="p.nombre(dispo()) + ' L disponibles'">
+        <select id="v-qualite" formControlName="qualite" aria-describedby="v-qualite-msg">
+          @for (q of qualites; track q) { <option [value]="q">{{ q }}</option> }
+        </select>
+      </app-field>
+      <app-field label="Quantité" for="v-qte" [error]="erreur('quantiteL')">
+        <div class="input-affix">
+          <input id="v-qte" type="number" min="1" formControlName="quantiteL" inputmode="numeric" aria-describedby="v-qte-msg" />
+          <span class="affix">L</span>
+        </div>
+      </app-field>
+      <app-field label="Prix par litre" for="v-prix" [error]="erreur('prixParL')">
+        <div class="input-affix">
+          <input id="v-prix" type="number" min="0.1" step="0.05" formControlName="prixParL" inputmode="decimal" aria-describedby="v-prix-msg" />
+          <span class="affix">TND</span>
+        </div>
+      </app-field>
+      <app-field label="Date" for="v-date">
+        <input id="v-date" type="date" formControlName="date" />
+      </app-field>
+    </div>
+
+    <aside class="recap" aria-live="polite">
+      <span class="r-label">Total de la vente</span>
+      <span class="r-total"><span class="num">{{ p.nombre(total(), 2) }}</span> TND</span>
+      <span class="r-detail">{{ p.nombre(valeurs().quantiteL || 0) }} L × {{ p.nombre(valeurs().prixParL || 0, 2) }} TND</span>
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="depasse()">Valider la vente</button>
+    </aside>
+  </form>
+</section>
+
+<section class="card card-flush" style="margin-top: 24px" aria-labelledby="t-hist">
+  <div class="card-head">
+    <h2 id="t-hist">Historique des ventes</h2>
+    <div class="chips" role="group" aria-label="Filtrer par statut">
+      <button type="button" class="chip" [attr.aria-pressed]="filtre() === 'toutes'" (click)="filtre.set('toutes')">Toutes</button>
+      <button type="button" class="chip" [attr.aria-pressed]="filtre() === 'En attente'" (click)="filtre.set('En attente')">En attente</button>
+      <button type="button" class="chip" [attr.aria-pressed]="filtre() === 'Livrée'" (click)="filtre.set('Livrée')">Livrées</button>
+      <button type="button" class="chip" [attr.aria-pressed]="filtre() === 'Payée'" (click)="filtre.set('Payée')">Payées</button>
+    </div>
+  </div>
+  <div style="padding: 0 24px 20px">
+    @if (historique().length) {
+      <div class="table-wrap">
+        <table class="table stack">
+          <thead>
+            <tr><th scope="col">Date</th><th scope="col">Acheteur</th><th scope="col">Qualité</th><th scope="col" class="t-num">Quantité</th><th scope="col" class="t-num">Prix</th><th scope="col" class="t-num">Montant</th><th scope="col">Statut</th></tr>
+          </thead>
+          <tbody>
+            @for (v of historique(); track v.id) {
+              <tr>
+                <td data-label="Date" class="num">{{ p.date(v.date) }}</td>
+                <td data-label="Acheteur" class="t-main">{{ v.acheteur }}</td>
+                <td data-label="Qualité"><app-badge [valeur]="v.qualite" /></td>
+                <td data-label="Quantité" class="t-num">{{ p.nombre(v.quantiteL) }} L</td>
+                <td data-label="Prix" class="t-num">{{ p.nombre(v.prixParL, 2) }} TND/L</td>
+                <td data-label="Montant" class="t-num strong">{{ p.nombre(v.quantiteL * v.prixParL, 2) }} TND</td>
+                <td data-label="Statut"><app-badge [valeur]="v.statut" /></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <app-empty title="Aucune vente avec ce statut" text="Consultez le marché pour trouver le meilleur acheteur." icon="billet">
+        <button type="button" class="btn btn-outline" (click)="filtre.set('toutes')">Voir toutes les ventes</button>
+      </app-empty>
+    }
+  </div>
+</section>
