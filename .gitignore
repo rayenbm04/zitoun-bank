@@ -1,0 +1,30 @@
+node_modules/
+dist/
+.angular/
+.env
+
+docs/objectif2/canva/arborescence-zitoun-bank-v2.png
+docs/objectif2/canva/Diagramme sans nom.drawio.png
+docs/objectif2/canva/Screenshot 2026-11-07 091823.png
+docs/objectif2/canva/Screenshot 2026-11-07 091901.png
+docs/objectif2/canva/Screenshot 2026-11-07 092651.png
+docs/objectif2/canva/zb-hf-1-accueil.png
+docs/objectif2/canva/zb-hf-2-connexion.png
+docs/objectif2/canva/zb-hf-3-mot-de-passe-oublie.png
+docs/objectif2/canva/zb-hf-4-tableau-de-bord.png
+docs/objectif2/canva/zb-hf-5-marche.png
+docs/objectif2/canva/zb-hf-6-ventes.png
+docs/objectif2/canva/zb-hf-7-profil.png
+docs/objectif2/canva/zb-hf-8-verger.png
+docs/objectif2/canva/zb-hf-9-recoltes.png
+docs/objectif2/canva/zb-wf-1-accueil.png
+docs/objectif2/canva/zb-wf-2-connexion.png
+docs/objectif2/canva/zb-wf-3-inscription.png
+docs/objectif2/canva/zb-wf-4-mot-de-passe-oublie.png
+docs/objectif2/canva/zb-wf-5-tableau-de-bord.png
+docs/objectif2/canva/zb-wf-6-marche.png
+docs/objectif2/canva/zb-wf-7-ventes.png
+docs/objectif2/canva/zb-wf-8-profil.png
+docs/objectif2/canva/zb-wf-9-verger.png
+docs/objectif2/canva/zb-wf-10-recoltes.png
+docs/Fiche_notions_hors_cours.pdf

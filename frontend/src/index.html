@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>Zitoun Bank : du verger à la vente</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Zitoun Bank aide les oléiculteurs tunisiens à suivre leur verger, leurs récoltes et leur huile, et à vendre au meilleur prix.">
+  <meta name="theme-color" content="#2f3a17">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <script>
+    try {
+      var l = localStorage.getItem('zitoun_bank_langue'), s = localStorage.getItem('zitoun_bank_sombre');
+      if (l === 'ar') { document.documentElement.lang = 'ar'; document.documentElement.dir = 'rtl'; }
+      if (s === '1' || (s === null && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>
