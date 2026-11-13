@@ -1,1 +1,10 @@
-body { margin: 0; }
+@import '@fontsource-variable/dm-sans/index.css';
+@import '@fontsource/playfair-display/600.css';
+@import '@fontsource/playfair-display/700.css';
+@import '@fontsource/noto-kufi-arabic/400.css';
+@import '@fontsource/noto-kufi-arabic/600.css';
+@import '@fontsource/noto-kufi-arabic/700.css';
+
+@import './styles/tokens.css';
+@import './styles/base.css';
+@import './styles/components.css';
