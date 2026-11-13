@@ -1,0 +1,48 @@
+<app-branche class="deco haut" />
+<app-branche class="deco" />
+
+<header class="entete">
+  <a routerLink="/" aria-label="Zitoun Bank, accueil"><app-logo /></a>
+  <a routerLink="/" class="retour"><app-icon name="retour" />Accueil</a>
+</header>
+
+<main class="zone">
+  <section class="carte" aria-labelledby="titre">
+    <h1 id="titre">Connexion</h1>
+    <p class="sous">Retrouvez votre verger, vos stocks et les offres du jour.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      @if (error()) {
+        <app-alert tone="danger" title="Connexion impossible">{{ error() }}</app-alert>
+      }
+
+      <app-field label="Adresse e-mail" for="email" [error]="erreur('email')">
+        <input id="email" type="email" formControlName="email" autocomplete="email" inputmode="email"
+               placeholder="nom@domaine.tn" [attr.aria-invalid]="!!erreur('email')" aria-describedby="email-msg" />
+      </app-field>
+
+      <div class="field" [class.invalid]="!!erreur('password')">
+        <div class="ligne-mdp">
+          <label for="password">Mot de passe</label>
+        </div>
+        <div class="input-affix">
+          <input id="password" [type]="voirMdp() ? 'text' : 'password'" formControlName="password"
+                 autocomplete="current-password" [attr.aria-invalid]="!!erreur('password')" aria-describedby="password-msg" />
+          <button type="button" class="affix-btn" (click)="voirMdp.set(!voirMdp())"
+                  [attr.aria-label]="voirMdp() ? 'Masquer le mot de passe' : 'Afficher le mot de passe'" [attr.aria-pressed]="voirMdp()">
+            <app-icon [name]="voirMdp() ? 'oeil-barre' : 'oeil'" />
+          </button>
+        </div>
+        @if (erreur('password'); as e) {
+          <span class="error" id="password-msg"><app-icon name="erreur" />{{ e }}</span>
+        }
+      </div>
+
+      <button class="btn btn-primary btn-block" type="submit" [disabled]="loading()" [attr.aria-busy]="loading()">
+        @if (loading()) { <span class="spinner" aria-hidden="true"></span> Connexion en cours… } @else { Se connecter }
+      </button>
+    </form>
+
+    <p class="bascule">Pas encore de compte ? <a routerLink="/inscription">Créer un compte</a></p>
+  </section>
+</main>

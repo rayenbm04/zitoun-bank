@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const pool = require('./db');
+const authRoutes = require('./routes/auth');
 
 if (!process.env.JWT_SECRET) {
   console.error('JWT_SECRET manquant : copiez .env.example en .env et remplissez-le.');
@@ -20,6 +21,8 @@ app.get('/api/health', async (req, res) => {
     res.status(500).json({ api: 'ok', database: 'erreur', detail: err.message });
   }
 });
+
+app.use('/api/auth', authRoutes);
 
 app.use((req, res) => res.status(404).json({ message: 'Route introuvable.' }));
 

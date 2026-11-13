@@ -1,0 +1,78 @@
+<app-branche class="deco haut" />
+<app-branche class="deco" />
+
+<header class="entete">
+  <a routerLink="/" aria-label="Zitoun Bank, accueil"><app-logo /></a>
+  <a routerLink="/" class="retour"><app-icon name="retour" />Accueil</a>
+</header>
+
+<main class="zone">
+  <section class="carte large" aria-labelledby="titre">
+    <h1 id="titre">Créer un compte</h1>
+    <p class="sous">Gratuit pour les agriculteurs. Il ne faut qu’une minute.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      @if (error()) {
+        <app-alert tone="danger" title="Inscription impossible">{{ error() }}</app-alert>
+      }
+
+      <div class="deux">
+        <app-field label="Prénom" for="prenom" [error]="erreur('prenom')">
+          <input id="prenom" formControlName="prenom" autocomplete="given-name" aria-describedby="prenom-msg" />
+        </app-field>
+        <app-field label="Nom" for="nom" [error]="erreur('nom')">
+          <input id="nom" formControlName="nom" autocomplete="family-name" aria-describedby="nom-msg" />
+        </app-field>
+      </div>
+
+      <app-field label="Adresse e-mail" for="email" [error]="erreur('email')">
+        <input id="email" type="email" formControlName="email" autocomplete="email" inputmode="email"
+               placeholder="nom@domaine.tn" aria-describedby="email-msg" />
+        @if (valide('email')) { <span class="ok-champ"><app-icon name="valide" />Adresse valide</span> }
+      </app-field>
+
+      <div class="deux">
+        <app-field label="Téléphone" for="telephone" [optional]="true" hint="8 chiffres" [error]="erreur('telephone')">
+          <input id="telephone" type="tel" formControlName="telephone" autocomplete="tel" inputmode="tel"
+                 placeholder="98 123 456" aria-describedby="telephone-msg" />
+        </app-field>
+        <app-field label="Région" for="region" [error]="erreur('region')">
+          <select id="region" formControlName="region" aria-describedby="region-msg">
+            <option value="" disabled>Choisir une région</option>
+            @for (r of regions; track r) { <option [value]="r">{{ r }}</option> }
+          </select>
+        </app-field>
+      </div>
+
+      <div class="field" [class.invalid]="!!erreur('password')">
+        <label for="password">Mot de passe</label>
+        <div class="input-affix">
+          <input id="password" [type]="voirMdp() ? 'text' : 'password'" formControlName="password"
+                 autocomplete="new-password" aria-describedby="password-msg" />
+          <button type="button" class="affix-btn" (click)="voirMdp.set(!voirMdp())"
+                  [attr.aria-label]="voirMdp() ? 'Masquer le mot de passe' : 'Afficher le mot de passe'" [attr.aria-pressed]="voirMdp()">
+            <app-icon [name]="voirMdp() ? 'oeil-barre' : 'oeil'" />
+          </button>
+        </div>
+        @if (erreur('password'); as e) {
+          <span class="error" id="password-msg"><app-icon name="erreur" />{{ e }}</span>
+        } @else {
+          <div class="force" [attr.data-n]="force()" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+          <span class="hint" id="password-msg">8 caractères minimum.@if (force()) { Robustesse : {{ forceTexte() }}. }</span>
+        }
+      </div>
+
+      <app-field label="Confirmer le mot de passe" for="confirm" [error]="erreur('confirm')">
+        <input id="confirm" [type]="voirMdp() ? 'text' : 'password'" formControlName="confirm"
+               autocomplete="new-password" aria-describedby="confirm-msg" />
+        @if (valide('confirm') && !form.hasError('mismatch')) { <span class="ok-champ"><app-icon name="valide" />Les mots de passe correspondent</span> }
+      </app-field>
+
+      <button class="btn btn-primary btn-block" type="submit" [disabled]="loading()" [attr.aria-busy]="loading()">
+        @if (loading()) { <span class="spinner" aria-hidden="true"></span> Création du compte… } @else { Créer mon compte }
+      </button>
+    </form>
+
+    <p class="bascule">Déjà inscrit ? <a routerLink="/connexion">Se connecter</a></p>
+  </section>
+</main>
