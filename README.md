@@ -126,3 +126,74 @@ Règles pour éviter les conflits :
 | Le port 4200 est déjà utilisé | `npm start -- --port 4201` |
 
 ---
+
+## Choix du framework
+
+| Couche | Choix | Pourquoi |
+|---|---|---|
+| Frontend | **Angular 21** (composants autonomes, signaux) | Composants réutilisables, routage intégré (pages protégées par un garde), formulaires réactifs avec validation, structure imposée qui garde le code propre à deux |
+| Backend | **Node.js + Express** | Même langage (JavaScript) que le frontend, léger, rapide à mettre en place pour une API REST |
+| Base de données | **MySQL** (XAMPP) | Base relationnelle adaptée à des données liées (comptes, parcelles, récoltes, ventes) |
+| Style | **CSS natif** avec variables (jetons de design) | La charte graphique (couleurs, typographies, rayons, ombres) est définie une seule fois dans `frontend/src/styles/tokens.css` ; mode sombre et arabe sans bibliothèque |
+| Polices | **DM Sans, Playfair Display, Noto Kufi Arabic** via `@fontsource` | Hébergées avec l'application : rien n'est chargé depuis un service externe |
+
+## Fonctionnalités développées
+
+Cinq pages dynamiques, qui forment le parcours principal : **Accueil › Se connecter › Tableau de bord › Marché et prix › Vendre**.
+
+| Page | Route | Ce qu'on peut faire | Données |
+|---|---|---|---|
+| Accueil | `/` | Présentation, fonctionnalités, étapes, à propos, formulaire de contact validé | Démonstration |
+| Authentification | `/connexion`, `/inscription` | Inscription avec validation en direct, connexion, affichage du mot de passe, erreurs sous les champs | **API + MySQL** |
+| Tableau de bord | `/tableau-de-bord` | 4 indicateurs, courbe des prix, alertes (stock bas, meilleur prix, olives à presser), dernières ventes | Démonstration |
+| Marché et prix | `/marche` | Filtres région et qualité, tri, meilleure offre mise en avant, écart à la moyenne, bouton « Vendre » | Démonstration |
+| Ventes | `/ventes` | Formulaire pré-rempli depuis le marché, total calculé en direct, contrôle du stock, historique filtrable | Démonstration |
+
+Les données « Démonstration » sont gardées en mémoire par `DataService` (`frontend/src/app/core/data.service.ts`) et réinitialisées au rechargement : elles simulent une API, avec un court temps de chargement affiché en squelettes.
+
+Qualité de l'interface :
+- responsive : ordinateur (menu latéral), tablette 768 px (barre d'icônes), mobile 390 px (barre de navigation en bas, tableaux transformés en cartes) ;
+- mode sombre et version arabe de droite à gauche (bouton FR / ع et lune dans la barre du haut) ;
+- accessibilité : contrastes WCAG AA vérifiés, focus clavier visible, libellés sur tous les champs, badges et alertes avec texte + icône (jamais la couleur seule).
+
+Pages prévues pour la suite (une branche par page) : Verger, Récoltes, Production d'huile, Stocks, Profil, Mot de passe oublié.
+
+## Méthode de travail
+
+Une branche par fonctionnalité, fusionnée dans `main` quand elle est terminée :
+
+```
+git checkout main
+git pull
+git checkout -b feature/nom-de-la-fonctionnalite
+git add .
+git commit -m "Description courte"
+git push -u origin feature/nom-de-la-fonctionnalite
+```
+
+Puis ouvrir une Pull Request sur GitHub vers `main`.
+
+## Organisation du code
+
+```
+frontend/src/
+  styles/          tokens.css (charte), base.css, components.css (boutons, champs, tableaux…)
+  app/core/        services : authentification, données, préférences (langue, thème), traductions
+  app/layout/      shell (mise en page), sidebar (menu latéral), topbar (barre du haut)
+  app/shared/ui/   composants réutilisables : icon, kpi-card, badge, alert, field, modal, toast,
+                   empty-state, charts (courbe, histogramme), brand (logo, illustrations)
+  app/pages/       une page par dossier (accueil, auth, dashboard, marche, ventes)
+backend/src/       server.js, db.js, routes/auth.js, middleware/auth.js
+database/          schema.sql
+```
+
+## Routes de l'API
+
+| Méthode | URL | Rôle |
+|---|---|---|
+| POST | `/api/auth/register` | Créer un compte |
+| POST | `/api/auth/login` | Se connecter (renvoie un jeton JWT) |
+| GET | `/api/auth/me` | Utilisateur connecté (jeton requis) |
+| PUT | `/api/auth/me` | Modifier ses informations (jeton requis) |
+| PUT | `/api/auth/password` | Changer son mot de passe (jeton requis) |
+| GET | `/api/health` | État de l'API et de la base |
