@@ -2,9 +2,11 @@
 
 Plateforme web qui accompagne les agriculteurs oléicoles, du verger à la vente.
 
+> **Projet en cours de développement.** Cette version contient 5 pages : accueil, connexion / inscription, tableau de bord, marché et ventes. Les autres fonctionnalités seront ajoutées progressivement (voir [Prochaines étapes](#prochaines-étapes)).
+
 | Dossier | Contenu |
 |---|---|
-| `frontend/` | Application Angular : toutes les pages, avec des données de démonstration |
+| `frontend/` | Application Angular : les pages développées, avec des données de démonstration |
 | `backend/` | API Node.js + Express : inscription et connexion |
 | `database/schema.sql` | Création de la base MySQL `zitoun_bank` |
 
@@ -168,8 +170,6 @@ Qualité de l'interface :
 - accessibilité : contrastes WCAG AA vérifiés, focus clavier visible, libellés sur tous les champs, badges et alertes avec texte + icône (jamais la couleur seule) ;
 - compatibilité navigateurs : application testée sur Microsoft Edge et Opera, toutes les pages fonctionnent correctement.
 
-Pages prévues pour la suite (une branche par page) : Verger, Récoltes, Production d'huile, Stocks, Profil, Mot de passe oublié.
-
 ## Méthode de travail
 
 Une branche par fonctionnalité, fusionnée dans `main` quand elle est terminée :
@@ -209,3 +209,17 @@ database/          schema.sql
 | PUT | `/api/auth/me` | Modifier ses informations (jeton requis, prévue pour la future page Profil) |
 | PUT | `/api/auth/password` | Changer son mot de passe (jeton requis, prévue pour la future page Profil) |
 | GET | `/api/health` | État de l'API et de la base |
+
+## Prochaines étapes
+
+Fonctionnalités prévues, chacune dans sa propre branche :
+
+| Fonctionnalité | Description |
+|---|---|
+| Verger | Gestion des parcelles et des oliviers (variété, nombre d'arbres, superficie) |
+| Récoltes | Enregistrement des récoltes d'olives par parcelle et par date |
+| Production d'huile | Suivi des passages au moulin : olives pressées, litres d'huile obtenus, rendement |
+| Stocks | Quantités d'olives et d'huile disponibles, avec alerte quand le stock est bas |
+| Profil | Modifier ses informations et son mot de passe (routes `PUT /api/auth/me` et `PUT /api/auth/password` déjà prêtes) |
+| Mot de passe oublié | Réinitialisation du mot de passe depuis la page de connexion |
+| Backend | Nouvelles tables MySQL et routes API pour ces données, afin de remplacer les données de démonstration |
