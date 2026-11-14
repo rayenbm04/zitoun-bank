@@ -1,7 +1,6 @@
 # Zitoun Bank
 
 Plateforme web qui accompagne les agriculteurs oléicoles, du verger à la vente.
-Projet Web SUP'COM 2025/2026, réalisé en binôme.
 
 | Dossier | Contenu |
 |---|---|
@@ -151,6 +150,18 @@ Cinq pages dynamiques, qui forment le parcours principal : **Accueil › Se conn
 
 Les données « Démonstration » sont gardées en mémoire par `DataService` (`frontend/src/app/core/data.service.ts`) et réinitialisées au rechargement : elles simulent une API, avec un court temps de chargement affiché en squelettes.
 
+### Fonctionnalités du backend (API Express + MySQL)
+
+Deux fonctionnalités sont développées côté serveur, dans `backend/src/routes/auth.js` :
+
+| Fonctionnalité | Route | Fonctionnement |
+|---|---|---|
+| **Inscription** | `POST /api/auth/register` | Vérifie les champs (nom, prénom, e-mail valide, mot de passe de 8 caractères minimum), refuse un e-mail déjà utilisé (erreur 409), hache le mot de passe avec **bcrypt**, enregistre le compte dans la table `users`, puis renvoie un jeton de connexion **JWT** |
+| **Connexion** | `POST /api/auth/login` | Retrouve le compte par son e-mail, compare le mot de passe saisi avec l'empreinte bcrypt, puis renvoie un jeton JWT valable 7 jours (erreur 401 si l'e-mail ou le mot de passe est incorrect) |
+
+Côté frontend, le jeton est gardé dans le navigateur et ajouté automatiquement à chaque requête par un intercepteur (`Authorization: Bearer …`). Les pages de l'espace agriculteur sont protégées par un garde de route : sans connexion, l'utilisateur est renvoyé vers `/connexion`.
+Les mots de passe ne sont jamais stockés en clair et les requêtes SQL sont paramétrées (protection contre les injections SQL).
+
 Qualité de l'interface :
 - responsive : ordinateur (menu latéral), tablette 768 px (barre d'icônes), mobile 390 px (barre de navigation en bas, tableaux transformés en cartes) ;
 - mode sombre et version arabe de droite à gauche (bouton FR / ع et lune dans la barre du haut) ;
@@ -194,6 +205,6 @@ database/          schema.sql
 | POST | `/api/auth/register` | Créer un compte |
 | POST | `/api/auth/login` | Se connecter (renvoie un jeton JWT) |
 | GET | `/api/auth/me` | Utilisateur connecté (jeton requis) |
-| PUT | `/api/auth/me` | Modifier ses informations (jeton requis) |
-| PUT | `/api/auth/password` | Changer son mot de passe (jeton requis) |
+| PUT | `/api/auth/me` | Modifier ses informations (jeton requis, prévue pour la future page Profil) |
+| PUT | `/api/auth/password` | Changer son mot de passe (jeton requis, prévue pour la future page Profil) |
 | GET | `/api/health` | État de l'API et de la base |
