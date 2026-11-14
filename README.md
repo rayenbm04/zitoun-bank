@@ -165,7 +165,8 @@ Les mots de passe ne sont jamais stockés en clair et les requêtes SQL sont par
 Qualité de l'interface :
 - responsive : ordinateur (menu latéral), tablette 768 px (barre d'icônes), mobile 390 px (barre de navigation en bas, tableaux transformés en cartes) ;
 - mode sombre et version arabe de droite à gauche (bouton FR / ع et lune dans la barre du haut) ;
-- accessibilité : contrastes WCAG AA vérifiés, focus clavier visible, libellés sur tous les champs, badges et alertes avec texte + icône (jamais la couleur seule).
+- accessibilité : contrastes WCAG AA vérifiés, focus clavier visible, libellés sur tous les champs, badges et alertes avec texte + icône (jamais la couleur seule) ;
+- compatibilité navigateurs : application testée sur Microsoft Edge et Opera, toutes les pages fonctionnent correctement.
 
 Pages prévues pour la suite (une branche par page) : Verger, Récoltes, Production d'huile, Stocks, Profil, Mot de passe oublié.
 
