@@ -13,6 +13,7 @@ export const routes: Routes = [
     loadComponent: () => import('./layout/shell').then(m => m.Shell),
     children: [
       { path: 'tableau-de-bord', title: t('Tableau de bord'), data: { titre: 'nav.dashboard' }, loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard) },
+      { path: 'verger', title: t('Verger'), data: { titre: 'nav.verger' }, loadComponent: () => import('./pages/verger/verger').then(m => m.Verger) },
       { path: 'marche', title: t('Marché et prix'), data: { titre: 'nav.marche' }, loadComponent: () => import('./pages/marche/marche').then(m => m.Marche) },
       { path: 'ventes', title: t('Ventes'), data: { titre: 'nav.ventes' }, loadComponent: () => import('./pages/ventes/ventes').then(m => m.Ventes) },
     ],
