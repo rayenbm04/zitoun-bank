@@ -1,0 +1,116 @@
+<div class="page-head">
+  <p>Vos parcelles d’oliviers, leur variété et leur état. Un état « À surveiller » signale un problème à vérifier sur place.</p>
+  <div class="actions">
+    <button type="button" class="btn btn-primary" (click)="ouvrirAjout()"><app-icon name="plus" />Ajouter une parcelle</button>
+  </div>
+</div>
+
+<section class="kpi-grid cols-3" aria-label="Chiffres du verger">
+  <app-kpi label="Superficie totale" [value]="p.nombre(data.superficieTotale(), data.superficieTotale() % 1 ? 1 : 0)" unit="ha"
+           [hint]="densite() + ' oliviers par hectare'" icon="olive" [loading]="data.chargement()" />
+  <app-kpi label="Oliviers" [value]="p.nombre(data.totalOliviers())" hint="toutes variétés" icon="arbre" [loading]="data.chargement()" />
+  <app-kpi label="Parcelles" [value]="'' + data.parcelles().length"
+           [hint]="regionsTexte()" icon="grille" [loading]="data.chargement()" />
+</section>
+
+<section class="card card-flush" style="margin-top: 24px" aria-labelledby="t-parcelles">
+  <div class="card-head">
+    <h2 id="t-parcelles">Parcelles</h2>
+  </div>
+  <div style="padding: 0 24px 20px">
+    @if (data.chargement()) {
+      @for (i of [1, 2, 3]; track i) { <span class="skeleton" style="height: 52px; margin-bottom: 10px"></span> }
+    } @else if (data.parcelles().length) {
+      <div class="table-wrap">
+        <table class="table stack">
+          <thead>
+            <tr>
+              <th scope="col">Nom</th>
+              <th scope="col" class="t-num">Superficie</th>
+              <th scope="col">Variété</th>
+              <th scope="col" class="t-num">Oliviers</th>
+              <th scope="col">État</th>
+              <th scope="col" class="t-actions"><span class="sr-only">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (x of data.parcelles(); track x.id) {
+              <tr>
+                <td class="t-main" data-label="Nom">{{ x.nom }}<span class="t-sub">{{ x.region }}</span></td>
+                <td class="t-num" data-label="Superficie">{{ p.nombre(x.superficieHa, x.superficieHa % 1 ? 1 : 0) }} ha</td>
+                <td data-label="Variété">{{ x.variete }}</td>
+                <td class="t-num" data-label="Oliviers">{{ p.nombre(x.nbOliviers) }}</td>
+                <td data-label="État"><app-badge [valeur]="x.etat" /></td>
+                <td class="t-actions">
+                  <div class="row-gap" style="justify-content: flex-end; gap: 6px; width: 100%">
+                    <button type="button" class="btn btn-outline btn-sm" (click)="ouvrirEdition(x)" [attr.aria-label]="'Modifier ' + x.nom">
+                      <app-icon name="crayon" />Modifier
+                    </button>
+                    <button type="button" class="btn btn-ghost btn-sm" (click)="demanderSuppression(x)" [attr.aria-label]="'Supprimer ' + x.nom">
+                      <app-icon name="corbeille" />Supprimer
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <app-empty title="Aucune parcelle pour l’instant" text="Ajoutez votre première parcelle pour suivre vos oliviers, vos récoltes et votre rendement." icon="arbre">
+        <button type="button" class="btn btn-secondary" (click)="ouvrirAjout()"><app-icon name="plus" />Ajouter une parcelle</button>
+      </app-empty>
+    }
+  </div>
+</section>
+
+<app-modal [(open)]="formOuvert" [title]="enEdition() ? 'Modifier la parcelle' : 'Nouvelle parcelle'"
+           description="Ces informations servent au suivi des récoltes et du rendement.">
+  <form id="form-parcelle" class="form-grid" [formGroup]="form" (ngSubmit)="enregistrer()" novalidate>
+    <app-field class="span-2" label="Nom de la parcelle" for="p-nom" [error]="erreur('nom')">
+      <input id="p-nom" formControlName="nom" placeholder="Henchir El Ain" aria-describedby="p-nom-msg" />
+    </app-field>
+    <app-field label="Région" for="p-region">
+      <select id="p-region" formControlName="region">
+        @for (r of regions; track r) { <option [value]="r">{{ r }}</option> }
+      </select>
+    </app-field>
+    <app-field label="Variété" for="p-variete">
+      <select id="p-variete" formControlName="variete">
+        @for (v of varietes; track v) { <option [value]="v">{{ v }}</option> }
+      </select>
+    </app-field>
+    <app-field label="Superficie" for="p-ha" [error]="erreur('superficieHa')">
+      <div class="input-affix">
+        <input id="p-ha" type="number" step="0.1" min="0.1" formControlName="superficieHa" inputmode="decimal" aria-describedby="p-ha-msg" />
+        <span class="affix">ha</span>
+      </div>
+    </app-field>
+    <app-field label="Nombre d’oliviers" for="p-arbres" [error]="erreur('nbOliviers')">
+      <input id="p-arbres" type="number" min="1" formControlName="nbOliviers" inputmode="numeric" aria-describedby="p-arbres-msg" />
+    </app-field>
+    <fieldset class="span-2 etats">
+      <legend class="field-label">État de la parcelle</legend>
+      <div class="chips">
+        @for (e of etats; track e) {
+          <label class="radio-chip">
+            <input type="radio" formControlName="etat" [value]="e" />
+            <app-badge [valeur]="e" />
+          </label>
+        }
+      </div>
+    </fieldset>
+  </form>
+  <div slot="footer">
+    <button type="button" class="btn btn-outline" (click)="formOuvert.set(false)">Annuler</button>
+    <button type="submit" form="form-parcelle" class="btn btn-secondary">{{ enEdition() ? 'Enregistrer les modifications' : 'Enregistrer la parcelle' }}</button>
+  </div>
+</app-modal>
+
+<app-modal [(open)]="confirmOuvert" tone="danger" title="Supprimer cette parcelle ?"
+           [description]="'« ' + (aSupprimer()?.nom ?? '') + ' » et ses ' + (aSupprimer()?.nbOliviers ?? 0) + ' oliviers seront retirés du verger. Les récoltes déjà enregistrées restent dans l’historique.'">
+  <div slot="footer">
+    <button type="button" class="btn btn-outline" (click)="confirmOuvert.set(false)">Garder la parcelle</button>
+    <button type="button" class="btn btn-danger" (click)="supprimer()"><app-icon name="corbeille" />Supprimer</button>
+  </div>
+</app-modal>
