@@ -55,12 +55,7 @@ export class DataService {
 
   readonly recoltes = signal<Recolte[]>([]);
 
-  readonly pressages = signal<Pressage[]>([
-    { id: 1, date: ilYa(24), moulin: 'Huilerie Ben Salah', olivesKg: 1500, huileL: 298, qualite: 'Extra vierge' },
-    { id: 2, date: ilYa(19), moulin: 'Huilerie El Amal', olivesKg: 2000, huileL: 424, qualite: 'Extra vierge' },
-    { id: 3, date: ilYa(10), moulin: 'Huilerie Ben Salah', olivesKg: 1800, huileL: 405, qualite: 'Extra vierge' },
-    { id: 4, date: ilYa(4), moulin: 'Huilerie El Amal', olivesKg: 700, huileL: 163, qualite: 'Vierge' },
-  ]);
+  readonly pressages = signal<Pressage[]>([]);
 
   readonly offres = signal<Offre[]>([
     { id: 1, acheteur: 'Med Olive Export', type: 'Exportateur', region: 'Sousse', qualite: 'Extra vierge', prixParL: 14.2, quantiteMaxL: 1000, date: ilYa(0) },
@@ -115,10 +110,12 @@ export class DataService {
     forkJoin({
       parcelles: this.http.get<Parcelle[]>(`${API_URL}/parcelles`),
       recoltes: this.http.get<Recolte[]>(`${API_URL}/recoltes`),
+      pressages: this.http.get<Pressage[]>(`${API_URL}/pressages`),
     }).subscribe({
       next: d => {
         this.parcelles.set(d.parcelles);
         this.recoltes.set(d.recoltes);
+        this.pressages.set(d.pressages);
         this.chargement.set(false);
       },
       error: () => {
@@ -131,6 +128,7 @@ export class DataService {
   private vider(): void {
     this.parcelles.set([]);
     this.recoltes.set([]);
+    this.pressages.set([]);
   }
 
   readonly superficieTotale = computed(() => this.parcelles().reduce((s, p) => s + p.superficieHa, 0));
@@ -294,12 +292,17 @@ export class DataService {
     this.taches.update(list => list.filter(t => t.id !== id));
   }
 
-  ajouterPressage(p: Omit<Pressage, 'id'>): string | null {
+  async ajouterPressage(p: Omit<Pressage, 'id'>): Promise<string | null> {
     if (p.olivesKg > this.stockOlivesKg()) {
       return `Stock d’olives insuffisant : ${this.stockOlivesKg().toLocaleString('fr-FR')} kg disponibles.`;
     }
-    this.pressages.update(list => [...list, { ...p, id: this.nextId++ }]);
-    return null;
+    try {
+      const enregistre = await firstValueFrom(this.http.post<Pressage>(`${API_URL}/pressages`, p));
+      this.pressages.update(list => [...list, enregistre]);
+      return null;
+    } catch (e) {
+      return messageErreur(e);
+    }
   }
 
   ajouterVente(v: Omit<Vente, 'id' | 'statut'>): string | null {

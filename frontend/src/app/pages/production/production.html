@@ -45,7 +45,7 @@
         @for (q of qualites; track q) { <option [value]="q">{{ q }}</option> }
       </select>
     </app-field>
-    <div class="form-submit"><button type="submit" class="btn btn-secondary">Enregistrer le pressage</button></div>
+    <div class="form-submit"><button type="submit" class="btn btn-secondary" [disabled]="envoi()">Enregistrer le pressage</button></div>
   </form>
 </section>
 
