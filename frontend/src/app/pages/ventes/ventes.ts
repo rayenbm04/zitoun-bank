@@ -31,6 +31,7 @@ export class Ventes {
 
   readonly qualites = QUALITES;
   readonly erreurStock = signal('');
+  readonly envoi = signal(false);
   readonly filtre = signal<StatutVente | 'toutes'>('toutes');
   readonly offreChoisie = computed(() => this.data.offres().find(o => o.id === Number(this.offre())) ?? null);
 
@@ -86,16 +87,18 @@ export class Ventes {
     this.form.reset();
   }
 
-  enregistrer(): void {
+  async enregistrer(): Promise<void> {
     this.erreurStock.set('');
     if (this.form.invalid || this.depasse()) {
       this.form.markAllAsTouched();
       return;
     }
     const v = this.form.getRawValue();
-    const msg = this.data.ajouterVente({
+    this.envoi.set(true);
+    const msg = await this.data.ajouterVente({
       acheteur: v.acheteur, qualite: v.qualite, quantiteL: Number(v.quantiteL), prixParL: Number(v.prixParL), date: v.date,
     });
+    this.envoi.set(false);
     if (msg) {
       this.erreurStock.set(msg);
       return;

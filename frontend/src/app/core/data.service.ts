@@ -57,20 +57,9 @@ export class DataService {
 
   readonly pressages = signal<Pressage[]>([]);
 
-  readonly offres = signal<Offre[]>([
-    { id: 1, acheteur: 'Med Olive Export', type: 'Exportateur', region: 'Sousse', qualite: 'Extra vierge', prixParL: 14.2, quantiteMaxL: 1000, date: ilYa(0) },
-    { id: 2, acheteur: 'Monastir Oils', type: 'Exportateur', region: 'Monastir', qualite: 'Extra vierge', prixParL: 13.9, quantiteMaxL: 800, date: ilYa(1) },
-    { id: 3, acheteur: 'Coopérative Ennour', type: 'Coopérative', region: 'Sfax', qualite: 'Extra vierge', prixParL: 13.4, quantiteMaxL: 600, date: ilYa(0) },
-    { id: 4, acheteur: 'Huilerie El Amal', type: 'Moulin', region: 'Sfax', qualite: 'Vierge', prixParL: 11.1, quantiteMaxL: 300, date: ilYa(2) },
-    { id: 5, acheteur: 'SMSA El Baraka', type: 'Coopérative', region: 'Mahdia', qualite: 'Vierge', prixParL: 10.8, quantiteMaxL: 500, date: ilYa(1) },
-    { id: 6, acheteur: 'Grossiste Kairouan', type: 'Grossiste', region: 'Kairouan', qualite: 'Ordinaire', prixParL: 7.6, quantiteMaxL: 2000, date: ilYa(3) },
-  ]);
+  readonly offres = signal<Offre[]>([]);
 
-  readonly ventes = signal<Vente[]>([
-    { id: 1, date: ilYa(15), acheteur: 'Coopérative Ennour', qualite: 'Extra vierge', quantiteL: 400, prixParL: 13.1, statut: 'Payée' },
-    { id: 2, date: ilYa(7), acheteur: 'Monastir Oils', qualite: 'Extra vierge', quantiteL: 250, prixParL: 13.6, statut: 'Livrée' },
-    { id: 3, date: ilYa(2), acheteur: 'Huilerie El Amal', qualite: 'Vierge', quantiteL: 40, prixParL: 10.9, statut: 'En attente' },
-  ]);
+  readonly ventes = signal<Vente[]>([]);
 
   readonly taches = signal<Tache[]>([
     { id: 1, date: ilYa(18), type: 'Traitement', parcelleId: 3, note: 'Cuivre contre l’œil de paon', faite: true },
@@ -111,11 +100,15 @@ export class DataService {
       parcelles: this.http.get<Parcelle[]>(`${API_URL}/parcelles`),
       recoltes: this.http.get<Recolte[]>(`${API_URL}/recoltes`),
       pressages: this.http.get<Pressage[]>(`${API_URL}/pressages`),
+      offres: this.http.get<Offre[]>(`${API_URL}/offres`),
+      ventes: this.http.get<Vente[]>(`${API_URL}/ventes`),
     }).subscribe({
       next: d => {
         this.parcelles.set(d.parcelles);
         this.recoltes.set(d.recoltes);
         this.pressages.set(d.pressages);
+        this.offres.set(d.offres);
+        this.ventes.set(d.ventes);
         this.chargement.set(false);
       },
       error: () => {
@@ -129,6 +122,8 @@ export class DataService {
     this.parcelles.set([]);
     this.recoltes.set([]);
     this.pressages.set([]);
+    this.offres.set([]);
+    this.ventes.set([]);
   }
 
   readonly superficieTotale = computed(() => this.parcelles().reduce((s, p) => s + p.superficieHa, 0));
@@ -305,12 +300,17 @@ export class DataService {
     }
   }
 
-  ajouterVente(v: Omit<Vente, 'id' | 'statut'>): string | null {
+  async ajouterVente(v: Omit<Vente, 'id' | 'statut'>): Promise<string | null> {
     const dispo = this.stockParQualite()[v.qualite];
     if (v.quantiteL > dispo) {
       return `Stock insuffisant : ${dispo.toLocaleString('fr-FR')} L d’huile ${v.qualite.toLowerCase()} disponibles.`;
     }
-    this.ventes.update(list => [...list, { ...v, id: this.nextId++, statut: 'En attente' }]);
-    return null;
+    try {
+      const enregistree = await firstValueFrom(this.http.post<Vente>(`${API_URL}/ventes`, v));
+      this.ventes.update(list => [...list, enregistree]);
+      return null;
+    } catch (e) {
+      return messageErreur(e);
+    }
   }
 }
