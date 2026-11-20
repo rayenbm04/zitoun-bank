@@ -20,6 +20,18 @@ export type EtatParcelle = (typeof ETATS)[number];
 export const QUALITES = ['Extra vierge', 'Vierge', 'Ordinaire'] as const;
 export type QualiteHuile = (typeof QUALITES)[number];
 
+export const TYPES_TACHE = ['Récolte', 'Taille', 'Traitement', 'Irrigation', 'Fertilisation', 'Labour'] as const;
+export type TypeTache = (typeof TYPES_TACHE)[number];
+
+export interface Tache {
+  id: number;
+  date: string;
+  type: TypeTache;
+  parcelleId: number | null;
+  note: string;
+  faite: boolean;
+}
+
 export type StatutVente = 'Payée' | 'En attente' | 'Livrée';
 
 export interface Parcelle {

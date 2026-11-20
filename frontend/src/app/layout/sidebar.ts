@@ -7,6 +7,7 @@ import { Logo } from '../shared/ui/brand';
 
 export const LIENS = [
   { path: '/tableau-de-bord', cle: 'nav.dashboard', icone: 'grille' },
+  { path: '/calendrier', cle: 'nav.calendrier', icone: 'calendrier' },
   { path: '/meteo', cle: 'nav.meteo', icone: 'soleil' },
   { path: '/verger', cle: 'nav.verger', icone: 'arbre' },
   { path: '/recoltes', cle: 'nav.recoltes', icone: 'panier' },
