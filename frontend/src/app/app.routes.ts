@@ -19,6 +19,7 @@ export const routes: Routes = [
       { path: 'stocks', title: t('Stocks'), data: { titre: 'nav.stocks' }, loadComponent: () => import('./pages/stocks/stocks').then(m => m.Stocks) },
       { path: 'marche', title: t('Marché et prix'), data: { titre: 'nav.marche' }, loadComponent: () => import('./pages/marche/marche').then(m => m.Marche) },
       { path: 'ventes', title: t('Ventes'), data: { titre: 'nav.ventes' }, loadComponent: () => import('./pages/ventes/ventes').then(m => m.Ventes) },
+      { path: 'profil', title: t('Profil et paramètres'), data: { titre: 'nav.profil' }, loadComponent: () => import('./pages/profil/profil').then(m => m.Profil) },
     ],
   },
   { path: '**', redirectTo: '' },
