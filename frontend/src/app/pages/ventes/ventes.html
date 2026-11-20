@@ -53,7 +53,7 @@
       <span class="r-label">Total de la vente</span>
       <span class="r-total"><span class="num">{{ p.nombre(total(), 2) }}</span> TND</span>
       <span class="r-detail">{{ p.nombre(valeurs().quantiteL || 0) }} L × {{ p.nombre(valeurs().prixParL || 0, 2) }} TND</span>
-      <button type="submit" class="btn btn-primary btn-block" [disabled]="depasse()">Valider la vente</button>
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="depasse() || envoi()">Valider la vente</button>
     </aside>
   </form>
 </section>
