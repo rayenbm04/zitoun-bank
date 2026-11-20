@@ -1,8 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { catchError, of } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { DataService } from '../../core/data.service';
 import { AuthService } from '../../core/auth.service';
 import { PrefsService } from '../../core/prefs.service';
+import { MeteoService, decrireTemps, regionValide } from '../../core/meteo.service';
 import { KpiCard } from '../../shared/ui/kpi-card';
 import { Alert } from '../../shared/ui/alert';
 import { Badge } from '../../shared/ui/badge';
@@ -21,6 +24,13 @@ export class Dashboard {
   readonly data = inject(DataService);
   readonly auth = inject(AuthService);
   readonly p = inject(PrefsService);
+
+  readonly meteo = toSignal(
+    inject(MeteoService).charger(regionValide(this.auth.user()?.region)).pipe(catchError(() => of(null))),
+    { initialValue: null }
+  );
+  readonly temps = decrireTemps;
+  readonly arrondi = Math.round;
 
   readonly mois = computed(() => this.data.historiquePrix().map(x => this.p.mois(x.mois)));
   readonly series = computed<Serie[]>(() => [

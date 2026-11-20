@@ -148,6 +148,7 @@ Le parcours principal est : **Accueil › Se connecter › Tableau de bord › M
 | Authentification | `/connexion`, `/inscription` | Inscription avec validation en direct, connexion, affichage du mot de passe, erreurs sous les champs | **API + MySQL** |
 | Mot de passe oublié | `/mot-de-passe-oublie` | Saisie de l'e-mail validée, message de confirmation (envoi simulé) | Démonstration |
 | Tableau de bord | `/tableau-de-bord` | 4 indicateurs, courbe des prix, alertes (stock bas, meilleur prix, olives à presser), dernières ventes | Démonstration |
+| Météo | `/meteo` | Prévisions sur 7 jours par région, conseils pour la récolte et les traitements (gel, pluie, vent fort, chaleur), météo du jour sur le tableau de bord | **API externe** Open-Meteo |
 | Verger | `/verger` | Liste des parcelles (superficie, variété, nombre d'oliviers, état), ajout, modification et suppression d'une parcelle | Démonstration |
 | Récoltes | `/recoltes` | Saisie d'une récolte, total de la saison, récolte par parcelle, historique filtrable | Démonstration |
 | Production d'huile | `/production` | Saisie d'un pressage au moulin, rendement calculé, historique, courbe d'évolution du rendement | Démonstration |
@@ -156,6 +157,8 @@ Le parcours principal est : **Accueil › Se connecter › Tableau de bord › M
 | Ventes | `/ventes` | Formulaire pré-rempli depuis le marché, total calculé en direct, contrôle du stock, historique filtrable | Démonstration |
 | Profil et paramètres | `/profil` | Modifier ses informations, changer son mot de passe, choisir la langue et le mode sombre | **API + MySQL** |
 | Charte graphique | `/charte` | Couleurs, typographie, boutons, champs, badges, alertes et icônes utilisés dans l'application | Statique |
+
+La page Météo appelle l'API publique Open-Meteo (gratuite, sans clé) depuis le navigateur ; le jeton de connexion n'est envoyé qu'à notre propre API.
 
 Les données « Démonstration » sont gardées en mémoire par `DataService` (`frontend/src/app/core/data.service.ts`) et réinitialisées au rechargement : elles simulent une API, avec un court temps de chargement affiché en squelettes.
 
@@ -199,11 +202,11 @@ Puis ouvrir une Pull Request sur GitHub vers `main`.
 ```
 frontend/src/
   styles/          tokens.css (charte), base.css, components.css (boutons, champs, tableaux…)
-  app/core/        services : authentification, données, préférences (langue, thème), traductions
+  app/core/        services : authentification, données, météo, préférences (langue, thème), traductions
   app/layout/      shell (mise en page), sidebar (menu latéral), topbar (barre du haut)
   app/shared/ui/   composants réutilisables : icon, kpi-card, badge, alert, field, modal, toast,
                    empty-state, charts (courbe, histogramme), brand (logo, illustrations)
-  app/pages/       une page par dossier (accueil, auth, dashboard, verger, recoltes, production,
+  app/pages/       une page par dossier (accueil, auth, dashboard, meteo, verger, recoltes, production,
                    stocks, marche, ventes, profil, charte)
 backend/src/       server.js, db.js, routes/auth.js, middleware/auth.js
 database/          schema.sql

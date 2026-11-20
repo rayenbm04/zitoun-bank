@@ -1,5 +1,6 @@
 export const TEXTES: Record<string, { fr: string; ar: string }> = {
   'nav.dashboard': { fr: 'Tableau de bord', ar: 'لوحة القيادة' },
+  'nav.meteo': { fr: 'Météo', ar: 'الطقس' },
   'nav.verger': { fr: 'Verger', ar: 'البستان' },
   'nav.recoltes': { fr: 'Récoltes', ar: 'الجني' },
   'nav.production': { fr: 'Production d’huile', ar: 'إنتاج الزيت' },
