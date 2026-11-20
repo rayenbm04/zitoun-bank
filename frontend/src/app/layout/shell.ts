@@ -3,13 +3,15 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { PrefsService } from '../core/prefs.service';
+import { DataService } from '../core/data.service';
+import { Alert } from '../shared/ui/alert';
 import { Icon } from '../shared/ui/icon';
 import { Sidebar } from './sidebar';
 import { Topbar } from './topbar';
 
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon, Sidebar, Topbar],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon, Alert, Sidebar, Topbar],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { '(document:keydown.escape)': 'tiroir.set(false)' },
   template: `
@@ -18,6 +20,12 @@ import { Topbar } from './topbar';
     <div class="principal">
       <app-topbar [titre]="titre()" />
       <main id="contenu" tabindex="-1" class="contenu">
+        @if (data.erreurChargement()) {
+          <app-alert tone="danger" title="Impossible de charger vos données" class="erreur-api">
+            Le serveur ne répond pas. Vérifiez que l’API et MySQL sont lancés, puis réessayez.
+            <button slot="action" type="button" class="btn btn-outline btn-sm" (click)="data.charger()">Réessayer</button>
+          </app-alert>
+        }
         <router-outlet />
       </main>
     </div>
@@ -40,6 +48,7 @@ import { Topbar } from './topbar';
     .principal { flex: 1; min-width: 0; display: flex; flex-direction: column; }
     .contenu { flex: 1; width: 100%; max-width: var(--content-max); padding: 32px 40px 64px; outline: none; }
     .nav-bas { display: none; }
+    .erreur-api { display: block; margin-bottom: 24px; }
     @media (max-width: 1100px) { .contenu { padding: 28px 28px 56px; } }
     @media (max-width: 720px) {
       .contenu { padding: 20px 16px 104px; }
@@ -61,6 +70,7 @@ import { Topbar } from './topbar';
 })
 export class Shell {
   readonly prefs = inject(PrefsService);
+  readonly data = inject(DataService);
   private readonly router = inject(Router);
 
   readonly tiroir = signal(false);

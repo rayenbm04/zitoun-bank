@@ -31,6 +31,7 @@ export class Verger {
   readonly enEdition = signal<Parcelle | null>(null);
   readonly aSupprimer = signal<Parcelle | null>(null);
   readonly confirmOuvert = signal(false);
+  readonly envoi = signal(false);
 
   readonly form = this.fb.nonNullable.group({
     nom: ['', Validators.required],
@@ -69,15 +70,22 @@ export class Verger {
     this.formOuvert.set(true);
   }
 
-  enregistrer(): void {
+  async enregistrer(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
     const edit = this.enEdition();
-    this.data.enregistrerParcelle(this.form.getRawValue(), edit?.id);
+    const valeurs = this.form.getRawValue();
+    this.envoi.set(true);
+    const erreur = await this.data.enregistrerParcelle(valeurs, edit?.id);
+    this.envoi.set(false);
+    if (erreur) {
+      this.toast.afficher('Parcelle non enregistrée', erreur, 'danger');
+      return;
+    }
     this.formOuvert.set(false);
-    this.toast.afficher(edit ? 'Parcelle modifiée' : 'Parcelle ajoutée', this.form.getRawValue().nom);
+    this.toast.afficher(edit ? 'Parcelle modifiée' : 'Parcelle ajoutée', valeurs.nom);
   }
 
   demanderSuppression(p: Parcelle): void {
@@ -85,11 +93,17 @@ export class Verger {
     this.confirmOuvert.set(true);
   }
 
-  supprimer(): void {
+  async supprimer(): Promise<void> {
     const p = this.aSupprimer();
     if (!p) return;
-    this.data.supprimerParcelle(p.id);
+    this.envoi.set(true);
+    const erreur = await this.data.supprimerParcelle(p.id);
+    this.envoi.set(false);
     this.confirmOuvert.set(false);
+    if (erreur) {
+      this.toast.afficher('Parcelle non supprimée', erreur, 'danger');
+      return;
+    }
     this.toast.afficher('Parcelle supprimée', p.nom);
   }
 }

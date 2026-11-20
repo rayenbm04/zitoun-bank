@@ -16,3 +16,17 @@ CREATE TABLE IF NOT EXISTS users (
   PRIMARY KEY (id),
   UNIQUE KEY uq_users_email (email)
 ) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS parcelles (
+  id            INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id       INT UNSIGNED NOT NULL,
+  nom           VARCHAR(80)  NOT NULL,
+  region        VARCHAR(40)  NOT NULL,
+  superficie_ha DECIMAL(8,2) NOT NULL,
+  variete       VARCHAR(40)  NOT NULL,
+  nb_oliviers   INT UNSIGNED NOT NULL,
+  etat          VARCHAR(20)  NOT NULL DEFAULT 'Bon',
+  PRIMARY KEY (id),
+  KEY idx_parcelles_user (user_id),
+  CONSTRAINT fk_parcelles_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+) ENGINE=InnoDB;
