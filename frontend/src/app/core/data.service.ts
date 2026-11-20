@@ -53,12 +53,7 @@ export class DataService {
 
   readonly parcelles = signal<Parcelle[]>([]);
 
-  readonly recoltes = signal<Recolte[]>([
-    { id: 1, date: ilYa(26), parcelleId: 1, quantiteKg: 1800 },
-    { id: 2, date: ilYa(22), parcelleId: 2, quantiteKg: 2100 },
-    { id: 3, date: ilYa(12), parcelleId: 1, quantiteKg: 2400 },
-    { id: 4, date: ilYa(8), parcelleId: 3, quantiteKg: 900 },
-  ]);
+  readonly recoltes = signal<Recolte[]>([]);
 
   readonly pressages = signal<Pressage[]>([
     { id: 1, date: ilYa(24), moulin: 'Huilerie Ben Salah', olivesKg: 1500, huileL: 298, qualite: 'Extra vierge' },
@@ -119,9 +114,11 @@ export class DataService {
     this.erreurChargement.set(false);
     forkJoin({
       parcelles: this.http.get<Parcelle[]>(`${API_URL}/parcelles`),
+      recoltes: this.http.get<Recolte[]>(`${API_URL}/recoltes`),
     }).subscribe({
       next: d => {
         this.parcelles.set(d.parcelles);
+        this.recoltes.set(d.recoltes);
         this.chargement.set(false);
       },
       error: () => {
@@ -133,6 +130,7 @@ export class DataService {
 
   private vider(): void {
     this.parcelles.set([]);
+    this.recoltes.set([]);
   }
 
   readonly superficieTotale = computed(() => this.parcelles().reduce((s, p) => s + p.superficieHa, 0));
@@ -246,7 +244,7 @@ export class DataService {
     return liste;
   });
 
-  nomParcelle(id: number): string {
+  nomParcelle(id: number | null): string {
     return this.parcelles().find(p => p.id === id)?.nom ?? 'Parcelle supprimée';
   }
 
@@ -267,14 +265,21 @@ export class DataService {
     try {
       await firstValueFrom(this.http.delete(`${API_URL}/parcelles/${id}`));
       this.parcelles.update(list => list.filter(p => p.id !== id));
+      this.recoltes.update(list => list.map(r => (r.parcelleId === id ? { ...r, parcelleId: null } : r)));
       return null;
     } catch (e) {
       return messageErreur(e);
     }
   }
 
-  ajouterRecolte(r: Omit<Recolte, 'id'>): void {
-    this.recoltes.update(list => [...list, { ...r, id: this.nextId++ }]);
+  async ajouterRecolte(r: Omit<Recolte, 'id'>): Promise<string | null> {
+    try {
+      const enregistree = await firstValueFrom(this.http.post<Recolte>(`${API_URL}/recoltes`, r));
+      this.recoltes.update(list => [...list, enregistree]);
+      return null;
+    } catch (e) {
+      return messageErreur(e);
+    }
   }
 
   ajouterTache(t: Omit<Tache, 'id' | 'faite'>): void {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DataService } from '../../core/data.service';
 import { PrefsService } from '../../core/prefs.service';
@@ -23,12 +23,21 @@ export class Recoltes {
 
   readonly aujourdhui = new Date().toISOString().slice(0, 10);
   readonly filtre = signal<number | null>(null);
+  readonly envoi = signal(false);
 
   readonly form = this.fb.nonNullable.group({
     parcelleId: [this.data.parcelles()[0]?.id ?? 0, [Validators.required, Validators.min(1)]],
     date: [this.aujourdhui, Validators.required],
     quantiteKg: [null as number | null, [Validators.required, Validators.min(1), Validators.max(50000)]],
   });
+
+  constructor() {
+    effect(() => {
+      const premiere = this.data.parcelles()[0];
+      const choix = this.form.controls.parcelleId;
+      if (premiere && !this.data.parcelles().some(x => x.id === Number(choix.value))) choix.setValue(premiere.id);
+    });
+  }
 
   erreur(champ: 'parcelleId' | 'date' | 'quantiteKg'): string | null {
     const c = this.form.controls[champ];
@@ -59,17 +68,23 @@ export class Recoltes {
     return arbres ? this.data.totalRecolteKg() / arbres : 0;
   });
 
-  variete(id: number): string {
+  variete(id: number | null): string {
     return this.data.parcelles().find(x => x.id === id)?.variete ?? '';
   }
 
-  enregistrer(): void {
+  async enregistrer(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
     const v = this.form.getRawValue();
-    this.data.ajouterRecolte({ parcelleId: Number(v.parcelleId), date: v.date, quantiteKg: Number(v.quantiteKg) });
+    this.envoi.set(true);
+    const erreur = await this.data.ajouterRecolte({ parcelleId: Number(v.parcelleId), date: v.date, quantiteKg: Number(v.quantiteKg) });
+    this.envoi.set(false);
+    if (erreur) {
+      this.toast.afficher('Récolte non enregistrée', erreur, 'danger');
+      return;
+    }
     this.toast.afficher('Récolte enregistrée', `${this.p.nombre(Number(v.quantiteKg))} kg · ${this.data.nomParcelle(Number(v.parcelleId))}. Le stock d’olives est à jour.`);
     this.form.patchValue({ quantiteKg: null });
     this.form.controls.quantiteKg.markAsUntouched();

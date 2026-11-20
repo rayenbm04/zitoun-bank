@@ -47,7 +47,7 @@ export interface Parcelle {
 export interface Recolte {
   id: number;
   date: string;
-  parcelleId: number;
+  parcelleId: number | null;
   quantiteKg: number;
 }
 

@@ -4,6 +4,7 @@ const cors = require('cors');
 const pool = require('./db');
 const authRoutes = require('./routes/auth');
 const parcellesRoutes = require('./routes/parcelles');
+const recoltesRoutes = require('./routes/recoltes');
 
 if (!process.env.JWT_SECRET) {
   console.error('JWT_SECRET manquant : copiez .env.example en .env et remplissez-le.');
@@ -25,6 +26,7 @@ app.get('/api/health', async (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/parcelles', parcellesRoutes);
+app.use('/api/recoltes', recoltesRoutes);
 
 app.use((req, res) => res.status(404).json({ message: 'Route introuvable.' }));
 
