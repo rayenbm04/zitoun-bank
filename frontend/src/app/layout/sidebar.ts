@@ -10,6 +10,7 @@ export const LIENS = [
   { path: '/verger', cle: 'nav.verger', icone: 'arbre' },
   { path: '/recoltes', cle: 'nav.recoltes', icone: 'panier' },
   { path: '/production', cle: 'nav.production', icone: 'goutte' },
+  { path: '/stocks', cle: 'nav.stocks', icone: 'caisse' },
   { path: '/marche', cle: 'nav.marche', icone: 'etiquette' },
   { path: '/ventes', cle: 'nav.ventes', icone: 'billet' },
 ];

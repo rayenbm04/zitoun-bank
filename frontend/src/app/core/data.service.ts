@@ -148,7 +148,7 @@ export class DataService {
       if (stock[q] < SEUIL_HUILE_L) {
         liste.push({
           id: 'stock-' + q, ton: 'warn', icone: 'attention', titre: 'al.stockBas', texte: 'al.stockBas.txt',
-          vars: { q: q.toLowerCase(), v: stock[q], s: SEUIL_HUILE_L },
+          vars: { q: q.toLowerCase(), v: stock[q], s: SEUIL_HUILE_L }, lien: '/stocks', action: 'db.voirStocks',
         });
       }
     }

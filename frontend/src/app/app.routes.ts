@@ -16,6 +16,7 @@ export const routes: Routes = [
       { path: 'verger', title: t('Verger'), data: { titre: 'nav.verger' }, loadComponent: () => import('./pages/verger/verger').then(m => m.Verger) },
       { path: 'recoltes', title: t('Récoltes'), data: { titre: 'nav.recoltes' }, loadComponent: () => import('./pages/recoltes/recoltes').then(m => m.Recoltes) },
       { path: 'production', title: t('Production d’huile'), data: { titre: 'nav.production' }, loadComponent: () => import('./pages/production/production').then(m => m.Production) },
+      { path: 'stocks', title: t('Stocks'), data: { titre: 'nav.stocks' }, loadComponent: () => import('./pages/stocks/stocks').then(m => m.Stocks) },
       { path: 'marche', title: t('Marché et prix'), data: { titre: 'nav.marche' }, loadComponent: () => import('./pages/marche/marche').then(m => m.Marche) },
       { path: 'ventes', title: t('Ventes'), data: { titre: 'nav.ventes' }, loadComponent: () => import('./pages/ventes/ventes').then(m => m.Ventes) },
     ],
