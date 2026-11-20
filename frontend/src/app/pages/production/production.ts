@@ -29,6 +29,7 @@ export class Production {
   readonly moulins = ['Huilerie Ben Salah', 'Huilerie El Amal', 'Moulin Zaafrane', 'Huilerie Chaabane'];
   readonly aujourdhui = new Date().toISOString().slice(0, 10);
   readonly erreurStock = signal('');
+  readonly envoi = signal(false);
 
   readonly form = this.fb.nonNullable.group({
     moulin: ['', Validators.required],
@@ -58,16 +59,18 @@ export class Production {
     return { moulin: 'Indiquez le moulin.', olivesKg: 'Quantité d’olives requise.', huileL: 'Litres d’huile obtenus requis.' }[champ];
   }
 
-  enregistrer(): void {
+  async enregistrer(): Promise<void> {
     this.erreurStock.set('');
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
     const v = this.form.getRawValue();
-    const msg = this.data.ajouterPressage({
+    this.envoi.set(true);
+    const msg = await this.data.ajouterPressage({
       moulin: v.moulin, date: v.date, olivesKg: Number(v.olivesKg), huileL: Number(v.huileL), qualite: v.qualite,
     });
+    this.envoi.set(false);
     if (msg) {
       this.erreurStock.set(msg);
       return;
