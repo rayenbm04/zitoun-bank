@@ -3,7 +3,13 @@ import { AuthService } from '../../core/auth.service';
 import { PrefsService } from '../../core/prefs.service';
 import { REGIONS, Region } from '../../core/models';
 import {
-  MeteoService, Meteo as DonneesMeteo, conseils, decrireTemps, estFavorable, nomDuJour, regionValide,
+  MeteoService,
+  Meteo as DonneesMeteo,
+  conseils,
+  decrireTemps,
+  estFavorable,
+  nomDuJour,
+  regionValide,
 } from '../../core/meteo.service';
 import { Alert } from '../../shared/ui/alert';
 import { Icon } from '../../shared/ui/icon';
@@ -48,7 +54,7 @@ export class Meteo {
   charger(): void {
     this.etat.set('chargement');
     this.service.charger(this.region()).subscribe({
-      next: m => {
+      next: (m) => {
         this.meteo.set(m);
         this.etat.set('pret');
       },

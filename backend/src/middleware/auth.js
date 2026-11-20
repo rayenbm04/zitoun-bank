@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 
+/** Vérifie le jeton « Bearer » et place l’identifiant de l’utilisateur dans req.userId. */
 function requireAuth(req, res, next) {
   const header = req.headers.authorization || '';
   const [type, token] = header.split(' ');

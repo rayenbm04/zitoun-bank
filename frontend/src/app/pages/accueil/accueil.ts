@@ -32,18 +32,48 @@ export class Accueil {
   ];
 
   readonly fonctionnalites = [
-    { icone: 'arbre', titre: 'Verger', texte: 'Vos parcelles, leurs oliviers Chemlali ou Chetoui, et leur état en un coup d’œil.' },
-    { icone: 'panier', titre: 'Récoltes', texte: 'Chaque cueillette notée par parcelle, avec le total de la saison.' },
-    { icone: 'goutte', titre: 'Production', texte: 'Les passages au moulin et le rendement de vos olives, calculé pour vous.' },
-    { icone: 'caisse', titre: 'Stocks', texte: 'Olives et huile mises à jour toutes seules, avec une alerte quand le stock baisse.' },
-    { icone: 'etiquette', titre: 'Marché', texte: 'Les offres des acheteurs comparées, la meilleure mise en avant.' },
-    { icone: 'billet', titre: 'Ventes', texte: 'Une vente en un clic depuis l’offre, et l’historique de vos revenus.' },
+    {
+      icone: 'arbre',
+      titre: 'Verger',
+      texte: 'Vos parcelles, leurs oliviers Chemlali ou Chetoui, et leur état en un coup d’œil.',
+    },
+    {
+      icone: 'panier',
+      titre: 'Récoltes',
+      texte: 'Chaque cueillette notée par parcelle, avec le total de la saison.',
+    },
+    {
+      icone: 'goutte',
+      titre: 'Production',
+      texte: 'Les passages au moulin et le rendement de vos olives, calculé pour vous.',
+    },
+    {
+      icone: 'caisse',
+      titre: 'Stocks',
+      texte: 'Olives et huile mises à jour toutes seules, avec une alerte quand le stock baisse.',
+    },
+    {
+      icone: 'etiquette',
+      titre: 'Marché',
+      texte: 'Les offres des acheteurs comparées, la meilleure mise en avant.',
+    },
+    {
+      icone: 'billet',
+      titre: 'Ventes',
+      texte: 'Une vente en un clic depuis l’offre, et l’historique de vos revenus.',
+    },
   ];
 
   readonly etapes = [
     { titre: 'Créez votre compte', texte: 'Gratuit, en une minute, avec votre région.' },
-    { titre: 'Décrivez votre verger', texte: 'Ajoutez vos parcelles, puis vos récoltes et vos pressages.' },
-    { titre: 'Vendez au meilleur prix', texte: 'Comparez les offres du jour et vendez en un clic.' },
+    {
+      titre: 'Décrivez votre verger',
+      texte: 'Ajoutez vos parcelles, puis vos récoltes et vos pressages.',
+    },
+    {
+      titre: 'Vendez au meilleur prix',
+      texte: 'Comparez les offres du jour et vendez en un clic.',
+    },
   ];
 
   readonly contact = this.fb.nonNullable.group({

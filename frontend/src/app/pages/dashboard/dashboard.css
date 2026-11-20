@@ -1,30 +1,112 @@
-.intro { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
-.salut { font-size: 1.0625rem; color: var(--text-strong); }
-.date { display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: var(--fs-sm); font-weight: 600; }
-.date app-icon { width: 16px; height: 16px; color: var(--icon); }
-.intro-droite { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.salut {
+  font-size: 1.0625rem;
+  color: var(--text-strong);
+}
+.date {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.date app-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--icon);
+}
+.intro-droite {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
 .meteo-mini {
-  display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 4px 14px; border-radius: 999px;
-  background: var(--surface-2); color: var(--text-strong); font-size: var(--fs-sm); font-weight: 600; text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-strong);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-decoration: none;
 }
-.meteo-mini .num { font-weight: 700; }
-.meteo-mini app-icon { width: 18px; height: 18px; color: var(--accent-text); }
-.meteo-mini:hover { background: var(--surface-sunk); }
-.zone { margin-top: 24px; }
-.alertes { display: flex; flex-direction: column; gap: 10px; }
-.alertes .txt { display: block; font-size: 0.875rem; margin-top: 2px; opacity: 0.92; }
+.meteo-mini .num {
+  font-weight: 700;
+}
+.meteo-mini app-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--accent-text);
+}
+.meteo-mini:hover {
+  background: var(--surface-sunk);
+}
+.zone {
+  margin-top: 24px;
+}
+.alertes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.alertes .txt {
+  display: block;
+  font-size: 0.875rem;
+  margin-top: 2px;
+  opacity: 0.92;
+}
 .lien-action {
-  display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; font-weight: 700; font-size: 0.875rem;
-  color: inherit; text-decoration: underline; text-underline-offset: 3px; min-height: 32px; border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  min-height: 32px;
+  border-radius: 8px;
 }
-.lien-action:hover { text-decoration-thickness: 2px; }
-.lien-action app-icon { width: 16px; height: 16px; }
+.lien-action:hover {
+  text-decoration-thickness: 2px;
+}
+.lien-action app-icon {
+  width: 16px;
+  height: 16px;
+}
 .compteur {
-  min-width: 28px; height: 28px; padding: 0 8px; border-radius: 999px; display: grid; place-items: center;
-  background: var(--surface-2); color: var(--text-strong); font-weight: 700; font-size: var(--fs-sm);
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+  color: var(--text-strong);
+  font-weight: 700;
+  font-size: var(--fs-sm);
 }
-.pad { padding: 0 var(--sp-6) var(--sp-5); }
+.pad {
+  padding: 0 var(--sp-6) var(--sp-5);
+}
 @media (max-width: 720px) {
-  .pad { padding: 0 var(--sp-4) var(--sp-4); }
-  .zone { margin-top: 16px; }
+  .pad {
+    padding: 0 var(--sp-4) var(--sp-4);
+  }
+  .zone {
+    margin-top: 16px;
+  }
 }

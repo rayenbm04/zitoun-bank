@@ -12,17 +12,29 @@ const ICONES = { info: 'info', ok: 'succes', warn: 'attention', danger: 'erreur'
     <div [class]="'alert alert-' + tone()" [class.stacked]="stacked()">
       <app-icon [name]="icone()" />
       <div class="alert-body">
-        @if (title()) { <strong>{{ title() }}</strong> }
+        @if (title()) {
+          <strong>{{ title() }}</strong>
+        }
         <ng-content />
       </div>
       <div class="alert-action"><ng-content select="[slot=action]" /></div>
     </div>
   `,
   styles: `
-    :host { display: block; }
-    .alert-action:empty { display: none; }
-    .stacked { flex-wrap: wrap; row-gap: 4px; }
-    .stacked .alert-action { flex-basis: 100%; margin-inline-start: 32px; }
+    :host {
+      display: block;
+    }
+    .alert-action:empty {
+      display: none;
+    }
+    .stacked {
+      flex-wrap: wrap;
+      row-gap: 4px;
+    }
+    .stacked .alert-action {
+      flex-basis: 100%;
+      margin-inline-start: 32px;
+    }
   `,
 })
 export class Alert {

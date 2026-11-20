@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DataService } from '../../core/data.service';
 import { PrefsService } from '../../core/prefs.service';
@@ -28,38 +35,46 @@ export class Recoltes {
   readonly form = this.fb.nonNullable.group({
     parcelleId: [this.data.parcelles()[0]?.id ?? 0, [Validators.required, Validators.min(1)]],
     date: [this.aujourdhui, Validators.required],
-    quantiteKg: [null as number | null, [Validators.required, Validators.min(1), Validators.max(50000)]],
+    quantiteKg: [
+      null as number | null,
+      [Validators.required, Validators.min(1), Validators.max(50000)],
+    ],
   });
 
   constructor() {
     effect(() => {
       const premiere = this.data.parcelles()[0];
       const choix = this.form.controls.parcelleId;
-      if (premiere && !this.data.parcelles().some(x => x.id === Number(choix.value))) choix.setValue(premiere.id);
+      if (premiere && !this.data.parcelles().some((x) => x.id === Number(choix.value)))
+        choix.setValue(premiere.id);
     });
   }
 
   erreur(champ: 'parcelleId' | 'date' | 'quantiteKg'): string | null {
     const c = this.form.controls[champ];
     if (!c.touched || c.valid) return null;
-    if (champ === 'quantiteKg') return c.hasError('required') ? 'Indiquez la quantité.' : 'Entre 1 et 50 000 kg.';
+    if (champ === 'quantiteKg')
+      return c.hasError('required') ? 'Indiquez la quantité.' : 'Entre 1 et 50 000 kg.';
     if (champ === 'date') return 'Choisissez une date.';
     return 'Choisissez une parcelle.';
   }
 
   readonly parParcelle = computed(() =>
-    this.data.parcelles().map(x => {
-      const kg = this.data.recoltes().filter(r => r.parcelleId === x.id).reduce((s, r) => s + r.quantiteKg, 0);
+    this.data.parcelles().map((x) => {
+      const kg = this.data
+        .recoltes()
+        .filter((r) => r.parcelleId === x.id)
+        .reduce((s, r) => s + r.quantiteKg, 0);
       return { id: x.id, nom: x.nom, kg, parArbre: x.nbOliviers ? kg / x.nbOliviers : 0 };
-    })
+    }),
   );
 
-  readonly barres = computed(() => this.parParcelle().map(x => ({ label: x.nom, valeur: x.kg })));
+  readonly barres = computed(() => this.parParcelle().map((x) => ({ label: x.nom, valeur: x.kg })));
 
   readonly historique = computed(() => {
     const f = this.filtre();
     return [...this.data.recoltes()]
-      .filter(r => f === null || r.parcelleId === f)
+      .filter((r) => f === null || r.parcelleId === f)
       .sort((a, b) => b.date.localeCompare(a.date));
   });
 
@@ -69,7 +84,7 @@ export class Recoltes {
   });
 
   variete(id: number | null): string {
-    return this.data.parcelles().find(x => x.id === id)?.variete ?? '';
+    return this.data.parcelles().find((x) => x.id === id)?.variete ?? '';
   }
 
   async enregistrer(): Promise<void> {
@@ -79,13 +94,20 @@ export class Recoltes {
     }
     const v = this.form.getRawValue();
     this.envoi.set(true);
-    const erreur = await this.data.ajouterRecolte({ parcelleId: Number(v.parcelleId), date: v.date, quantiteKg: Number(v.quantiteKg) });
+    const erreur = await this.data.ajouterRecolte({
+      parcelleId: Number(v.parcelleId),
+      date: v.date,
+      quantiteKg: Number(v.quantiteKg),
+    });
     this.envoi.set(false);
     if (erreur) {
       this.toast.afficher('Récolte non enregistrée', erreur, 'danger');
       return;
     }
-    this.toast.afficher('Récolte enregistrée', `${this.p.nombre(Number(v.quantiteKg))} kg · ${this.data.nomParcelle(Number(v.parcelleId))}. Le stock d’olives est à jour.`);
+    this.toast.afficher(
+      'Récolte enregistrée',
+      `${this.p.nombre(Number(v.quantiteKg))} kg · ${this.data.nomParcelle(Number(v.parcelleId))}. Le stock d’olives est à jour.`,
+    );
     this.form.patchValue({ quantiteKg: null });
     this.form.controls.quantiteKg.markAsUntouched();
   }

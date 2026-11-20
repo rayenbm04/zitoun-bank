@@ -35,19 +35,23 @@ export class AuthService {
   }
 
   register(data: RegisterData): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${API_URL}/auth/register`, data).pipe(tap(res => this.save(res)));
+    return this.http
+      .post<AuthResponse>(`${API_URL}/auth/register`, data)
+      .pipe(tap((res) => this.save(res)));
   }
 
   login(email: string, password: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${API_URL}/auth/login`, { email, password }).pipe(tap(res => this.save(res)));
+    return this.http
+      .post<AuthResponse>(`${API_URL}/auth/login`, { email, password })
+      .pipe(tap((res) => this.save(res)));
   }
 
   updateProfile(data: Omit<RegisterData, 'password'>): Observable<{ user: User }> {
     return this.http.put<{ user: User }>(`${API_URL}/auth/me`, data).pipe(
-      tap(res => {
+      tap((res) => {
         localStorage.setItem(USER_KEY, JSON.stringify(res.user));
         this.user.set(res.user);
-      })
+      }),
     );
   }
 

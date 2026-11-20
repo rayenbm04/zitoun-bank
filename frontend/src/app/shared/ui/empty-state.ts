@@ -21,29 +21,91 @@ import { Icon } from './icon';
         <span class="pastille"><app-icon [name]="icon()" /></span>
       </div>
       <h3>{{ title() }}</h3>
-      @if (text()) { <p>{{ text() }}</p> }
+      @if (text()) {
+        <p>{{ text() }}</p>
+      }
       <div class="cta"><ng-content /></div>
     </div>
   `,
   styles: `
-    .empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 40px 16px; }
-    .illu { position: relative; width: 120px; height: 120px; margin-bottom: 8px; }
-    .disc { fill: var(--sauge-clair); }
-    html.dark .disc { fill: #2a3320; }
-    .tige { fill: none; stroke: var(--olive-700); stroke-width: 2.4; stroke-linecap: round; }
-    html.dark .tige { stroke: #9aab89; }
-    .f1 { fill: var(--feuille); } .f2 { fill: var(--sauge); }
-    .o1 { fill: var(--or); } .o2 { fill: var(--olive-700); }
-    html.dark .o2 { fill: #cfd9b1; }
-    .pastille {
-      position: absolute; inset-block-end: 2px; inset-inline-end: 2px; width: 40px; height: 40px; border-radius: 50%;
-      background: var(--surface); border: 1px solid var(--border); display: grid; place-items: center; box-shadow: var(--shadow-1);
+    .empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+      padding: 40px 16px;
     }
-    .pastille app-icon { width: 22px; height: 22px; }
-    h3 { font-size: 1.125rem; }
-    p { color: var(--text-muted); max-width: 42ch; }
-    .cta { margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-    .cta:empty { display: none; }
+    .illu {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin-bottom: 8px;
+    }
+    .disc {
+      fill: var(--sauge-clair);
+    }
+    html.dark .disc {
+      fill: #2a3320;
+    }
+    .tige {
+      fill: none;
+      stroke: var(--olive-700);
+      stroke-width: 2.4;
+      stroke-linecap: round;
+    }
+    html.dark .tige {
+      stroke: #9aab89;
+    }
+    .f1 {
+      fill: var(--feuille);
+    }
+    .f2 {
+      fill: var(--sauge);
+    }
+    .o1 {
+      fill: var(--or);
+    }
+    .o2 {
+      fill: var(--olive-700);
+    }
+    html.dark .o2 {
+      fill: #cfd9b1;
+    }
+    .pastille {
+      position: absolute;
+      inset-block-end: 2px;
+      inset-inline-end: 2px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      box-shadow: var(--shadow-1);
+    }
+    .pastille app-icon {
+      width: 22px;
+      height: 22px;
+    }
+    h3 {
+      font-size: 1.125rem;
+    }
+    p {
+      color: var(--text-muted);
+      max-width: 42ch;
+    }
+    .cta {
+      margin-top: 12px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .cta:empty {
+      display: none;
+    }
   `,
 })
 export class EmptyState {

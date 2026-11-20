@@ -37,23 +37,29 @@ const METIER: Record<string, string> = {
   grille:
     '<rect class="p1" x="3" y="3" width="8" height="10" rx="2"/><rect class="p2" x="13" y="3" width="8" height="6" rx="2"/>' +
     '<rect class="p4" x="13" y="11" width="8" height="10" rx="2"/><rect class="p3" x="3" y="15" width="8" height="6" rx="2"/>',
-  profil: '<circle class="p1" cx="12" cy="8" r="4.5"/><path class="p4" d="M3.5 21a8.5 8.5 0 0 1 17 0z"/>',
+  profil:
+    '<circle class="p1" cx="12" cy="8" r="4.5"/><path class="p4" d="M3.5 21a8.5 8.5 0 0 1 17 0z"/>',
 };
 
 const TRAIT: Record<string, string> = {
-  cloche: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
-  soleil: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+  cloche:
+    '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  soleil:
+    '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
   lune: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
-  langue: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+  langue:
+    '<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
   menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
   fermer: '<path d="M18 6 6 18M6 6l12 12"/>',
   valide: '<path d="M20 6 9 17l-5-5"/>',
   succes: '<circle cx="12" cy="12" r="10"/><path d="m8.5 12 2.5 2.5 4.5-5"/>',
-  attention: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/>',
+  attention:
+    '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/>',
   info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
   erreur: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
-  corbeille: '<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/>',
+  corbeille:
+    '<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/>',
   crayon: '<path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>',
   recherche: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
   filtre: '<path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/>',
@@ -62,30 +68,39 @@ const TRAIT: Record<string, string> = {
   'chevron-fin': '<path d="m9 18 6-6-6-6"/>',
   retour: '<path d="M19 12H5M12 19l-7-7 7-7"/>',
   oeil: '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
-  'oeil-barre': '<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68M6.61 6.61A13.53 13.53 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61M2 2l20 20"/>',
+  'oeil-barre':
+    '<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68M6.61 6.61A13.53 13.53 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61M2 2l20 20"/>',
   mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
   cadenas: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
-  telephone: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>',
+  telephone:
+    '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>',
   lieu: '<path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
   calendrier: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
   hausse: '<path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/>',
   baisse: '<path d="m22 17-8.5-8.5-5 5L2 7"/><path d="M16 17h6v-6"/>',
   entree: '<path d="M12 5v14M19 12l-7 7-7-7"/>',
   sortie2: '<path d="M12 19V5M5 12l7-7 7 7"/>',
-  etoile: '<path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>',
+  etoile:
+    '<path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>',
   horloge: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
   envoyer: '<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
   reglages: '<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',
   nuage: '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>',
-  eclaircie: '<path d="M12 2v2M4.93 4.93l1.41 1.41M20 12h2M19.07 4.93l-1.41 1.41M15.95 12.65a4 4 0 0 0-5.93-4.45"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/>',
-  pluie: '<path d="M4 14.9A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.24"/><path d="M16 14v6M8 14v6M12 16v6"/>',
-  orage: '<path d="M6 16.33A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.97"/><path d="m13 12-3 5h4l-3 5"/>',
-  brouillard: '<path d="M4 14.9A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.24"/><path d="M16 17H7M17 21H9"/>',
+  eclaircie:
+    '<path d="M12 2v2M4.93 4.93l1.41 1.41M20 12h2M19.07 4.93l-1.41 1.41M15.95 12.65a4 4 0 0 0-5.93-4.45"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/>',
+  pluie:
+    '<path d="M4 14.9A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.24"/><path d="M16 14v6M8 14v6M12 16v6"/>',
+  orage:
+    '<path d="M6 16.33A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.97"/><path d="m13 12-3 5h4l-3 5"/>',
+  brouillard:
+    '<path d="M4 14.9A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.24"/><path d="M16 17H7M17 21H9"/>',
   flocon: '<path d="M2 12h20M12 2v20M20 16l-4-4 4-4M4 8l4 4-4 4M16 4l-4 4-4-4M8 20l4-4 4 4"/>',
   vent: '<path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2M9.6 4.6A2 2 0 1 1 11 8H2M12.6 19.4A2 2 0 1 0 14 16H2"/>',
   thermometre: '<path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>',
-  calculatrice: '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M16 14v4M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01"/>',
-  camion: '<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2M15 18H9M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>',
+  calculatrice:
+    '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M16 14v4M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01"/>',
+  camion:
+    '<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2M15 18H9M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>',
 };
 
 const MIROIR = new Set(['chevron-fin', 'retour', 'sortie', 'hausse', 'baisse']);
@@ -102,23 +117,67 @@ const MIROIR = new Set(['chevron-fin', 'retour', 'sortie', 'hausse', 'baisse']);
   template: '',
   styles: `
     :host {
-      --ic1: var(--feuille); --ic2: var(--or); --ic3: var(--sauge); --ic4: var(--olive-700); --ic-cut: var(--surface);
-      display: inline-flex; width: 24px; height: 24px; flex: none; line-height: 0;
+      --ic1: var(--feuille);
+      --ic2: var(--or);
+      --ic3: var(--sauge);
+      --ic4: var(--olive-700);
+      --ic-cut: var(--surface);
+      display: inline-flex;
+      width: 24px;
+      height: 24px;
+      flex: none;
+      line-height: 0;
     }
-    :host-context(html.dark) { --ic1: #9aab89; --ic3: #6f7f4b; --ic4: #cfd9b1; }
-    :host ::ng-deep svg { width: 100%; height: 100%; overflow: visible; }
-    :host ::ng-deep .p1 { fill: var(--ic1); }
-    :host ::ng-deep .p2 { fill: var(--ic2); }
-    :host ::ng-deep .p3 { fill: var(--ic3); }
-    :host ::ng-deep .p4 { fill: var(--ic4); }
-    :host ::ng-deep .s { stroke: var(--ic4); }
-    :host ::ng-deep .hl { stroke: var(--ic-cut); }
-    :host ::ng-deep .hole { fill: var(--ic-cut); }
-    :host(.mono) ::ng-deep .p1, :host(.mono) ::ng-deep .p2, :host(.mono) ::ng-deep .p3, :host(.mono) ::ng-deep .p4 { fill: currentColor; }
-    :host(.mono) ::ng-deep .p1 { opacity: 0.7; }
-    :host(.mono) ::ng-deep .p3 { opacity: 0.45; }
-    :host(.mono) ::ng-deep .s { stroke: currentColor; }
-    :host(.mono) ::ng-deep .hl, :host(.mono) ::ng-deep .hole { opacity: 0; }
+    :host-context(html.dark) {
+      --ic1: #9aab89;
+      --ic3: #6f7f4b;
+      --ic4: #cfd9b1;
+    }
+    :host ::ng-deep svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    :host ::ng-deep .p1 {
+      fill: var(--ic1);
+    }
+    :host ::ng-deep .p2 {
+      fill: var(--ic2);
+    }
+    :host ::ng-deep .p3 {
+      fill: var(--ic3);
+    }
+    :host ::ng-deep .p4 {
+      fill: var(--ic4);
+    }
+    :host ::ng-deep .s {
+      stroke: var(--ic4);
+    }
+    :host ::ng-deep .hl {
+      stroke: var(--ic-cut);
+    }
+    :host ::ng-deep .hole {
+      fill: var(--ic-cut);
+    }
+    :host(.mono) ::ng-deep .p1,
+    :host(.mono) ::ng-deep .p2,
+    :host(.mono) ::ng-deep .p3,
+    :host(.mono) ::ng-deep .p4 {
+      fill: currentColor;
+    }
+    :host(.mono) ::ng-deep .p1 {
+      opacity: 0.7;
+    }
+    :host(.mono) ::ng-deep .p3 {
+      opacity: 0.45;
+    }
+    :host(.mono) ::ng-deep .s {
+      stroke: currentColor;
+    }
+    :host(.mono) ::ng-deep .hl,
+    :host(.mono) ::ng-deep .hole {
+      opacity: 0;
+    }
   `,
 })
 export class Icon {

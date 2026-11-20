@@ -20,7 +20,14 @@ export type EtatParcelle = (typeof ETATS)[number];
 export const QUALITES = ['Extra vierge', 'Vierge', 'Ordinaire'] as const;
 export type QualiteHuile = (typeof QUALITES)[number];
 
-export const TYPES_TACHE = ['Récolte', 'Taille', 'Traitement', 'Irrigation', 'Fertilisation', 'Labour'] as const;
+export const TYPES_TACHE = [
+  'Récolte',
+  'Taille',
+  'Traitement',
+  'Irrigation',
+  'Fertilisation',
+  'Labour',
+] as const;
 export type TypeTache = (typeof TYPES_TACHE)[number];
 
 export interface Tache {

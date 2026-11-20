@@ -16,8 +16,14 @@
         }
       </div>
     </nav>
-    <button type="button" class="burger btn btn-outline btn-icon" (click)="menu.set(!menu())"
-            [attr.aria-expanded]="menu()" aria-controls="menu-sections" [attr.aria-label]="menu() ? 'Fermer le menu' : 'Ouvrir le menu'">
+    <button
+      type="button"
+      class="burger btn btn-outline btn-icon"
+      (click)="menu.set(!menu())"
+      [attr.aria-expanded]="menu()"
+      aria-controls="menu-sections"
+      [attr.aria-label]="menu() ? 'Fermer le menu' : 'Ouvrir le menu'"
+    >
       <app-icon [name]="menu() ? 'fermer' : 'menu'" />
     </button>
   </div>
@@ -28,7 +34,10 @@
     <div class="hero-in">
       <div class="hero-texte">
         <h1 id="hero-titre">Suivez votre production et vendez au meilleur prix.</h1>
-        <p class="hero-sous">Zitoun Bank accompagne les oléiculteurs tunisiens du verger à la vente : récoltes, passages au moulin, stocks d’olives et d’huile, et offres des acheteurs, au même endroit.</p>
+        <p class="hero-sous">
+          Zitoun Bank accompagne les oléiculteurs tunisiens du verger à la vente : récoltes,
+          passages au moulin, stocks d’olives et d’huile, et offres des acheteurs, au même endroit.
+        </p>
         <div class="hero-cta">
           <a class="btn btn-primary btn-lg" routerLink="/inscription">Créer un compte</a>
           <a class="btn btn-clair btn-lg" routerLink="/connexion">Se connecter</a>
@@ -39,7 +48,10 @@
         <app-olive-tree />
         <div class="ticket" aria-hidden="true">
           <span class="t-ic"><app-icon name="etiquette" /></span>
-          <span class="t-txt"><small>Meilleure offre du jour</small><strong>14,20 TND/L</strong><em>Extra vierge, Sousse</em></span>
+          <span class="t-txt"
+            ><small>Meilleure offre du jour</small><strong>14,20 TND/L</strong
+            ><em>Extra vierge, Sousse</em></span
+          >
         </div>
       </div>
     </div>
@@ -47,9 +59,16 @@
 
   <section class="chiffres" aria-label="Chiffres clés">
     <div class="chiffres-in">
-      <div class="c"><strong>340 000 t</strong><span>d’huile d’olive produites en Tunisie en 2024/25</span></div>
-      <div class="c"><strong>2<sup>e</sup></strong><span>exportateur mondial d’huile d’olive</span></div>
-      <div class="c"><strong>3 clics</strong><span>pour vendre votre huile à la meilleure offre</span></div>
+      <div class="c">
+        <strong>340 000 t</strong><span>d’huile d’olive produites en Tunisie en 2024/25</span>
+      </div>
+      <div class="c">
+        <strong>2<sup>e</sup></strong
+        ><span>exportateur mondial d’huile d’olive</span>
+      </div>
+      <div class="c">
+        <strong>3 clics</strong><span>pour vendre votre huile à la meilleure offre</span>
+      </div>
     </div>
     <p class="source">Sources : ONH et COI, via Challenges.tn et Kapitalis (2024).</p>
   </section>
@@ -57,7 +76,10 @@
   <section id="fonctionnalites" class="bloc" aria-labelledby="t-fonc">
     <div class="bloc-tete">
       <h2 id="t-fonc">Toute l’exploitation, de l’olivier au litre vendu</h2>
-      <p>Six modules reliés entre eux : une récolte remplit le stock d’olives, un pressage le stock d’huile, une vente le vide.</p>
+      <p>
+        Six modules reliés entre eux : une récolte remplit le stock d’olives, un pressage le stock
+        d’huile, une vente le vide.
+      </p>
     </div>
     <ul class="fonc">
       @for (f of fonctionnalites; track f.titre) {
@@ -92,8 +114,16 @@
     <div class="propos">
       <div>
         <h2 id="t-propos">À propos</h2>
-        <p>La Tunisie compte parmi les premiers producteurs d’huile d’olive au monde. Pourtant, beaucoup de petites et moyennes exploitations suivent encore leur activité sur un carnet, sans vision claire de leurs stocks ni des prix proposés par les acheteurs.</p>
-        <p>Zitoun Bank réunit tout au même endroit et aide l’agriculteur à vendre au bon moment. Ce n’est pas une banque : « zitoun » veut dire olive en arabe, et la plateforme est la banque de vos olives.</p>
+        <p>
+          La Tunisie compte parmi les premiers producteurs d’huile d’olive au monde. Pourtant,
+          beaucoup de petites et moyennes exploitations suivent encore leur activité sur un carnet,
+          sans vision claire de leurs stocks ni des prix proposés par les acheteurs.
+        </p>
+        <p>
+          Zitoun Bank réunit tout au même endroit et aide l’agriculteur à vendre au bon moment. Ce
+          n’est pas une banque : « zitoun » veut dire olive en arabe, et la plateforme est la banque
+          de vos olives.
+        </p>
         <p class="note">Projet Web réalisé à SUP’COM, année universitaire 2025/2026.</p>
       </div>
       <figure class="mot" aria-label="Le mot zitoun en arabe">
@@ -107,7 +137,10 @@
     <div class="bloc-in contact">
       <div class="bloc-tete">
         <h2 id="t-contact">Contact</h2>
-        <p>Une question, une idée pour la plateforme ? Écrivez-nous, nous répondons sous deux jours ouvrés.</p>
+        <p>
+          Une question, une idée pour la plateforme ? Écrivez-nous, nous répondons sous deux jours
+          ouvrés.
+        </p>
         <ul class="infos">
           <li><app-icon name="lieu" />SUP’COM, Cité technologique des communications, Ariana</li>
           <li><app-icon name="horloge" />Du lundi au vendredi</li>
@@ -115,7 +148,10 @@
       </div>
       <form class="card c-form" [formGroup]="contact" (ngSubmit)="envoyer()" novalidate>
         @if (envoye()) {
-          <app-alert tone="ok" title="Message envoyé">Merci. Nous vous répondrons à l’adresse indiquée. (Démonstration : aucun e-mail n’est réellement envoyé.)</app-alert>
+          <app-alert tone="ok" title="Message envoyé"
+            >Merci. Nous vous répondrons à l’adresse indiquée. (Démonstration : aucun e-mail n’est
+            réellement envoyé.)</app-alert
+          >
         }
         <app-field label="Nom" for="c-nom" [error]="erreur('nom')">
           <input id="c-nom" formControlName="nom" autocomplete="name" />
@@ -126,8 +162,17 @@
         <app-field label="Message" for="c-msg" [error]="erreur('message')">
           <textarea id="c-msg" rows="5" formControlName="message"></textarea>
         </app-field>
-        <button class="btn btn-secondary" type="submit" [disabled]="envoi()" [attr.aria-busy]="envoi()">
-          @if (envoi()) { <span class="spinner" aria-hidden="true"></span> Envoi… } @else { <app-icon name="envoyer" />Envoyer le message }
+        <button
+          class="btn btn-secondary"
+          type="submit"
+          [disabled]="envoi()"
+          [attr.aria-busy]="envoi()"
+        >
+          @if (envoi()) {
+            <span class="spinner" aria-hidden="true"></span> Envoi…
+          } @else {
+            <app-icon name="envoyer" />Envoyer le message
+          }
         </button>
       </form>
     </div>
@@ -147,5 +192,7 @@
       <a routerLink="/charte">Charte graphique</a>
     </nav>
   </div>
-  <p class="copy">© {{ annee }} Zitoun Bank. Projet Web SUP’COM, binôme BEN MIMOUN Rayen et BEN TAMARZIZT Mahdi.</p>
+  <p class="copy">
+    © {{ annee }} Zitoun Bank. Projet Web SUP’COM, binôme BEN MIMOUN Rayen et BEN TAMARZIZT Mahdi.
+  </p>
 </footer>

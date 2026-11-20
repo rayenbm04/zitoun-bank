@@ -4,33 +4,60 @@
 
 <div class="tabs" role="tablist" aria-label="Type de stock">
   @for (o of onglets; track o.id; let i = $index) {
-    <button type="button" role="tab" class="tab" [id]="'tab-' + o.id" [attr.aria-selected]="onglet() === o.id"
-            [attr.aria-controls]="'panel-' + o.id" [attr.tabindex]="onglet() === o.id ? 0 : -1"
-            (click)="choisir(o.id)" (keydown)="clavier($event, i)">
+    <button
+      type="button"
+      role="tab"
+      class="tab"
+      [id]="'tab-' + o.id"
+      [attr.aria-selected]="onglet() === o.id"
+      [attr.aria-controls]="'panel-' + o.id"
+      [attr.tabindex]="onglet() === o.id ? 0 : -1"
+      (click)="choisir(o.id)"
+      (keydown)="clavier($event, i)"
+    >
       <app-icon [name]="o.icone" />{{ o.nom }}
     </button>
   }
 </div>
 
-<div class="panel" role="tabpanel" [id]="'panel-' + onglet()" [attr.aria-labelledby]="'tab-' + onglet()">
-
+<div
+  class="panel"
+  role="tabpanel"
+  [id]="'panel-' + onglet()"
+  [attr.aria-labelledby]="'tab-' + onglet()"
+>
   @switch (onglet()) {
     @case ('olives') {
       <div class="niveaux une">
         <article class="card niveau">
           <div class="tete">
             <span class="ic"><app-icon name="panier" /></span>
-            <div><h2>Olives en attente du moulin</h2><p class="muted">Capacité de stockage : {{ p.nombre(capaciteOlives) }} kg</p></div>
+            <div>
+              <h2>Olives en attente du moulin</h2>
+              <p class="muted">Capacité de stockage : {{ p.nombre(capaciteOlives) }} kg</p>
+            </div>
           </div>
-          <p class="valeur"><span class="num">{{ p.nombre(data.stockOlivesKg()) }}</span> kg</p>
-          <div class="gauge" [class.mid]="data.stockOlivesKg() > seuilOlives" role="meter" aria-label="Remplissage du stock d’olives"
-               [attr.aria-valuenow]="data.stockOlivesKg()" aria-valuemin="0" [attr.aria-valuemax]="capaciteOlives">
+          <p class="valeur">
+            <span class="num">{{ p.nombre(data.stockOlivesKg()) }}</span> kg
+          </p>
+          <div
+            class="gauge"
+            [class.mid]="data.stockOlivesKg() > seuilOlives"
+            role="meter"
+            aria-label="Remplissage du stock d’olives"
+            [attr.aria-valuenow]="data.stockOlivesKg()"
+            aria-valuemin="0"
+            [attr.aria-valuemax]="capaciteOlives"
+          >
             <span [style.width.%]="pct(data.stockOlivesKg(), capaciteOlives)"></span>
           </div>
           @if (data.stockOlivesKg() > seuilOlives) {
             <app-alert tone="warn" title="À presser rapidement" style="margin-top: 16px">
-              Plus de {{ p.nombre(seuilOlives) }} kg attendent. Une olive pressée dans les 48 heures donne une huile de meilleure qualité.
-              <a slot="action" routerLink="/production" class="btn btn-outline btn-sm">Enregistrer un pressage</a>
+              Plus de {{ p.nombre(seuilOlives) }} kg attendent. Une olive pressée dans les 48 heures
+              donne une huile de meilleure qualité.
+              <a slot="action" routerLink="/production" class="btn btn-outline btn-sm"
+                >Enregistrer un pressage</a
+              >
             </app-alert>
           }
         </article>
@@ -38,25 +65,44 @@
     }
     @case ('huile') {
       @if (qualitesBasses().length) {
-        <app-alert tone="warn" [title]="'Stock bas : huile ' + qualitesBasses().join(', ').toLowerCase()" style="margin-bottom: 16px">
+        <app-alert
+          tone="warn"
+          [title]="'Stock bas : huile ' + qualitesBasses().join(', ').toLowerCase()"
+          style="margin-bottom: 16px"
+        >
           Sous le seuil de {{ seuilHuile }} L. Pensez-y avant d’accepter une nouvelle offre.
         </app-alert>
       }
       <div class="niveaux">
         @for (q of qualites; track q) {
-          <article class="card niveau" [class.bas]="data.stockParQualite()[q] < seuilHuile && q !== 'Ordinaire'">
+          <article
+            class="card niveau"
+            [class.bas]="data.stockParQualite()[q] < seuilHuile && q !== 'Ordinaire'"
+          >
             <div class="tete">
               <app-badge [valeur]="q" />
               @if (data.stockParQualite()[q] < seuilHuile && q !== 'Ordinaire') {
                 <span class="etiquette-bas"><app-icon name="attention" />Stock bas</span>
               }
             </div>
-            <p class="valeur"><span class="num">{{ p.nombre(data.stockParQualite()[q]) }}</span> L</p>
-            <div class="gauge" [class.low]="data.stockParQualite()[q] < seuilHuile" role="meter" [attr.aria-label]="'Stock d’huile ' + q"
-                 [attr.aria-valuenow]="data.stockParQualite()[q]" aria-valuemin="0" [attr.aria-valuemax]="capaciteHuile">
+            <p class="valeur">
+              <span class="num">{{ p.nombre(data.stockParQualite()[q]) }}</span> L
+            </p>
+            <div
+              class="gauge"
+              [class.low]="data.stockParQualite()[q] < seuilHuile"
+              role="meter"
+              [attr.aria-label]="'Stock d’huile ' + q"
+              [attr.aria-valuenow]="data.stockParQualite()[q]"
+              aria-valuemin="0"
+              [attr.aria-valuemax]="capaciteHuile"
+            >
               <span [style.width.%]="pct(data.stockParQualite()[q], capaciteHuile)"></span>
             </div>
-            <p class="note">Seuil d’alerte : {{ seuilHuile }} L. Valeur estimée : {{ p.nombre(data.stockParQualite()[q] * data.prixMoyen(q), 0) }} TND au prix moyen.</p>
+            <p class="note">
+              Seuil d’alerte : {{ seuilHuile }} L. Valeur estimée :
+              {{ p.nombre(data.stockParQualite()[q] * data.prixMoyen(q), 0) }} TND au prix moyen.
+            </p>
           </article>
         }
       </div>
@@ -64,15 +110,30 @@
     @case ('oliviers') {
       <div class="niveaux">
         <article class="card niveau">
-          <div class="tete"><span class="ic"><app-icon name="arbre" /></span><h2>Oliviers</h2></div>
-          <p class="valeur"><span class="num">{{ p.nombre(data.totalOliviers()) }}</span> arbres</p>
-          <p class="muted">sur {{ p.nombre(data.superficieTotale(), 1) }} ha, {{ data.parcelles().length }} parcelles</p>
+          <div class="tete">
+            <span class="ic"><app-icon name="arbre" /></span>
+            <h2>Oliviers</h2>
+          </div>
+          <p class="valeur">
+            <span class="num">{{ p.nombre(data.totalOliviers()) }}</span> arbres
+          </p>
+          <p class="muted">
+            sur {{ p.nombre(data.superficieTotale(), 1) }} ha,
+            {{ data.parcelles().length }} parcelles
+          </p>
         </article>
         @for (x of parVariete(); track x.v) {
           <article class="card niveau">
-            <div class="tete"><span class="ic"><app-icon name="olive" /></span><h2>{{ x.v }}</h2></div>
-            <p class="valeur"><span class="num">{{ p.nombre(x.n) }}</span> arbres</p>
-            <div class="gauge"><span [style.width.%]="pct(x.n, data.totalOliviers() || 1)"></span></div>
+            <div class="tete">
+              <span class="ic"><app-icon name="olive" /></span>
+              <h2>{{ x.v }}</h2>
+            </div>
+            <p class="valeur">
+              <span class="num">{{ p.nombre(x.n) }}</span> arbres
+            </p>
+            <div class="gauge">
+              <span [style.width.%]="pct(x.n, data.totalOliviers() || 1)"></span>
+            </div>
           </article>
         }
       </div>
@@ -84,16 +145,45 @@
       <div class="card-head">
         <div>
           <h2 id="t-mvt">Mouvements</h2>
-          <p>Entrées : {{ p.nombre(totaux().entree) }} {{ onglet() === 'olives' ? 'kg' : 'L' }}, sorties : {{ p.nombre(totaux().sortie) }} {{ onglet() === 'olives' ? 'kg' : 'L' }}</p>
+          <p>
+            Entrées : {{ p.nombre(totaux().entree) }} {{ onglet() === 'olives' ? 'kg' : 'L' }},
+            sorties : {{ p.nombre(totaux().sortie) }} {{ onglet() === 'olives' ? 'kg' : 'L' }}
+          </p>
         </div>
         <div class="filtres">
           <div class="chips" role="group" aria-label="Filtrer par sens">
-            <button type="button" class="chip" [attr.aria-pressed]="sens() === 'tous'" (click)="sens.set('tous')">Tous</button>
-            <button type="button" class="chip" [attr.aria-pressed]="sens() === 'entree'" (click)="sens.set('entree')"><app-icon name="entree" />Entrées</button>
-            <button type="button" class="chip" [attr.aria-pressed]="sens() === 'sortie'" (click)="sens.set('sortie')"><app-icon name="sortie2" />Sorties</button>
+            <button
+              type="button"
+              class="chip"
+              [attr.aria-pressed]="sens() === 'tous'"
+              (click)="sens.set('tous')"
+            >
+              Tous
+            </button>
+            <button
+              type="button"
+              class="chip"
+              [attr.aria-pressed]="sens() === 'entree'"
+              (click)="sens.set('entree')"
+            >
+              <app-icon name="entree" />Entrées
+            </button>
+            <button
+              type="button"
+              class="chip"
+              [attr.aria-pressed]="sens() === 'sortie'"
+              (click)="sens.set('sortie')"
+            >
+              <app-icon name="sortie2" />Sorties
+            </button>
           </div>
           <label class="sr-only" for="periode">Période</label>
-          <select id="periode" class="input periode" [value]="periode()" (change)="periode.set($any($event.target).value)">
+          <select
+            id="periode"
+            class="input periode"
+            [value]="periode()"
+            (change)="periode.set($any($event.target).value)"
+          >
             <option value="7">7 derniers jours</option>
             <option value="30">30 derniers jours</option>
             <option value="saison">Toute la saison</option>
@@ -104,38 +194,76 @@
         @if (mouvements().length) {
           <div class="table-wrap">
             <table class="table stack">
-              <thead><tr><th scope="col">Date</th><th scope="col">Mouvement</th><th scope="col">Sens</th><th scope="col">Origine ou destination</th><th scope="col" class="t-num">Quantité</th></tr></thead>
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Mouvement</th>
+                  <th scope="col">Sens</th>
+                  <th scope="col">Origine ou destination</th>
+                  <th scope="col" class="t-num">Quantité</th>
+                </tr>
+              </thead>
               <tbody>
                 @for (m of mouvements(); track m.id) {
                   <tr>
                     <td data-label="Date" class="num">{{ p.date(m.date) }}</td>
                     <td data-label="Mouvement" class="t-main">{{ m.libelle }}</td>
-                    <td data-label="Sens"><app-badge [valeur]="m.type === 'entree' ? 'Entrée' : 'Sortie'" /></td>
+                    <td data-label="Sens">
+                      <app-badge [valeur]="m.type === 'entree' ? 'Entrée' : 'Sortie'" />
+                    </td>
                     <td data-label="Origine ou destination">{{ m.detail }}</td>
-                    <td data-label="Quantité" class="t-num strong">{{ m.type === 'entree' ? '+' : '−' }}{{ p.nombre(m.quantite) }} {{ m.produit === 'olives' ? 'kg' : 'L' }}</td>
+                    <td data-label="Quantité" class="t-num strong">
+                      {{ m.type === 'entree' ? '+' : '−' }}{{ p.nombre(m.quantite) }}
+                      {{ m.produit === 'olives' ? 'kg' : 'L' }}
+                    </td>
                   </tr>
                 }
               </tbody>
             </table>
           </div>
         } @else {
-          <app-empty title="Aucun mouvement sur cette période" text="Élargissez la période ou changez de filtre pour voir l’historique." icon="caisse">
-            <button type="button" class="btn btn-outline" (click)="periode.set('saison'); sens.set('tous')">Voir toute la saison</button>
+          <app-empty
+            title="Aucun mouvement sur cette période"
+            text="Élargissez la période ou changez de filtre pour voir l’historique."
+            icon="caisse"
+          >
+            <button
+              type="button"
+              class="btn btn-outline"
+              (click)="periode.set('saison'); sens.set('tous')"
+            >
+              Voir toute la saison
+            </button>
           </app-empty>
         }
       </div>
     } @else {
-      <div class="card-head"><h2 id="t-mvt">Oliviers par parcelle</h2><a routerLink="/verger" class="btn btn-ghost btn-sm">Gérer le verger<app-icon name="chevron-fin" /></a></div>
+      <div class="card-head">
+        <h2 id="t-mvt">Oliviers par parcelle</h2>
+        <a routerLink="/verger" class="btn btn-ghost btn-sm"
+          >Gérer le verger<app-icon name="chevron-fin"
+        /></a>
+      </div>
       <div style="padding: 0 24px 20px">
         <table class="table stack">
-          <thead><tr><th scope="col">Parcelle</th><th scope="col">Variété</th><th scope="col" class="t-num">Oliviers</th><th scope="col" class="t-num">Densité</th><th scope="col">État</th></tr></thead>
+          <thead>
+            <tr>
+              <th scope="col">Parcelle</th>
+              <th scope="col">Variété</th>
+              <th scope="col" class="t-num">Oliviers</th>
+              <th scope="col" class="t-num">Densité</th>
+              <th scope="col">État</th>
+            </tr>
+          </thead>
           <tbody>
             @for (x of data.parcelles(); track x.id) {
               <tr>
                 <td data-label="Parcelle" class="t-main">{{ x.nom }}</td>
                 <td data-label="Variété">{{ x.variete }}</td>
                 <td data-label="Oliviers" class="t-num">{{ p.nombre(x.nbOliviers) }}</td>
-                <td data-label="Densité" class="t-num">{{ p.nombre(x.nbOliviers / x.superficieHa) }} / ha</td>
+                <td data-label="Densité" class="t-num">
+                  {{ p.nombre(x.nbOliviers / x.superficieHa) }} / ha
+                </td>
                 <td data-label="État"><app-badge [valeur]="x.etat" /></td>
               </tr>
             }
