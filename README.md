@@ -2,13 +2,13 @@
 
 Plateforme web qui accompagne les agriculteurs oléicoles, du verger à la vente.
 
-> **Projet en cours de développement.** Toutes les pages de l'application sont réalisées. L'authentification et le profil utilisent déjà l'API et la base MySQL ; les autres pages fonctionnent avec des données de démonstration, qui seront remplacées progressivement par l'API (voir [Prochaines étapes](#prochaines-étapes)).
+> **Version quasi finale.** Toutes les pages sont réalisées et enregistrent leurs données dans MySQL via l'API Express. Les dernières améliorations prévues sont listées dans [Prochaines étapes](#prochaines-étapes).
 
 | Dossier | Contenu |
 |---|---|
-| `frontend/` | Application Angular : les pages développées, avec des données de démonstration |
-| `backend/` | API Node.js + Express : inscription et connexion |
-| `database/schema.sql` | Création de la base MySQL `zitoun_bank` |
+| `frontend/` | Application Angular : toutes les pages de l'application |
+| `backend/` | API Node.js + Express : comptes, parcelles, récoltes, pressages, offres, ventes et tâches |
+| `database/schema.sql` | Création de la base MySQL `zitoun_bank` (7 tables) et des offres du marché |
 
 ---
 
@@ -47,7 +47,8 @@ cd zitoun-bank
 2. Ouvrir http://localhost/phpmyadmin
 3. Onglet **Importer** › choisir le fichier `database/schema.sql` › **Exécuter**.
 
-La base `zitoun_bank` et la table `users` sont créées.
+La base `zitoun_bank` est créée avec ses tables : `users`, `parcelles`, `recoltes`, `pressages`, `offres`, `ventes` et `taches`.
+Le fichier peut être réimporté sans risque après une mise à jour : les tables existantes et leurs données sont conservées, seules les nouvelles tables sont ajoutées.
 Chaque membre du binôme a **sa propre base sur son PC** : un compte créé chez l'un n'existe pas chez l'autre.
 
 ---
@@ -70,6 +71,15 @@ npm run dev
 
 Vérification : http://localhost:3000/api/health doit afficher `{"api":"ok","database":"ok"}`.
 
+Pour avoir tout de suite une exploitation remplie (parcelles, récoltes, pressages, ventes, tâches), lancer une fois dans un autre terminal :
+
+```
+cd backend
+npm run seed
+```
+
+Puis se connecter avec **demo@zitounbank.tn** / **demo12345**. La commande peut être relancée : elle remet le compte de démonstration à zéro.
+
 Laisser ce terminal ouvert.
 
 ---
@@ -86,7 +96,7 @@ npm start
 
 (`npm install` la première fois, et à nouveau après cette mise à jour : les polices sont maintenant des paquets npm.)
 
-Ouvrir http://localhost:4200 : la page d'accueil s'affiche. Cliquer sur **Créer un compte**, puis se connecter.
+Ouvrir http://localhost:4200 : la page d'accueil s'affiche. Se connecter avec le compte de démonstration, ou cliquer sur **Créer un compte** pour partir d'une exploitation vide.
 
 ---
 
@@ -122,6 +132,8 @@ Règles pour éviter les conflits :
 | `"database":"erreur"` sur /api/health | MySQL n'est pas démarré dans XAMPP, ou la base n'a pas été importée (étape 3) |
 | MySQL ne démarre pas dans XAMPP (port 3306) | Un autre MySQL tourne déjà : l'arrêter, ou changer `DB_PORT` dans `backend/.env` |
 | « Impossible de joindre le serveur » sur la page de connexion | Le backend n'est pas lancé (étape 4) |
+| « Impossible de charger vos données » dans l'espace agriculteur | Le backend ou MySQL est arrêté, ou `schema.sql` n'a pas été réimporté après une mise à jour (étape 3) |
+| La page Météo affiche « Météo indisponible » | Pas de connexion internet : les prévisions viennent du service en ligne Open-Meteo |
 | `JWT_SECRET manquant` au lancement du backend | Le fichier `backend/.env` n'a pas été créé (étape 4) |
 | Erreurs pendant `npm install` | Vérifier `node -v` (20.19 minimum), supprimer le dossier `node_modules` et relancer `npm install` |
 | Le port 4200 est déjà utilisé | `npm start -- --port 4201` |
@@ -144,29 +156,30 @@ Le parcours principal est : **Accueil › Se connecter › Tableau de bord › M
 
 | Page | Route | Ce qu'on peut faire | Données |
 |---|---|---|---|
-| Accueil | `/` | Présentation, fonctionnalités, étapes, à propos, formulaire de contact validé | Démonstration |
+| Accueil | `/` | Présentation, fonctionnalités, étapes, à propos, formulaire de contact validé | Statique (envoi du formulaire simulé) |
 | Authentification | `/connexion`, `/inscription` | Inscription avec validation en direct, connexion, affichage du mot de passe, erreurs sous les champs | **API + MySQL** |
-| Mot de passe oublié | `/mot-de-passe-oublie` | Saisie de l'e-mail validée, message de confirmation (envoi simulé) | Démonstration |
-| Tableau de bord | `/tableau-de-bord` | 4 indicateurs, courbe des prix, alertes (stock bas, meilleur prix, olives à presser), dernières ventes | Démonstration |
-| Calendrier | `/calendrier` | Calendrier mensuel des travaux, ajout de tâches par parcelle, liste des tâches à faire et en retard (signalées dans les alertes), repères saisonniers de l'olivier | Démonstration |
+| Mot de passe oublié | `/mot-de-passe-oublie` | Saisie de l'e-mail validée, message de confirmation | Envoi de l'e-mail simulé |
+| Tableau de bord | `/tableau-de-bord` | 4 indicateurs, météo du jour, courbe des prix, alertes (tâches en retard, stock bas, meilleur prix, olives à presser), dernières ventes | **API + MySQL** |
+| Calendrier | `/calendrier` | Calendrier mensuel des travaux, ajout de tâches par parcelle, liste des tâches à faire et en retard (signalées dans les alertes), repères saisonniers de l'olivier | **API + MySQL** |
 | Météo | `/meteo` | Prévisions sur 7 jours par région, conseils pour la récolte et les traitements (gel, pluie, vent fort, chaleur), météo du jour sur le tableau de bord | **API externe** Open-Meteo |
-| Verger | `/verger` | Liste des parcelles (superficie, variété, nombre d'oliviers, état), ajout, modification et suppression d'une parcelle | Démonstration |
-| Récoltes | `/recoltes` | Saisie d'une récolte, total de la saison, récolte par parcelle, historique filtrable | Démonstration |
-| Production d'huile | `/production` | Saisie d'un pressage au moulin, rendement calculé, historique, courbe d'évolution du rendement | Démonstration |
-| Stocks | `/stocks` | Stock d'huile par qualité, olives en attente du moulin, mouvements d'entrée et de sortie, oliviers par parcelle | Démonstration |
-| Marché et prix | `/marche` | Filtres région et qualité, tri, meilleure offre mise en avant, écart à la moyenne, bouton « Vendre » | Démonstration |
-| Ventes | `/ventes` | Formulaire pré-rempli depuis le marché, total calculé en direct, contrôle du stock, historique filtrable | Démonstration |
+| Verger | `/verger` | Liste des parcelles (superficie, variété, nombre d'oliviers, état), ajout, modification et suppression d'une parcelle | **API + MySQL** |
+| Récoltes | `/recoltes` | Saisie d'une récolte, total de la saison, récolte par parcelle, historique filtrable | **API + MySQL** |
+| Production d'huile | `/production` | Saisie d'un pressage au moulin, rendement calculé, historique, courbe d'évolution du rendement | **API + MySQL** |
+| Stocks | `/stocks` | Stock d'huile par qualité, olives en attente du moulin, mouvements d'entrée et de sortie, oliviers par parcelle | **API + MySQL** |
+| Marché et prix | `/marche` | Filtres région et qualité, tri, meilleure offre mise en avant, écart à la moyenne, bouton « Vendre » | **API + MySQL** |
+| Ventes | `/ventes` | Formulaire pré-rempli depuis le marché, total calculé en direct, contrôle du stock, historique filtrable | **API + MySQL** |
 | Simulateur de rentabilité | `/simulateur` | Estimation du bénéfice à partir de la récolte, du rendement, du prix du marché et des coûts ; prix minimum de vente et scénarios de prix | Calcul en direct |
 | Profil et paramètres | `/profil` | Modifier ses informations, changer son mot de passe, choisir la langue et le mode sombre | **API + MySQL** |
 | Charte graphique | `/charte` | Couleurs, typographie, boutons, champs, badges, alertes et icônes utilisés dans l'application | Statique |
+| Page introuvable | toute autre adresse | Page 404 avec retour à l'accueil ou au tableau de bord | Statique |
 
 La page Météo appelle l'API publique Open-Meteo (gratuite, sans clé) depuis le navigateur ; le jeton de connexion n'est envoyé qu'à notre propre API.
 
-Les données « Démonstration » sont gardées en mémoire par `DataService` (`frontend/src/app/core/data.service.ts`) et réinitialisées au rechargement : elles simulent une API, avec un court temps de chargement affiché en squelettes.
+`DataService` (`frontend/src/app/core/data.service.ts`) charge toutes les listes de l'utilisateur connecté en parallèle dès la connexion, puis garde les données dans des signaux : les stocks, totaux et alertes se recalculent seuls après chaque ajout ou modification. Pendant le chargement, les pages affichent des squelettes ; si l'API ne répond pas, un message propose de réessayer. Seul l'historique des prix sur 6 mois (courbe du tableau de bord) reste une donnée fixe indicative.
 
 ### Fonctionnalités du backend (API Express + MySQL)
 
-Quatre fonctionnalités sont développées côté serveur, dans `backend/src/routes/auth.js` :
+Le backend gère les comptes (`backend/src/routes/auth.js`) et toutes les données de l'exploitation (un fichier par table dans `backend/src/routes/`) :
 
 | Fonctionnalité | Route | Fonctionnement |
 |---|---|---|
@@ -174,6 +187,14 @@ Quatre fonctionnalités sont développées côté serveur, dans `backend/src/rou
 | **Connexion** | `POST /api/auth/login` | Retrouve le compte par son e-mail, compare le mot de passe saisi avec l'empreinte bcrypt, puis renvoie un jeton JWT valable 7 jours (erreur 401 si l'e-mail ou le mot de passe est incorrect) |
 | **Modification du profil** | `PUT /api/auth/me` | Jeton requis. Vérifie les champs obligatoires et l'e-mail, refuse un e-mail déjà utilisé par un autre compte (erreur 409), puis met à jour la table `users` |
 | **Changement de mot de passe** | `PUT /api/auth/password` | Jeton requis. Vérifie le mot de passe actuel avec bcrypt, exige 8 caractères minimum pour le nouveau, puis enregistre sa nouvelle empreinte bcrypt |
+| **Parcelles** | `/api/parcelles` | Lister, ajouter, modifier, supprimer ; région, variété et état contrôlés |
+| **Récoltes** | `/api/recoltes` | Lister et ajouter ; la parcelle doit appartenir à l'agriculteur |
+| **Pressages** | `/api/pressages` | Lister et ajouter ; refusé si les olives demandées dépassent le stock (récolté − déjà pressé) |
+| **Offres du marché** | `/api/offres` | Offres des acheteurs, communes à tous les agriculteurs |
+| **Ventes** | `/api/ventes` | Lister et ajouter ; refusée si la quantité dépasse le stock d'huile de la qualité vendue |
+| **Tâches** | `/api/taches` | Lister, ajouter, cocher comme faite, supprimer |
+
+Chaque route vérifie les données reçues (et renvoie un message clair en cas d'erreur 400), filtre toujours sur l'utilisateur connecté (un agriculteur ne voit jamais les données d'un autre) et répond 404 si l'élément n'existe pas. Les contrôles de stock sont faits à la fois dans l'interface et sur le serveur.
 
 Côté frontend, le jeton est gardé dans le navigateur et ajouté automatiquement à chaque requête par un intercepteur (`Authorization: Bearer …`). Les pages de l'espace agriculteur sont protégées par un garde de route : sans connexion, l'utilisateur est renvoyé vers `/connexion`.
 Les mots de passe ne sont jamais stockés en clair et les requêtes SQL sont paramétrées (protection contre les injections SQL).
@@ -182,7 +203,38 @@ Qualité de l'interface :
 - responsive : ordinateur (menu latéral), tablette 768 px (barre d'icônes), mobile 390 px (barre de navigation en bas, tableaux transformés en cartes) ;
 - mode sombre et version arabe de droite à gauche (bouton FR / ع et lune dans la barre du haut) ;
 - accessibilité : contrastes WCAG AA vérifiés, focus clavier visible, libellés sur tous les champs, badges et alertes avec texte + icône (jamais la couleur seule) ;
-- compatibilité navigateurs : application testée sur Microsoft Edge et Opera, toutes les pages fonctionnent correctement.
+- compatibilité navigateurs : application testée sur Microsoft Edge et Opera, toutes les pages fonctionnent correctement ;
+- animations légères : transition en fondu entre les pages (View Transitions d'Angular) et apparition douce des cartes, désactivées si le système demande de réduire les animations ;
+- états de chargement et d'erreur : squelettes pendant le chargement, boutons désactivés pendant l'envoi, messages d'erreur de l'API affichés dans des notifications.
+
+## Qualité du code et performances
+
+| Outil | Commande (dans `frontend/`) | Rôle |
+|---|---|---|
+| **ESLint** (angular-eslint) | `npm run lint` | Règles TypeScript et Angular, plus l'accessibilité des templates ; le projet passe sans erreur |
+| **Prettier** | `npm run format` | Mise en forme identique dans tous les fichiers (`.prettierrc`) ; `npm run format:check` vérifie sans modifier |
+
+Optimisations :
+- chargement à la demande (lazy loading) : chaque page est un fichier JavaScript séparé, téléchargé seulement quand on l'ouvre ;
+- aucune image lourde : logo, illustrations et icônes sont des SVG dessinés dans le code ;
+- polices hébergées avec l'application, aucun appel à un service externe au démarrage ;
+- les prévisions météo sont gardées 30 minutes en mémoire pour éviter les appels répétés.
+
+Score **Lighthouse** de la version de production (`ng build`), mesuré en mode mobile :
+
+| Page | Performance | Accessibilité | Bonnes pratiques | SEO |
+|---|---|---|---|---|
+| Accueil | 93 | 100 | 100 | 100 |
+| Connexion | 94 | 100 | 100 | 100 |
+
+## Répartition du travail
+
+| Membre | Fonctionnalités |
+|---|---|
+| **BEN MIMOUN Rayen** | Initialisation du projet, charte graphique, authentification (backend et pages), accueil, verger, récoltes, production, stocks, profil, mot de passe oublié, page charte, météo, calendrier, simulateur, API des données, qualité du code, README |
+| **BEN TAMARZIZT Mahdi** | Tableau de bord, marché et prix, ventes |
+
+Chaque fonctionnalité a sa branche et sa Pull Request : l'historique est visible dans l'onglet **Pull requests** du dépôt.
 
 ## Méthode de travail
 
@@ -209,8 +261,10 @@ frontend/src/
   app/shared/ui/   composants réutilisables : icon, kpi-card, badge, alert, field, modal, toast,
                    empty-state, charts (courbe, histogramme), brand (logo, illustrations)
   app/pages/       une page par dossier (accueil, auth, dashboard, calendrier, meteo, verger, recoltes, production,
-                   stocks, marche, ventes, simulateur, profil, charte)
-backend/src/       server.js, db.js, routes/auth.js, middleware/auth.js
+                   stocks, marche, ventes, simulateur, profil, charte, introuvable)
+backend/src/       server.js, db.js, outils.js (validation), middleware/auth.js (jeton)
+backend/src/routes auth, parcelles, recoltes, pressages, offres, ventes, taches
+backend/scripts/   seed.js (compte de démonstration)
 database/          schema.sql
 ```
 
@@ -223,17 +277,23 @@ database/          schema.sql
 | GET | `/api/auth/me` | Utilisateur connecté (jeton requis) |
 | PUT | `/api/auth/me` | Modifier ses informations (jeton requis, utilisée par la page Profil) |
 | PUT | `/api/auth/password` | Changer son mot de passe (jeton requis, utilisée par la page Profil) |
+| GET, POST | `/api/parcelles` | Lister / ajouter des parcelles |
+| PUT, DELETE | `/api/parcelles/:id` | Modifier / supprimer une parcelle |
+| GET, POST | `/api/recoltes` | Lister / ajouter des récoltes |
+| GET, POST | `/api/pressages` | Lister / ajouter des pressages |
+| GET | `/api/offres` | Offres des acheteurs |
+| GET, POST | `/api/ventes` | Lister / ajouter des ventes |
+| GET, POST | `/api/taches` | Lister / ajouter des tâches |
+| PATCH, DELETE | `/api/taches/:id` | Cocher comme faite / supprimer une tâche |
 | GET | `/api/health` | État de l'API et de la base |
+
+Toutes les routes sauf `register`, `login` et `health` demandent le jeton (`Authorization: Bearer …`).
 
 ## Prochaines étapes
 
-Toutes les pages sont réalisées côté frontend. La suite consiste à relier au backend les pages qui utilisent encore des données de démonstration, une branche par fonctionnalité :
-
-| Fonctionnalité | À faire |
+| Amélioration | À faire |
 |---|---|
-| Verger | Table `parcelles` et routes API pour lister, ajouter, modifier et supprimer les parcelles |
-| Récoltes | Table `recoltes` et routes API pour enregistrer et consulter les récoltes |
-| Production d'huile | Table `pressages` et routes API pour enregistrer les passages au moulin |
-| Stocks | Calcul du stock à partir des récoltes, des pressages et des ventes enregistrés en base |
-| Marché et ventes | Tables `offres` et `ventes` et routes API correspondantes |
 | Mot de passe oublié | Envoi réel d'un e-mail avec un lien de réinitialisation |
+| Ventes | Changer le statut d'une vente (en attente, livrée, payée) depuis l'historique |
+| Historique des prix | Table des prix mensuels alimentée par les offres, à la place des valeurs fixes |
+| Déploiement | Mettre en ligne l'API, la base et le frontend pour une démonstration publique |
