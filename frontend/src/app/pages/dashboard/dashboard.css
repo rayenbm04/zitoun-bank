@@ -2,6 +2,14 @@
 .salut { font-size: 1.0625rem; color: var(--text-strong); }
 .date { display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: var(--fs-sm); font-weight: 600; }
 .date app-icon { width: 16px; height: 16px; color: var(--icon); }
+.intro-droite { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.meteo-mini {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 4px 14px; border-radius: 999px;
+  background: var(--surface-2); color: var(--text-strong); font-size: var(--fs-sm); font-weight: 600; text-decoration: none;
+}
+.meteo-mini .num { font-weight: 700; }
+.meteo-mini app-icon { width: 18px; height: 18px; color: var(--accent-text); }
+.meteo-mini:hover { background: var(--surface-sunk); }
 .zone { margin-top: 24px; }
 .alertes { display: flex; flex-direction: column; gap: 10px; }
 .alertes .txt { display: block; font-size: 0.875rem; margin-top: 2px; opacity: 0.92; }

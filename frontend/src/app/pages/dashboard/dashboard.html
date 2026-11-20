@@ -1,6 +1,13 @@
 <div class="intro">
   <p class="salut">{{ p.t('db.bonjour') }} {{ auth.user()?.prenom }}. {{ p.t('db.intro') }}</p>
-  <p class="date"><app-icon name="calendrier" />{{ aujourdhui() }}</p>
+  <div class="intro-droite">
+    @if (meteo(); as m) {
+      <a routerLink="/meteo" class="meteo-mini" [attr.aria-label]="'Météo à ' + m.region + ' : ' + temps(m.maintenant.code).libelle + ', ' + arrondi(m.maintenant.temperature) + ' °C'">
+        <app-icon [name]="temps(m.maintenant.code).icone" /><span class="num">{{ arrondi(m.maintenant.temperature) }} °C</span>{{ m.region }}
+      </a>
+    }
+    <p class="date"><app-icon name="calendrier" />{{ aujourdhui() }}</p>
+  </div>
 </div>
 
 <section class="kpi-grid" aria-label="Indicateurs clés">
