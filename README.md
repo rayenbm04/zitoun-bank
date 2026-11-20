@@ -224,17 +224,8 @@ Score **Lighthouse** de la version de production (`ng build`), mesuré en mode m
 
 | Page | Performance | Accessibilité | Bonnes pratiques | SEO |
 |---|---|---|---|---|
-| Accueil | 93 | 100 | 100 | 100 |
+| Accueil | 92 | 100 | 100 | 100 |
 | Connexion | 94 | 100 | 100 | 100 |
-
-## Répartition du travail
-
-| Membre | Fonctionnalités |
-|---|---|
-| **BEN MIMOUN Rayen** | Initialisation du projet, charte graphique, authentification (backend et pages), accueil, verger, récoltes, production, stocks, profil, mot de passe oublié, page charte, météo, calendrier, simulateur, API des données, qualité du code, README |
-| **BEN TAMARZIZT Mahdi** | Tableau de bord, marché et prix, ventes |
-
-Chaque fonctionnalité a sa branche et sa Pull Request : l'historique est visible dans l'onglet **Pull requests** du dépôt.
 
 ## Méthode de travail
 
