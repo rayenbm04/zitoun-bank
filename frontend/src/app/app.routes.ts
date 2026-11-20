@@ -26,5 +26,5 @@ export const routes: Routes = [
       { path: 'profil', title: t('Profil et paramètres'), data: { titre: 'nav.profil' }, loadComponent: () => import('./pages/profil/profil').then(m => m.Profil) },
     ],
   },
-  { path: '**', redirectTo: '' },
+  { path: '**', title: t('Page introuvable'), loadComponent: () => import('./pages/introuvable/introuvable').then(m => m.Introuvable) },
 ];
