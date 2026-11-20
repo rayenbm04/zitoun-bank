@@ -15,6 +15,7 @@ export const routes: Routes = [
       { path: 'tableau-de-bord', title: t('Tableau de bord'), data: { titre: 'nav.dashboard' }, loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard) },
       { path: 'verger', title: t('Verger'), data: { titre: 'nav.verger' }, loadComponent: () => import('./pages/verger/verger').then(m => m.Verger) },
       { path: 'recoltes', title: t('Récoltes'), data: { titre: 'nav.recoltes' }, loadComponent: () => import('./pages/recoltes/recoltes').then(m => m.Recoltes) },
+      { path: 'production', title: t('Production d’huile'), data: { titre: 'nav.production' }, loadComponent: () => import('./pages/production/production').then(m => m.Production) },
       { path: 'marche', title: t('Marché et prix'), data: { titre: 'nav.marche' }, loadComponent: () => import('./pages/marche/marche').then(m => m.Marche) },
       { path: 'ventes', title: t('Ventes'), data: { titre: 'nav.ventes' }, loadComponent: () => import('./pages/ventes/ventes').then(m => m.Ventes) },
     ],
