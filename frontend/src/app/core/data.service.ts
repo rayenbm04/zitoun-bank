@@ -164,7 +164,7 @@ export class DataService {
     if (this.stockOlivesKg() > SEUIL_OLIVES_KG) {
       liste.push({
         id: 'olives', ton: 'info', icone: 'horloge', titre: 'al.olives', texte: 'al.olives.txt',
-        vars: { v: this.stockOlivesKg().toLocaleString('fr-FR') },
+        vars: { v: this.stockOlivesKg().toLocaleString('fr-FR') }, lien: '/production', action: 'db.saisir',
       });
     }
     const aujourdHui = Date.now();
