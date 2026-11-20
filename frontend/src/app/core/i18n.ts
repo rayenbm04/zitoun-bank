@@ -8,6 +8,7 @@ export const TEXTES: Record<string, { fr: string; ar: string }> = {
   'nav.stocks': { fr: 'Stocks', ar: 'المخزون' },
   'nav.marche': { fr: 'Marché et prix', ar: 'السوق والأسعار' },
   'nav.ventes': { fr: 'Ventes', ar: 'المبيعات' },
+  'nav.simulateur': { fr: 'Simulateur', ar: 'محاكي المردودية' },
   'nav.profil': { fr: 'Profil', ar: 'الملف الشخصي' },
   'nav.plus': { fr: 'Plus', ar: 'المزيد' },
   'nav.principal': { fr: 'Navigation principale', ar: 'القائمة الرئيسية' },

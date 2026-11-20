@@ -156,6 +156,7 @@ Le parcours principal est : **Accueil › Se connecter › Tableau de bord › M
 | Stocks | `/stocks` | Stock d'huile par qualité, olives en attente du moulin, mouvements d'entrée et de sortie, oliviers par parcelle | Démonstration |
 | Marché et prix | `/marche` | Filtres région et qualité, tri, meilleure offre mise en avant, écart à la moyenne, bouton « Vendre » | Démonstration |
 | Ventes | `/ventes` | Formulaire pré-rempli depuis le marché, total calculé en direct, contrôle du stock, historique filtrable | Démonstration |
+| Simulateur de rentabilité | `/simulateur` | Estimation du bénéfice à partir de la récolte, du rendement, du prix du marché et des coûts ; prix minimum de vente et scénarios de prix | Calcul en direct |
 | Profil et paramètres | `/profil` | Modifier ses informations, changer son mot de passe, choisir la langue et le mode sombre | **API + MySQL** |
 | Charte graphique | `/charte` | Couleurs, typographie, boutons, champs, badges, alertes et icônes utilisés dans l'application | Statique |
 
@@ -208,7 +209,7 @@ frontend/src/
   app/shared/ui/   composants réutilisables : icon, kpi-card, badge, alert, field, modal, toast,
                    empty-state, charts (courbe, histogramme), brand (logo, illustrations)
   app/pages/       une page par dossier (accueil, auth, dashboard, calendrier, meteo, verger, recoltes, production,
-                   stocks, marche, ventes, profil, charte)
+                   stocks, marche, ventes, simulateur, profil, charte)
 backend/src/       server.js, db.js, routes/auth.js, middleware/auth.js
 database/          schema.sql
 ```

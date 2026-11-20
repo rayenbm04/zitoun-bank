@@ -1,0 +1,135 @@
+<div class="page-head">
+  <p>Estimez ce que vous rapportera votre récolte avant de la presser et de la vendre. Les valeurs de départ viennent de vos données et des offres du marché ; modifiez-les librement.</p>
+  <div class="actions">
+    <button type="button" class="btn btn-outline btn-sm" (click)="reinitialiser()"><app-icon name="retour" />Revenir à mes données</button>
+  </div>
+</div>
+
+<div class="mise-en-page">
+  <form class="card" [formGroup]="form" novalidate aria-labelledby="t-hyp" (submit)="$event.preventDefault()">
+    <div class="card-head"><h2 id="t-hyp">Vos hypothèses</h2></div>
+
+    <fieldset>
+      <legend>Production</legend>
+      <div class="form-grid">
+        <app-field label="Olives à presser" for="s-olives" [error]="erreur('olivesKg')" [hint]="'Récolte de la saison : ' + p.nombre(data.totalRecolteKg()) + ' kg'">
+          <div class="input-affix">
+            <input id="s-olives" type="number" min="1" step="100" formControlName="olivesKg" inputmode="numeric" aria-describedby="s-olives-msg" />
+            <span class="affix">kg</span>
+          </div>
+        </app-field>
+        <app-field label="Rendement" for="s-rend" [error]="erreur('rendement')" [hint]="'Votre moyenne : ' + p.nombre(data.rendementMoyen(), 1) + ' %'">
+          <div class="input-affix">
+            <input id="s-rend" type="number" min="5" max="40" step="0.5" formControlName="rendement" inputmode="decimal" aria-describedby="s-rend-msg" />
+            <span class="affix">%</span>
+          </div>
+        </app-field>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Vente</legend>
+      <div class="qualites" role="radiogroup" aria-label="Qualité de l’huile">
+        @for (q of qualites; track q) {
+          <label class="radio-chip">
+            <input type="radio" formControlName="qualite" [value]="q" />
+            <span class="badge" [class]="'q-' + $index">{{ q }}</span>
+          </label>
+        }
+      </div>
+      <app-field label="Prix de vente" for="s-prix" [error]="erreur('prixParL')"
+                 [hint]="meilleurPrix() ? 'Meilleure offre : ' + p.nombre(meilleurPrix(), 2) + ' TND/L · moyenne ' + p.nombre(prixMoyen(), 2) + ' TND/L' : 'Aucune offre pour cette qualité'">
+        <div class="input-affix">
+          <input id="s-prix" type="number" min="0.1" step="0.1" formControlName="prixParL" inputmode="decimal" aria-describedby="s-prix-msg" />
+          <span class="affix">TND/L</span>
+        </div>
+      </app-field>
+    </fieldset>
+
+    <fieldset>
+      <legend>Coûts</legend>
+      <div class="form-grid">
+        <app-field label="Cueillette" for="s-cueil" [error]="erreur('cueillette')" hint="Main-d’œuvre, par kg d’olives">
+          <div class="input-affix">
+            <input id="s-cueil" type="number" min="0" step="0.01" formControlName="cueillette" inputmode="decimal" aria-describedby="s-cueil-msg" />
+            <span class="affix">TND/kg</span>
+          </div>
+        </app-field>
+        <app-field label="Moulin" for="s-moulin" [error]="erreur('moulin')" hint="Trituration, par kg d’olives">
+          <div class="input-affix">
+            <input id="s-moulin" type="number" min="0" step="0.01" formControlName="moulin" inputmode="decimal" aria-describedby="s-moulin-msg" />
+            <span class="affix">TND/kg</span>
+          </div>
+        </app-field>
+        <app-field label="Transport" for="s-transp" [error]="erreur('transport')" hint="Montant total">
+          <div class="input-affix">
+            <input id="s-transp" type="number" min="0" step="10" formControlName="transport" inputmode="numeric" aria-describedby="s-transp-msg" />
+            <span class="affix">TND</span>
+          </div>
+        </app-field>
+        <app-field label="Autres charges" for="s-autres" [error]="erreur('autres')" hint="Bidons, analyses…">
+          <div class="input-affix">
+            <input id="s-autres" type="number" min="0" step="10" formControlName="autres" inputmode="numeric" aria-describedby="s-autres-msg" />
+            <span class="affix">TND</span>
+          </div>
+        </app-field>
+      </div>
+    </fieldset>
+  </form>
+
+  <section class="card resultat" aria-labelledby="t-res" aria-live="polite">
+    <div class="card-head"><h2 id="t-res">Résultat estimé</h2></div>
+    @if (!formuleValide()) {
+      <app-alert tone="warn" title="Hypothèses à corriger">Certaines valeurs sont hors limites : le résultat ne peut pas être calculé.</app-alert>
+    } @else {
+      @let r = resultat();
+      <p class="libelle">{{ r.benefice >= 0 ? 'Bénéfice' : 'Perte' }}</p>
+      <p class="chiffre" [class.perte]="r.benefice < 0"><span class="num">{{ p.nombre(r.benefice) }}</span><small>TND</small></p>
+      <p class="muted">Marge de {{ p.nombre(r.marge, 1) }} % sur un chiffre d’affaires de {{ p.nombre(r.chiffreAffaires) }} TND.</p>
+
+      <div class="repartition" role="img" [attr.aria-label]="'Répartition du chiffre d’affaires entre les coûts et le bénéfice'">
+        @for (s of r.segments; track s.nom) { <span [style.width.%]="s.part" [style.background]="s.couleur"></span> }
+      </div>
+      <ul class="legende">
+        @for (s of r.segments; track s.nom) {
+          <li><i [style.background]="s.couleur" aria-hidden="true"></i>{{ s.nom }}<span class="num">{{ p.nombre(s.montant) }} TND</span></li>
+        }
+      </ul>
+
+      <dl class="dl chiffres">
+        <dt>Huile obtenue</dt><dd>{{ p.nombre(r.huileL) }} L</dd>
+        <dt>Chiffre d’affaires</dt><dd>{{ p.nombre(r.chiffreAffaires) }} TND</dd>
+        <dt>Coûts totaux</dt><dd>{{ p.nombre(r.coutTotal) }} TND</dd>
+        <dt>Coût de revient</dt><dd>{{ p.nombre(r.coutParL, 2) }} TND/L</dd>
+      </dl>
+      <app-alert [tone]="r.benefice >= 0 ? 'ok' : 'danger'" icon="etiquette" title="Prix minimum pour ne pas perdre d’argent" [stacked]="true">
+        {{ p.nombre(r.coutParL, 2) }} TND/L. En dessous, chaque litre vendu coûte plus qu’il ne rapporte.
+      </app-alert>
+    }
+  </section>
+</div>
+
+@if (formuleValide()) {
+  <section class="card card-flush" style="margin-top: 24px" aria-labelledby="t-scen">
+    <div class="card-head">
+      <div><h2 id="t-scen">Et si le prix change ?</h2><p>Bénéfice selon le prix de vente, à coûts identiques</p></div>
+      <a routerLink="/marche" class="btn btn-ghost btn-sm">Voir les offres du marché<app-icon name="chevron-fin" /></a>
+    </div>
+    <div class="table-wrap" style="padding: 0 24px 20px">
+      <table class="table">
+        <thead><tr><th scope="col">Variation du prix</th><th scope="col" class="t-num">Prix de vente</th><th scope="col" class="t-num">Bénéfice</th></tr></thead>
+        <tbody>
+          @for (s of resultat().scenarios; track s.pct) {
+            <tr [class.actuel]="s.pct === 0">
+              <td data-label="Variation du prix" class="t-main">{{ variation(s.pct) }}</td>
+              <td data-label="Prix de vente" class="t-num">{{ p.nombre(s.prix, 2) }} TND/L</td>
+              <td data-label="Bénéfice" class="t-num strong" [class.negatif]="s.benefice < 0">{{ p.nombre(s.benefice) }} TND</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+}
+
+<p class="note fin"><app-icon name="info" />Estimation indicative : les coûts réels dépendent du moulin, de la main-d’œuvre et de la qualité finale de l’huile.</p>
