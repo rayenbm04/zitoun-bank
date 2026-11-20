@@ -20,7 +20,7 @@
           <span class="affix">kg</span>
         </div>
       </app-field>
-      <div class="form-submit"><button type="submit" class="btn btn-secondary"><app-icon name="plus" />Enregistrer la récolte</button></div>
+      <div class="form-submit"><button type="submit" class="btn btn-secondary" [disabled]="envoi()"><app-icon name="plus" />Enregistrer la récolte</button></div>
     </form>
   } @else {
     <app-empty title="Ajoutez d’abord une parcelle" text="Une récolte est toujours rattachée à une parcelle du verger." icon="arbre" />

@@ -30,3 +30,15 @@ CREATE TABLE IF NOT EXISTS parcelles (
   KEY idx_parcelles_user (user_id),
   CONSTRAINT fk_parcelles_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS recoltes (
+  id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id     INT UNSIGNED NOT NULL,
+  parcelle_id INT UNSIGNED NULL,
+  date        DATE         NOT NULL,
+  quantite_kg INT UNSIGNED NOT NULL,
+  PRIMARY KEY (id),
+  KEY idx_recoltes_user (user_id),
+  CONSTRAINT fk_recoltes_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+  CONSTRAINT fk_recoltes_parcelle FOREIGN KEY (parcelle_id) REFERENCES parcelles (id) ON DELETE SET NULL
+) ENGINE=InnoDB;
