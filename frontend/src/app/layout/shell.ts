@@ -46,7 +46,7 @@ import { Topbar } from './topbar';
   styles: `
     :host { display: flex; min-height: 100vh; }
     .principal { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-    .contenu { flex: 1; width: 100%; max-width: var(--content-max); padding: 32px 40px 64px; outline: none; }
+    .contenu { flex: 1; width: 100%; max-width: var(--content-max); padding: 32px 40px 64px; outline: none; view-transition-name: contenu; }
     .nav-bas { display: none; }
     .erreur-api { display: block; margin-bottom: 24px; }
     @media (max-width: 1100px) { .contenu { padding: 28px 28px 56px; } }
