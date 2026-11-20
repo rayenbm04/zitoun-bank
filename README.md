@@ -2,7 +2,7 @@
 
 Plateforme web qui accompagne les agriculteurs oléicoles, du verger à la vente.
 
-> **Projet en cours de développement.** Cette version contient 5 pages : accueil, connexion / inscription, tableau de bord, marché et ventes. Les autres fonctionnalités seront ajoutées progressivement (voir [Prochaines étapes](#prochaines-étapes)).
+> **Projet en cours de développement.** Toutes les pages de l'application sont réalisées. L'authentification et le profil utilisent déjà l'API et la base MySQL ; les autres pages fonctionnent avec des données de démonstration, qui seront remplacées progressivement par l'API (voir [Prochaines étapes](#prochaines-étapes)).
 
 | Dossier | Contenu |
 |---|---|
@@ -140,26 +140,35 @@ Règles pour éviter les conflits :
 
 ## Fonctionnalités développées
 
-Cinq pages dynamiques, qui forment le parcours principal : **Accueil › Se connecter › Tableau de bord › Marché et prix › Vendre**.
+Le parcours principal est : **Accueil › Se connecter › Tableau de bord › Marché et prix › Vendre**. Les autres pages couvrent le suivi de la production, du verger jusqu'au stock d'huile.
 
 | Page | Route | Ce qu'on peut faire | Données |
 |---|---|---|---|
 | Accueil | `/` | Présentation, fonctionnalités, étapes, à propos, formulaire de contact validé | Démonstration |
 | Authentification | `/connexion`, `/inscription` | Inscription avec validation en direct, connexion, affichage du mot de passe, erreurs sous les champs | **API + MySQL** |
+| Mot de passe oublié | `/mot-de-passe-oublie` | Saisie de l'e-mail validée, message de confirmation (envoi simulé) | Démonstration |
 | Tableau de bord | `/tableau-de-bord` | 4 indicateurs, courbe des prix, alertes (stock bas, meilleur prix, olives à presser), dernières ventes | Démonstration |
+| Verger | `/verger` | Liste des parcelles (superficie, variété, nombre d'oliviers, état), ajout, modification et suppression d'une parcelle | Démonstration |
+| Récoltes | `/recoltes` | Saisie d'une récolte, total de la saison, récolte par parcelle, historique filtrable | Démonstration |
+| Production d'huile | `/production` | Saisie d'un pressage au moulin, rendement calculé, historique, courbe d'évolution du rendement | Démonstration |
+| Stocks | `/stocks` | Stock d'huile par qualité, olives en attente du moulin, mouvements d'entrée et de sortie, oliviers par parcelle | Démonstration |
 | Marché et prix | `/marche` | Filtres région et qualité, tri, meilleure offre mise en avant, écart à la moyenne, bouton « Vendre » | Démonstration |
 | Ventes | `/ventes` | Formulaire pré-rempli depuis le marché, total calculé en direct, contrôle du stock, historique filtrable | Démonstration |
+| Profil et paramètres | `/profil` | Modifier ses informations, changer son mot de passe, choisir la langue et le mode sombre | **API + MySQL** |
+| Charte graphique | `/charte` | Couleurs, typographie, boutons, champs, badges, alertes et icônes utilisés dans l'application | Statique |
 
 Les données « Démonstration » sont gardées en mémoire par `DataService` (`frontend/src/app/core/data.service.ts`) et réinitialisées au rechargement : elles simulent une API, avec un court temps de chargement affiché en squelettes.
 
 ### Fonctionnalités du backend (API Express + MySQL)
 
-Deux fonctionnalités sont développées côté serveur, dans `backend/src/routes/auth.js` :
+Quatre fonctionnalités sont développées côté serveur, dans `backend/src/routes/auth.js` :
 
 | Fonctionnalité | Route | Fonctionnement |
 |---|---|---|
 | **Inscription** | `POST /api/auth/register` | Vérifie les champs (nom, prénom, e-mail valide, mot de passe de 8 caractères minimum), refuse un e-mail déjà utilisé (erreur 409), hache le mot de passe avec **bcrypt**, enregistre le compte dans la table `users`, puis renvoie un jeton de connexion **JWT** |
 | **Connexion** | `POST /api/auth/login` | Retrouve le compte par son e-mail, compare le mot de passe saisi avec l'empreinte bcrypt, puis renvoie un jeton JWT valable 7 jours (erreur 401 si l'e-mail ou le mot de passe est incorrect) |
+| **Modification du profil** | `PUT /api/auth/me` | Jeton requis. Vérifie les champs obligatoires et l'e-mail, refuse un e-mail déjà utilisé par un autre compte (erreur 409), puis met à jour la table `users` |
+| **Changement de mot de passe** | `PUT /api/auth/password` | Jeton requis. Vérifie le mot de passe actuel avec bcrypt, exige 8 caractères minimum pour le nouveau, puis enregistre sa nouvelle empreinte bcrypt |
 
 Côté frontend, le jeton est gardé dans le navigateur et ajouté automatiquement à chaque requête par un intercepteur (`Authorization: Bearer …`). Les pages de l'espace agriculteur sont protégées par un garde de route : sans connexion, l'utilisateur est renvoyé vers `/connexion`.
 Les mots de passe ne sont jamais stockés en clair et les requêtes SQL sont paramétrées (protection contre les injections SQL).
@@ -194,7 +203,8 @@ frontend/src/
   app/layout/      shell (mise en page), sidebar (menu latéral), topbar (barre du haut)
   app/shared/ui/   composants réutilisables : icon, kpi-card, badge, alert, field, modal, toast,
                    empty-state, charts (courbe, histogramme), brand (logo, illustrations)
-  app/pages/       une page par dossier (accueil, auth, dashboard, marche, ventes)
+  app/pages/       une page par dossier (accueil, auth, dashboard, verger, recoltes, production,
+                   stocks, marche, ventes, profil, charte)
 backend/src/       server.js, db.js, routes/auth.js, middleware/auth.js
 database/          schema.sql
 ```
@@ -206,20 +216,19 @@ database/          schema.sql
 | POST | `/api/auth/register` | Créer un compte |
 | POST | `/api/auth/login` | Se connecter (renvoie un jeton JWT) |
 | GET | `/api/auth/me` | Utilisateur connecté (jeton requis) |
-| PUT | `/api/auth/me` | Modifier ses informations (jeton requis, prévue pour la future page Profil) |
-| PUT | `/api/auth/password` | Changer son mot de passe (jeton requis, prévue pour la future page Profil) |
+| PUT | `/api/auth/me` | Modifier ses informations (jeton requis, utilisée par la page Profil) |
+| PUT | `/api/auth/password` | Changer son mot de passe (jeton requis, utilisée par la page Profil) |
 | GET | `/api/health` | État de l'API et de la base |
 
 ## Prochaines étapes
 
-Fonctionnalités prévues, chacune dans sa propre branche :
+Toutes les pages sont réalisées côté frontend. La suite consiste à relier au backend les pages qui utilisent encore des données de démonstration, une branche par fonctionnalité :
 
-| Fonctionnalité | Description |
+| Fonctionnalité | À faire |
 |---|---|
-| Verger | Gestion des parcelles et des oliviers (variété, nombre d'arbres, superficie) |
-| Récoltes | Enregistrement des récoltes d'olives par parcelle et par date |
-| Production d'huile | Suivi des passages au moulin : olives pressées, litres d'huile obtenus, rendement |
-| Stocks | Quantités d'olives et d'huile disponibles, avec alerte quand le stock est bas |
-| Profil | Modifier ses informations et son mot de passe (routes `PUT /api/auth/me` et `PUT /api/auth/password` déjà prêtes) |
-| Mot de passe oublié | Réinitialisation du mot de passe depuis la page de connexion |
-| Backend | Nouvelles tables MySQL et routes API pour ces données, afin de remplacer les données de démonstration |
+| Verger | Table `parcelles` et routes API pour lister, ajouter, modifier et supprimer les parcelles |
+| Récoltes | Table `recoltes` et routes API pour enregistrer et consulter les récoltes |
+| Production d'huile | Table `pressages` et routes API pour enregistrer les passages au moulin |
+| Stocks | Calcul du stock à partir des récoltes, des pressages et des ventes enregistrés en base |
+| Marché et ventes | Tables `offres` et `ventes` et routes API correspondantes |
+| Mot de passe oublié | Envoi réel d'un e-mail avec un lien de réinitialisation |
