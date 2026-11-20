@@ -1,11 +1,12 @@
 {
   "name": "zitoun-bank-backend",
   "version": "1.0.0",
-  "description": "API Zitoun Bank : inscription et connexion des agriculteurs",
+  "description": "API Zitoun Bank : comptes, verger, récoltes, production, ventes et calendrier des agriculteurs",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "node --watch src/server.js"
+    "dev": "node --watch src/server.js",
+    "seed": "node scripts/seed.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
