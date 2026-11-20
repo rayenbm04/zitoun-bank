@@ -64,6 +64,7 @@ export class Calendrier {
 
   readonly affiche = signal({ annee: new Date().getFullYear(), mois: new Date().getMonth() });
   readonly selection = signal(this.aujourdhui);
+  readonly envoi = signal(false);
 
   readonly form = this.fb.nonNullable.group({
     type: ['Récolte' as TypeTache, Validators.required],
@@ -144,14 +145,20 @@ export class Calendrier {
     return champ === 'date' ? 'Choisissez une date.' : '80 caractères au maximum.';
   }
 
-  ajouter(): void {
+  async ajouter(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
     const v = this.form.getRawValue();
     const parcelleId = Number(v.parcelleId) || null;
-    this.data.ajouterTache({ type: v.type, parcelleId, date: v.date, note: v.note.trim() });
+    this.envoi.set(true);
+    const erreur = await this.data.ajouterTache({ type: v.type, parcelleId, date: v.date, note: v.note.trim() });
+    this.envoi.set(false);
+    if (erreur) {
+      this.toast.afficher('Tâche non ajoutée', erreur, 'danger');
+      return;
+    }
     this.toast.afficher('Tâche ajoutée', `${v.type} · ${this.dateLongue(v.date)}`);
     const d = versDate(v.date);
     this.affiche.set({ annee: d.getFullYear(), mois: d.getMonth() });
@@ -160,12 +167,17 @@ export class Calendrier {
     this.form.controls.note.markAsUntouched();
   }
 
-  basculer(t: Tache): void {
-    this.data.basculerTache(t.id);
+  async basculer(t: Tache): Promise<void> {
+    const erreur = await this.data.basculerTache(t.id);
+    if (erreur) this.toast.afficher('Tâche non modifiée', erreur, 'danger');
   }
 
-  supprimer(t: Tache): void {
-    this.data.supprimerTache(t.id);
+  async supprimer(t: Tache): Promise<void> {
+    const erreur = await this.data.supprimerTache(t.id);
+    if (erreur) {
+      this.toast.afficher('Tâche non supprimée', erreur, 'danger');
+      return;
+    }
     this.toast.afficher('Tâche supprimée', `${t.type} · ${this.dateLongue(t.date)}`);
   }
 }

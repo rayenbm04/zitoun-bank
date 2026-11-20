@@ -13,10 +13,6 @@ function ilYa(jours: number): string {
   return d.toISOString().slice(0, 10);
 }
 
-function dans(jours: number): string {
-  return ilYa(-jours);
-}
-
 export function messageErreur(e: unknown): string {
   if (e instanceof HttpErrorResponse) {
     if (e.status === 0) return 'Le serveur ne répond pas. Vérifiez que l’API est lancée.';
@@ -46,7 +42,6 @@ export interface Alerte {
 export class DataService {
   private readonly http = inject(HttpClient);
   private readonly auth = inject(AuthService);
-  private nextId = 100;
 
   readonly chargement = signal(true);
   readonly erreurChargement = signal(false);
@@ -61,16 +56,7 @@ export class DataService {
 
   readonly ventes = signal<Vente[]>([]);
 
-  readonly taches = signal<Tache[]>([
-    { id: 1, date: ilYa(18), type: 'Traitement', parcelleId: 3, note: 'Cuivre contre l’œil de paon', faite: true },
-    { id: 2, date: ilYa(8), type: 'Récolte', parcelleId: 3, note: '', faite: true },
-    { id: 3, date: ilYa(3), type: 'Labour', parcelleId: 1, note: 'Désherber au pied des arbres', faite: false },
-    { id: 4, date: dans(1), type: 'Récolte', parcelleId: 1, note: 'Prévoir 4 ouvriers et les filets', faite: false },
-    { id: 5, date: dans(4), type: 'Récolte', parcelleId: 2, note: '', faite: false },
-    { id: 6, date: dans(9), type: 'Traitement', parcelleId: 2, note: 'Traitement au cuivre après la récolte', faite: false },
-    { id: 7, date: dans(16), type: 'Fertilisation', parcelleId: null, note: 'Commander le fumier', faite: false },
-    { id: 8, date: dans(40), type: 'Taille', parcelleId: 1, note: '', faite: false },
-  ]);
+  readonly taches = signal<Tache[]>([]);
 
   readonly historiquePrix = signal<PointPrix[]>(
     [
@@ -102,6 +88,7 @@ export class DataService {
       pressages: this.http.get<Pressage[]>(`${API_URL}/pressages`),
       offres: this.http.get<Offre[]>(`${API_URL}/offres`),
       ventes: this.http.get<Vente[]>(`${API_URL}/ventes`),
+      taches: this.http.get<Tache[]>(`${API_URL}/taches`),
     }).subscribe({
       next: d => {
         this.parcelles.set(d.parcelles);
@@ -109,6 +96,7 @@ export class DataService {
         this.pressages.set(d.pressages);
         this.offres.set(d.offres);
         this.ventes.set(d.ventes);
+        this.taches.set(d.taches);
         this.chargement.set(false);
       },
       error: () => {
@@ -124,6 +112,7 @@ export class DataService {
     this.pressages.set([]);
     this.offres.set([]);
     this.ventes.set([]);
+    this.taches.set([]);
   }
 
   readonly superficieTotale = computed(() => this.parcelles().reduce((s, p) => s + p.superficieHa, 0));
@@ -259,6 +248,7 @@ export class DataService {
       await firstValueFrom(this.http.delete(`${API_URL}/parcelles/${id}`));
       this.parcelles.update(list => list.filter(p => p.id !== id));
       this.recoltes.update(list => list.map(r => (r.parcelleId === id ? { ...r, parcelleId: null } : r)));
+      this.taches.update(list => list.map(t => (t.parcelleId === id ? { ...t, parcelleId: null } : t)));
       return null;
     } catch (e) {
       return messageErreur(e);
@@ -275,16 +265,37 @@ export class DataService {
     }
   }
 
-  ajouterTache(t: Omit<Tache, 'id' | 'faite'>): void {
-    this.taches.update(list => [...list, { ...t, id: this.nextId++, faite: false }]);
+  async ajouterTache(t: Omit<Tache, 'id' | 'faite'>): Promise<string | null> {
+    try {
+      const enregistree = await firstValueFrom(this.http.post<Tache>(`${API_URL}/taches`, t));
+      this.taches.update(list => [...list, enregistree]);
+      return null;
+    } catch (e) {
+      return messageErreur(e);
+    }
   }
 
-  basculerTache(id: number): void {
+  async basculerTache(id: number): Promise<string | null> {
+    const tache = this.taches().find(t => t.id === id);
+    if (!tache) return null;
     this.taches.update(list => list.map(t => (t.id === id ? { ...t, faite: !t.faite } : t)));
+    try {
+      await firstValueFrom(this.http.patch<Tache>(`${API_URL}/taches/${id}`, { faite: !tache.faite }));
+      return null;
+    } catch (e) {
+      this.taches.update(list => list.map(t => (t.id === id ? { ...t, faite: tache.faite } : t)));
+      return messageErreur(e);
+    }
   }
 
-  supprimerTache(id: number): void {
-    this.taches.update(list => list.filter(t => t.id !== id));
+  async supprimerTache(id: number): Promise<string | null> {
+    try {
+      await firstValueFrom(this.http.delete(`${API_URL}/taches/${id}`));
+      this.taches.update(list => list.filter(t => t.id !== id));
+      return null;
+    } catch (e) {
+      return messageErreur(e);
+    }
   }
 
   async ajouterPressage(p: Omit<Pressage, 'id'>): Promise<string | null> {

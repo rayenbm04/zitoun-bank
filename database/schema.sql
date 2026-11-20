@@ -94,3 +94,17 @@ CREATE TABLE IF NOT EXISTS ventes (
   KEY idx_ventes_user (user_id),
   CONSTRAINT fk_ventes_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS taches (
+  id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id     INT UNSIGNED NOT NULL,
+  parcelle_id INT UNSIGNED NULL,
+  date        DATE         NOT NULL,
+  type        VARCHAR(20)  NOT NULL,
+  note        VARCHAR(80)  NOT NULL DEFAULT '',
+  faite       TINYINT(1)   NOT NULL DEFAULT 0,
+  PRIMARY KEY (id),
+  KEY idx_taches_user (user_id),
+  CONSTRAINT fk_taches_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+  CONSTRAINT fk_taches_parcelle FOREIGN KEY (parcelle_id) REFERENCES parcelles (id) ON DELETE SET NULL
+) ENGINE=InnoDB;
