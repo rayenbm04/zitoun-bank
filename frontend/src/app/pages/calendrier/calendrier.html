@@ -1,0 +1,152 @@
+<div class="page-head">
+  <p>Planifiez les travaux de chaque parcelle et cochez-les une fois faits. Les tâches en retard apparaissent aussi dans les alertes du tableau de bord.</p>
+</div>
+
+<ng-template #ligneTache let-t let-avecDate="avecDate">
+  <li class="tache" [class.faite]="t.faite">
+    <input type="checkbox" [id]="'tache-' + t.id" [checked]="t.faite" (change)="basculer(t)" />
+    <label [for]="'tache-' + t.id">
+      <span class="type"><i class="pastille" [class]="classe(t.type)" aria-hidden="true"></i>{{ t.type }}</span>
+      <span class="meta">
+        @if (avecDate) { <span class="num">{{ p.date(t.date) }}</span> · }
+        {{ parcelle(t) }}@if (t.note) { · {{ t.note }} }
+      </span>
+    </label>
+    <button type="button" class="btn btn-ghost btn-icon btn-sm" (click)="supprimer(t)" [attr.aria-label]="'Supprimer la tâche ' + t.type + ' du ' + p.date(t.date)">
+      <app-icon name="corbeille" />
+    </button>
+  </li>
+</ng-template>
+
+<div class="grid-main">
+  <section class="card" aria-labelledby="t-mois">
+    <div class="card-head entete-mois">
+      <h2 id="t-mois" aria-live="polite">{{ titreMois() }}</h2>
+      <div class="nav-mois">
+        <button type="button" class="btn btn-outline btn-sm" (click)="revenirAujourdhui()">Aujourd’hui</button>
+        <button type="button" class="btn btn-ghost btn-icon btn-sm" (click)="changerMois(-1)" aria-label="Mois précédent"><app-icon name="chevron-fin" class="precedent" /></button>
+        <button type="button" class="btn btn-ghost btn-icon btn-sm" (click)="changerMois(1)" aria-label="Mois suivant"><app-icon name="chevron-fin" /></button>
+      </div>
+    </div>
+
+    <div class="grille">
+      <div class="ligne-jours" aria-hidden="true">
+        @for (j of joursSemaine; track j) {
+          <span class="jour-sem"><abbr [title]="j">{{ j.charAt(0).toUpperCase() }}</abbr></span>
+        }
+      </div>
+      <div class="cases">
+        @for (c of cases(); track $index) {
+          @if (c) {
+            <button type="button" class="case"
+                    [class.aujourdhui]="c.iso === aujourdhui" [attr.aria-pressed]="c.iso === selection()"
+                    [attr.aria-label]="libelleCase(c)" (click)="choisir(c.iso)">
+              <span class="num">{{ c.jour }}</span>
+              @if (c.taches.length) {
+                <span class="points" aria-hidden="true">
+                  @for (t of c.taches.slice(0, 3); track t.id) { <i class="pastille" [class]="classe(t.type)" [class.faite]="t.faite"></i> }
+                </span>
+              }
+            </button>
+          } @else {
+            <span class="case vide" aria-hidden="true"></span>
+          }
+        }
+      </div>
+    </div>
+
+    <ul class="legende" aria-label="Légende">
+      @for (t of types; track t) { <li><i class="pastille" [class]="classe(t)" aria-hidden="true"></i>{{ t }}</li> }
+    </ul>
+  </section>
+
+  <section class="card" aria-labelledby="t-jour">
+    <div class="card-head"><h2 id="t-jour" aria-live="polite">{{ dateLongue(selection()) }}</h2></div>
+    @if (tachesDuJour().length) {
+      <ul class="taches">
+        @for (t of tachesDuJour(); track t.id) {
+          <ng-container *ngTemplateOutlet="ligneTache; context: { $implicit: t, avecDate: false }" />
+        }
+      </ul>
+    } @else {
+      <p class="muted rien">Aucune tâche ce jour-là.</p>
+    }
+
+    <form class="ajout" [formGroup]="form" (ngSubmit)="ajouter()" novalidate>
+      <h3>Ajouter une tâche</h3>
+      <div class="form-grid">
+        <app-field label="Travail" for="c-type">
+          <select id="c-type" formControlName="type">
+            @for (t of types; track t) { <option [value]="t">{{ t }}</option> }
+          </select>
+        </app-field>
+        <app-field label="Date" for="c-date" [error]="erreur('date')">
+          <input id="c-date" type="date" formControlName="date" aria-describedby="c-date-msg" />
+        </app-field>
+        <app-field label="Parcelle" for="c-parcelle" class="span-2">
+          <select id="c-parcelle" formControlName="parcelleId">
+            <option [ngValue]="0">Toutes les parcelles</option>
+            @for (x of data.parcelles(); track x.id) { <option [ngValue]="x.id">{{ x.nom }}</option> }
+          </select>
+        </app-field>
+        <app-field label="Note" for="c-note" [optional]="true" [error]="erreur('note')" class="span-2">
+          <input id="c-note" formControlName="note" maxlength="80" placeholder="Prévoir 4 ouvriers" aria-describedby="c-note-msg" />
+        </app-field>
+      </div>
+      <button type="submit" class="btn btn-secondary btn-block"><app-icon name="plus" />Ajouter la tâche</button>
+    </form>
+  </section>
+</div>
+
+<div class="grid-2" style="margin-top: 24px">
+  <section class="card" aria-labelledby="t-afaire">
+    <div class="card-head"><div><h2 id="t-afaire">À faire</h2><p>Tâches en retard et prévues dans les 30 prochains jours</p></div></div>
+    @if (enRetard().length) {
+      <h3 class="sous-titre retard"><app-icon name="attention" />En retard</h3>
+      <ul class="taches">
+        @for (t of enRetard(); track t.id) {
+          <ng-container *ngTemplateOutlet="ligneTache; context: { $implicit: t, avecDate: true }" />
+        }
+      </ul>
+    }
+    <h3 class="sous-titre">À venir</h3>
+    @if (aVenir().length) {
+      <ul class="taches">
+        @for (t of aVenir(); track t.id) {
+          <ng-container *ngTemplateOutlet="ligneTache; context: { $implicit: t, avecDate: true }" />
+        }
+      </ul>
+    } @else {
+      <app-empty title="Rien de prévu" text="Ajoutez une tâche depuis le calendrier." icon="calendrier" />
+    }
+  </section>
+
+  <section class="card card-flush" aria-labelledby="t-saison">
+    <div class="card-head"><div><h2 id="t-saison">L’année de l’olivier</h2><p>Repères indicatifs pour la Tunisie ; le mois en cours est surligné</p></div></div>
+    <div class="table-wrap saison-wrap">
+      <table class="saison">
+        <caption class="sr-only">Mois conseillés pour chaque type de travail</caption>
+        <thead>
+          <tr>
+            <th scope="col">Travail</th>
+            @for (m of moisAnnee; track $index) {
+              <th scope="col" [class.courant]="$index === moisCourant"><abbr [title]="m">{{ m.charAt(0).toUpperCase() }}</abbr></th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (s of saison; track s.type) {
+            <tr>
+              <th scope="row"><span class="type"><i class="pastille" [class]="classe(s.type)" aria-hidden="true"></i>{{ s.type }}</span><small>{{ s.detail }}</small></th>
+              @for (m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]; track m) {
+                <td [class.courant]="m === moisCourant">
+                  @if (s.mois.includes(m)) { <i class="barre" [class]="classe(s.type)"></i><span class="sr-only">oui</span> }
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

@@ -1,12 +1,16 @@
 import { Injectable, computed, signal } from '@angular/core';
 import {
-  Mouvement, Offre, Parcelle, PointPrix, Pressage, QualiteHuile, Recolte, Vente,
+  Mouvement, Offre, Parcelle, PointPrix, Pressage, QualiteHuile, Recolte, Tache, Vente,
 } from './models';
 
 function ilYa(jours: number): string {
   const d = new Date();
   d.setDate(d.getDate() - jours);
   return d.toISOString().slice(0, 10);
+}
+
+function dans(jours: number): string {
+  return ilYa(-jours);
 }
 
 export const DENSITE_HUILE = 0.916;
@@ -65,6 +69,17 @@ export class DataService {
     { id: 1, date: ilYa(15), acheteur: 'Coopérative Ennour', qualite: 'Extra vierge', quantiteL: 400, prixParL: 13.1, statut: 'Payée' },
     { id: 2, date: ilYa(7), acheteur: 'Monastir Oils', qualite: 'Extra vierge', quantiteL: 250, prixParL: 13.6, statut: 'Livrée' },
     { id: 3, date: ilYa(2), acheteur: 'Huilerie El Amal', qualite: 'Vierge', quantiteL: 40, prixParL: 10.9, statut: 'En attente' },
+  ]);
+
+  readonly taches = signal<Tache[]>([
+    { id: 1, date: ilYa(18), type: 'Traitement', parcelleId: 3, note: 'Cuivre contre l’œil de paon', faite: true },
+    { id: 2, date: ilYa(8), type: 'Récolte', parcelleId: 3, note: '', faite: true },
+    { id: 3, date: ilYa(3), type: 'Labour', parcelleId: 1, note: 'Désherber au pied des arbres', faite: false },
+    { id: 4, date: dans(1), type: 'Récolte', parcelleId: 1, note: 'Prévoir 4 ouvriers et les filets', faite: false },
+    { id: 5, date: dans(4), type: 'Récolte', parcelleId: 2, note: '', faite: false },
+    { id: 6, date: dans(9), type: 'Traitement', parcelleId: 2, note: 'Traitement au cuivre après la récolte', faite: false },
+    { id: 7, date: dans(16), type: 'Fertilisation', parcelleId: null, note: 'Commander le fumier', faite: false },
+    { id: 8, date: dans(40), type: 'Taille', parcelleId: 1, note: '', faite: false },
   ]);
 
   readonly historiquePrix = signal<PointPrix[]>(
@@ -141,8 +156,20 @@ export class DataService {
     return liste.sort((a, b) => b.date.localeCompare(a.date));
   });
 
+  readonly tachesEnRetard = computed(() => {
+    const aujourdhui = ilYa(0);
+    return this.taches().filter(t => !t.faite && t.date < aujourdhui);
+  });
+
   readonly alertes = computed<Alerte[]>(() => {
     const liste: Alerte[] = [];
+    const retard = this.tachesEnRetard().length;
+    if (retard) {
+      liste.push({
+        id: 'taches', ton: 'warn', icone: 'calendrier', titre: 'al.retard', texte: 'al.retard.txt',
+        vars: { n: retard }, lien: '/calendrier', action: 'db.voirCalendrier',
+      });
+    }
     const stock = this.stockParQualite();
     for (const q of ['Extra vierge', 'Vierge'] as QualiteHuile[]) {
       if (stock[q] < SEUIL_HUILE_L) {
@@ -200,6 +227,18 @@ export class DataService {
 
   ajouterRecolte(r: Omit<Recolte, 'id'>): void {
     this.recoltes.update(list => [...list, { ...r, id: this.nextId++ }]);
+  }
+
+  ajouterTache(t: Omit<Tache, 'id' | 'faite'>): void {
+    this.taches.update(list => [...list, { ...t, id: this.nextId++, faite: false }]);
+  }
+
+  basculerTache(id: number): void {
+    this.taches.update(list => list.map(t => (t.id === id ? { ...t, faite: !t.faite } : t)));
+  }
+
+  supprimerTache(id: number): void {
+    this.taches.update(list => list.filter(t => t.id !== id));
   }
 
   ajouterPressage(p: Omit<Pressage, 'id'>): string | null {

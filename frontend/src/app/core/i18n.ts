@@ -1,6 +1,7 @@
 export const TEXTES: Record<string, { fr: string; ar: string }> = {
   'nav.dashboard': { fr: 'Tableau de bord', ar: 'لوحة القيادة' },
   'nav.meteo': { fr: 'Météo', ar: 'الطقس' },
+  'nav.calendrier': { fr: 'Calendrier', ar: 'الرزنامة' },
   'nav.verger': { fr: 'Verger', ar: 'البستان' },
   'nav.recoltes': { fr: 'Récoltes', ar: 'الجني' },
   'nav.production': { fr: 'Production d’huile', ar: 'إنتاج الزيت' },
@@ -41,6 +42,7 @@ export const TEXTES: Record<string, { fr: string; ar: string }> = {
   'db.tout': { fr: 'Voir tout', ar: 'عرض الكل' },
   'db.voirMarche': { fr: 'Voir le marché', ar: 'عرض السوق' },
   'db.voirStocks': { fr: 'Voir les stocks', ar: 'عرض المخزون' },
+  'db.voirCalendrier': { fr: 'Voir le calendrier', ar: 'عرض الرزنامة' },
   'db.saisir': { fr: 'Enregistrer', ar: 'تسجيل' },
   'db.vendre': { fr: 'Vendre', ar: 'بيع' },
 
@@ -50,6 +52,8 @@ export const TEXTES: Record<string, { fr: string; ar: string }> = {
   'al.meilleur.txt': { fr: '{a}, {r}. {e} au-dessus de la moyenne.', ar: '{a}، {r}. أعلى من المعدّل بـ {e}.' },
   'al.recolte': { fr: 'Récolte à enregistrer : {p}', ar: 'جني يجب تسجيله: {p}' },
   'al.recolte.txt': { fr: 'Dernière saisie il y a {j} jours.', ar: 'آخر تسجيل منذ {j} يوما.' },
+  'al.retard': { fr: 'Tâches en retard : {n}', ar: 'مهام متأخرة: {n}' },
+  'al.retard.txt': { fr: 'Des travaux prévus ne sont pas cochés comme faits.', ar: 'بعض الأشغال المبرمجة لم يُؤشَّر عليها كمنجزة.' },
   'al.olives': { fr: 'Olives à presser', ar: 'زيتون للعصر' },
   'al.olives.txt': { fr: '{v} kg attendent le moulin. Pressez-les vite pour garder la qualité.', ar: '{v} كغ في انتظار المعصرة. اعصرها بسرعة للحفاظ على الجودة.' },
 
