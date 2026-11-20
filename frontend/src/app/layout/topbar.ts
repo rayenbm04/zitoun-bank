@@ -84,6 +84,7 @@ import { Logo } from '../shared/ui/brand';
                 <strong>{{ auth.user()?.prenom }} {{ auth.user()?.nom }}</strong>
                 <small>{{ auth.user()?.email }}</small>
               </div>
+              <a routerLink="/profil" class="item" (click)="ouvert.set(null)"><app-icon name="reglages" />{{ prefs.t('nav.profil') }}</a>
               <button type="button" class="item" (click)="auth.logout()"><app-icon name="sortie" />{{ prefs.t('nav.deconnexion') }}</button>
             </div>
           }

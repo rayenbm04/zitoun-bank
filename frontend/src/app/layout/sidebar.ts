@@ -13,6 +13,7 @@ export const LIENS = [
   { path: '/stocks', cle: 'nav.stocks', icone: 'caisse' },
   { path: '/marche', cle: 'nav.marche', icone: 'etiquette' },
   { path: '/ventes', cle: 'nav.ventes', icone: 'billet' },
+  { path: '/profil', cle: 'nav.profil', icone: 'profil' },
 ];
 
 @Component({

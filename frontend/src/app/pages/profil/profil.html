@@ -1,0 +1,98 @@
+<section class="bloc" aria-labelledby="t-infos">
+  <div class="desc">
+    <h2 id="t-infos">Informations personnelles</h2>
+    <p>Elles apparaissent sur vos ventes et permettent aux acheteurs de vous joindre.</p>
+  </div>
+  <form class="card" [formGroup]="infos" (ngSubmit)="enregistrerInfos()" novalidate>
+    @if (erreurInfos()) { <app-alert tone="danger" title="Non enregistré" style="margin-bottom: 16px">{{ erreurInfos() }}</app-alert> }
+    <div class="form-grid">
+      <app-field label="Prénom" for="i-prenom" [error]="erreurInfo('prenom')">
+        <input id="i-prenom" formControlName="prenom" autocomplete="given-name" />
+      </app-field>
+      <app-field label="Nom" for="i-nom" [error]="erreurInfo('nom')">
+        <input id="i-nom" formControlName="nom" autocomplete="family-name" />
+      </app-field>
+      <app-field class="span-2" label="Adresse e-mail" for="i-email" [error]="erreurInfo('email')">
+        <input id="i-email" type="email" formControlName="email" autocomplete="email" />
+      </app-field>
+      <app-field label="Téléphone" for="i-tel" [optional]="true" [error]="erreurInfo('telephone')">
+        <input id="i-tel" type="tel" formControlName="telephone" autocomplete="tel" placeholder="98 123 456" />
+      </app-field>
+      <app-field label="Région" for="i-region" [error]="erreurInfo('region')">
+        <select id="i-region" formControlName="region">
+          <option value="" disabled>Choisir une région</option>
+          @for (r of regions; track r) { <option [value]="r">{{ r }}</option> }
+        </select>
+      </app-field>
+    </div>
+    <div class="form-actions pied">
+      <button type="submit" class="btn btn-secondary" [disabled]="envoiInfos() || infos.pristine" [attr.aria-busy]="envoiInfos()">
+        @if (envoiInfos()) { <span class="spinner" aria-hidden="true"></span> Enregistrement… } @else { Enregistrer }
+      </button>
+      @if (infos.pristine) { <span class="note">Aucune modification</span> }
+    </div>
+  </form>
+</section>
+
+<section class="bloc" aria-labelledby="t-mdp">
+  <div class="desc">
+    <h2 id="t-mdp">Mot de passe</h2>
+    <p>Au moins 8 caractères. Mélangez lettres, chiffres et symboles.</p>
+  </div>
+  <form class="card" [formGroup]="mdp" (ngSubmit)="changerMdp()" novalidate>
+    @if (erreurMdp()) { <app-alert tone="danger" title="Mot de passe inchangé" style="margin-bottom: 16px">{{ erreurMdp() }}</app-alert> }
+    <div class="form-grid">
+      <app-field class="span-2" label="Mot de passe actuel" for="m-actuel" [error]="erreurMotDePasse('actuel')">
+        <input id="m-actuel" type="password" formControlName="actuel" autocomplete="current-password" />
+      </app-field>
+      <app-field label="Nouveau mot de passe" for="m-nouveau" [error]="erreurMotDePasse('nouveau')">
+        <input id="m-nouveau" type="password" formControlName="nouveau" autocomplete="new-password" />
+      </app-field>
+      <app-field label="Confirmer" for="m-confirm" [error]="erreurMotDePasse('confirm')">
+        <input id="m-confirm" type="password" formControlName="confirm" autocomplete="new-password" />
+      </app-field>
+    </div>
+    <div class="form-actions pied">
+      <button type="submit" class="btn btn-secondary" [disabled]="envoiMdp()" [attr.aria-busy]="envoiMdp()">
+        @if (envoiMdp()) { <span class="spinner" aria-hidden="true"></span> Modification… } @else { Changer le mot de passe }
+      </button>
+    </div>
+  </form>
+</section>
+
+<section class="bloc" aria-labelledby="t-prefs">
+  <div class="desc">
+    <h2 id="t-prefs">Préférences</h2>
+    <p>Appliquées tout de suite et mémorisées sur cet appareil. Aussi accessibles depuis la barre du haut.</p>
+  </div>
+  <div class="card prefs">
+    <fieldset>
+      <legend class="field-label">Langue de l’interface</legend>
+      <div class="langues">
+        <label class="choix" [class.actif]="prefs.langue() === 'fr'">
+          <input type="radio" name="langue" value="fr" [checked]="prefs.langue() === 'fr'" (change)="prefs.langue.set('fr')" />
+          <span class="c-titre" lang="fr">Français</span>
+          <span class="c-sous">Lecture de gauche à droite</span>
+          <app-icon name="valide" class="coche" />
+        </label>
+        <label class="choix" [class.actif]="prefs.langue() === 'ar'">
+          <input type="radio" name="langue" value="ar" [checked]="prefs.langue() === 'ar'" (change)="prefs.langue.set('ar')" />
+          <span class="c-titre ar" lang="ar">العربية</span>
+          <span class="c-sous">Lecture de droite à gauche</span>
+          <app-icon name="valide" class="coche" />
+        </label>
+      </div>
+    </fieldset>
+
+    <div class="ligne-switch">
+      <div>
+        <span class="field-label" id="l-sombre">Mode sombre</span>
+        <p class="note">Plus reposant le soir, au moulin ou dans le verger.</p>
+      </div>
+      <button type="button" role="switch" class="switch" [attr.aria-checked]="prefs.sombre()" aria-labelledby="l-sombre"
+              (click)="prefs.basculerTheme()">
+        <span class="rond"><app-icon [name]="prefs.sombre() ? 'lune' : 'soleil'" /></span>
+      </button>
+    </div>
+  </div>
+</section>
