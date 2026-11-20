@@ -1,11 +1,36 @@
 <div class="page-head">
-  <p>Enregistrez chaque passage au moulin : le rendement est calculé tout seul, les olives sortent du stock et l’huile y entre.</p>
+  <p>
+    Enregistrez chaque passage au moulin : le rendement est calculé tout seul, les olives sortent du
+    stock et l’huile y entre.
+  </p>
 </div>
 
 <section class="kpi-grid cols-3" aria-label="Chiffres de production">
-  <app-kpi label="Huile produite" [value]="p.nombre(data.huileProduiteL())" unit="L" [hint]="data.pressages().length + ' pressages cette saison'" icon="bouteille" [loading]="data.chargement()" />
-  <app-kpi label="Rendement moyen" [value]="p.nombre(data.rendementMoyen(), 1)" unit="%" hint="kg d’huile pour 100 kg d’olives" icon="goutte" [featured]="true" [loading]="data.chargement()" />
-  <app-kpi label="Olives en attente" [value]="p.nombre(data.stockOlivesKg())" unit="kg" hint="à envoyer au moulin" icon="panier" [loading]="data.chargement()" />
+  <app-kpi
+    label="Huile produite"
+    [value]="p.nombre(data.huileProduiteL())"
+    unit="L"
+    [hint]="data.pressages().length + ' pressages cette saison'"
+    icon="bouteille"
+    [loading]="data.chargement()"
+  />
+  <app-kpi
+    label="Rendement moyen"
+    [value]="p.nombre(data.rendementMoyen(), 1)"
+    unit="%"
+    hint="kg d’huile pour 100 kg d’olives"
+    icon="goutte"
+    [featured]="true"
+    [loading]="data.chargement()"
+  />
+  <app-kpi
+    label="Olives en attente"
+    [value]="p.nombre(data.stockOlivesKg())"
+    unit="kg"
+    hint="à envoyer au moulin"
+    icon="panier"
+    [loading]="data.chargement()"
+  />
 </section>
 
 <section class="card" style="margin-top: 24px" aria-labelledby="t-form">
@@ -13,39 +38,78 @@
     <h2 id="t-form">Nouveau pressage</h2>
     <span class="rendement" [class.vide]="rendementSaisi() === null" aria-live="polite">
       <app-icon name="goutte" />
-      @if (rendementSaisi() !== null) { Rendement : <strong class="num">{{ p.nombre(rendementSaisi()!, 1) }} %</strong> }
-      @else { Le rendement s’affiche pendant la saisie }
+      @if (rendementSaisi() !== null) {
+        Rendement : <strong class="num">{{ p.nombre(rendementSaisi()!, 1) }} %</strong>
+      } @else {
+        Le rendement s’affiche pendant la saisie
+      }
     </span>
   </div>
   @if (erreurStock()) {
-    <app-alert tone="danger" title="Pressage non enregistré" style="margin-bottom: 16px">{{ erreurStock() }}</app-alert>
+    <app-alert tone="danger" title="Pressage non enregistré" style="margin-bottom: 16px">{{
+      erreurStock()
+    }}</app-alert>
   }
   <form class="form-row" [formGroup]="form" (ngSubmit)="enregistrer()" novalidate>
     <app-field label="Moulin" for="m-moulin" [error]="erreur('moulin')">
-      <input id="m-moulin" formControlName="moulin" list="moulins" placeholder="Huilerie Ben Salah" />
-      <datalist id="moulins">@for (m of moulins; track m) { <option [value]="m"></option> }</datalist>
+      <input
+        id="m-moulin"
+        formControlName="moulin"
+        list="moulins"
+        placeholder="Huilerie Ben Salah"
+      />
+      <datalist id="moulins">
+        @for (m of moulins; track m) {
+          <option [value]="m"></option>
+        }
+      </datalist>
     </app-field>
     <app-field label="Date" for="m-date">
       <input id="m-date" type="date" formControlName="date" [max]="aujourdhui" />
     </app-field>
-    <app-field label="Olives pressées" for="m-olives" [error]="erreur('olivesKg')" [hint]="p.nombre(data.stockOlivesKg()) + ' kg disponibles'">
+    <app-field
+      label="Olives pressées"
+      for="m-olives"
+      [error]="erreur('olivesKg')"
+      [hint]="p.nombre(data.stockOlivesKg()) + ' kg disponibles'"
+    >
       <div class="input-affix">
-        <input id="m-olives" type="number" min="1" formControlName="olivesKg" inputmode="numeric" aria-describedby="m-olives-msg" />
+        <input
+          id="m-olives"
+          type="number"
+          min="1"
+          formControlName="olivesKg"
+          inputmode="numeric"
+          aria-describedby="m-olives-msg"
+        />
         <span class="affix">kg</span>
       </div>
     </app-field>
     <app-field label="Huile obtenue" for="m-huile" [error]="erreur('huileL')">
       <div class="input-affix">
-        <input id="m-huile" type="number" min="1" formControlName="huileL" inputmode="numeric" aria-describedby="m-huile-msg" />
+        <input
+          id="m-huile"
+          type="number"
+          min="1"
+          formControlName="huileL"
+          inputmode="numeric"
+          aria-describedby="m-huile-msg"
+        />
         <span class="affix">L</span>
       </div>
     </app-field>
     <app-field label="Qualité" for="m-qualite">
       <select id="m-qualite" formControlName="qualite">
-        @for (q of qualites; track q) { <option [value]="q">{{ q }}</option> }
+        @for (q of qualites; track q) {
+          <option [value]="q">{{ q }}</option>
+        }
       </select>
     </app-field>
-    <div class="form-submit"><button type="submit" class="btn btn-secondary" [disabled]="envoi()">Enregistrer le pressage</button></div>
+    <div class="form-submit">
+      <button type="submit" class="btn btn-secondary" [disabled]="envoi()">
+        Enregistrer le pressage
+      </button>
+    </div>
   </form>
 </section>
 
@@ -56,7 +120,14 @@
       <div class="table-wrap">
         <table class="table stack">
           <thead>
-            <tr><th scope="col">Date</th><th scope="col">Moulin</th><th scope="col" class="t-num">Olives</th><th scope="col" class="t-num">Huile</th><th scope="col" class="t-num">Rendement</th><th scope="col">Qualité</th></tr>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Moulin</th>
+              <th scope="col" class="t-num">Olives</th>
+              <th scope="col" class="t-num">Huile</th>
+              <th scope="col" class="t-num">Rendement</th>
+              <th scope="col">Qualité</th>
+            </tr>
           </thead>
           <tbody>
             @for (x of tries(); track x.id) {
@@ -65,7 +136,9 @@
                 <td data-label="Moulin" class="t-main">{{ x.moulin }}</td>
                 <td data-label="Olives" class="t-num">{{ p.nombre(x.olivesKg) }} kg</td>
                 <td data-label="Huile" class="t-num">{{ p.nombre(x.huileL) }} L</td>
-                <td data-label="Rendement" class="t-num strong">{{ p.nombre(data.rendement(x.olivesKg, x.huileL), 1) }} %</td>
+                <td data-label="Rendement" class="t-num strong">
+                  {{ p.nombre(data.rendement(x.olivesKg, x.huileL), 1) }} %
+                </td>
                 <td data-label="Qualité"><app-badge [valeur]="x.qualite" /></td>
               </tr>
             }
@@ -76,11 +149,23 @@
   </section>
 
   <section class="card" aria-labelledby="t-tendance">
-    <div class="card-head"><div><h2 id="t-tendance">Évolution du rendement</h2><p>En %, pressage par pressage</p></div></div>
+    <div class="card-head">
+      <div>
+        <h2 id="t-tendance">Évolution du rendement</h2>
+        <p>En %, pressage par pressage</p>
+      </div>
+    </div>
     @if (data.chargement()) {
       <span class="skeleton" style="height: 220px; border-radius: 14px"></span>
     } @else {
-      <app-line-chart [etiquettes]="etiquettes()" [series]="series()" label="Évolution du rendement en pourcentage" unite="%" [decimales]="1" [hauteur]="300" />
+      <app-line-chart
+        [etiquettes]="etiquettes()"
+        [series]="series()"
+        label="Évolution du rendement en pourcentage"
+        unite="%"
+        [decimales]="1"
+        [hauteur]="300"
+      />
     }
   </section>
 </div>

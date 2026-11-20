@@ -8,7 +8,9 @@
     <form class="form-row" [formGroup]="form" (ngSubmit)="enregistrer()" novalidate>
       <app-field label="Parcelle" for="r-parcelle" [error]="erreur('parcelleId')">
         <select id="r-parcelle" formControlName="parcelleId">
-          @for (x of data.parcelles(); track x.id) { <option [ngValue]="x.id">{{ x.nom }}</option> }
+          @for (x of data.parcelles(); track x.id) {
+            <option [ngValue]="x.id">{{ x.nom }}</option>
+          }
         </select>
       </app-field>
       <app-field label="Date" for="r-date" [error]="erreur('date')">
@@ -16,14 +18,31 @@
       </app-field>
       <app-field label="Quantité" for="r-qte" [error]="erreur('quantiteKg')">
         <div class="input-affix">
-          <input id="r-qte" type="number" min="1" step="10" formControlName="quantiteKg" inputmode="numeric" placeholder="1 200" aria-describedby="r-qte-msg" />
+          <input
+            id="r-qte"
+            type="number"
+            min="1"
+            step="10"
+            formControlName="quantiteKg"
+            inputmode="numeric"
+            placeholder="1 200"
+            aria-describedby="r-qte-msg"
+          />
           <span class="affix">kg</span>
         </div>
       </app-field>
-      <div class="form-submit"><button type="submit" class="btn btn-secondary" [disabled]="envoi()"><app-icon name="plus" />Enregistrer la récolte</button></div>
+      <div class="form-submit">
+        <button type="submit" class="btn btn-secondary" [disabled]="envoi()">
+          <app-icon name="plus" />Enregistrer la récolte
+        </button>
+      </div>
     </form>
   } @else {
-    <app-empty title="Ajoutez d’abord une parcelle" text="Une récolte est toujours rattachée à une parcelle du verger." icon="arbre" />
+    <app-empty
+      title="Ajoutez d’abord une parcelle"
+      text="Une récolte est toujours rattachée à une parcelle du verger."
+      icon="arbre"
+    />
   }
 </section>
 
@@ -33,14 +52,24 @@
     @if (data.chargement()) {
       <span class="skeleton" style="height: 64px; width: 70%; margin-top: 8px"></span>
     } @else {
-      <p class="chiffre"><span class="num">{{ p.nombre(data.totalRecolteKg()) }}</span><small>kg</small></p>
-      <p class="muted">{{ data.recoltes().length }} récoltes, soit {{ p.nombre(moyenneParArbre(), 1) }} kg par olivier en moyenne.</p>
+      <p class="chiffre">
+        <span class="num">{{ p.nombre(data.totalRecolteKg()) }}</span
+        ><small>kg</small>
+      </p>
+      <p class="muted">
+        {{ data.recoltes().length }} récoltes, soit {{ p.nombre(moyenneParArbre(), 1) }} kg par
+        olivier en moyenne.
+      </p>
     }
     <ul class="repartition">
       @for (x of parParcelle(); track x.id) {
         <li>
           <span class="n">{{ x.nom }}</span>
-          <span class="barre" aria-hidden="true"><i [style.width.%]="data.totalRecolteKg() ? (x.kg / data.totalRecolteKg()) * 100 : 0"></i></span>
+          <span class="barre" aria-hidden="true"
+            ><i
+              [style.width.%]="data.totalRecolteKg() ? (x.kg / data.totalRecolteKg()) * 100 : 0"
+            ></i
+          ></span>
           <span class="v num">{{ p.nombre(x.kg) }} kg</span>
         </li>
       }
@@ -49,7 +78,10 @@
 
   <section class="card" aria-labelledby="t-chart">
     <div class="card-head">
-      <div><h2 id="t-chart">Récolte par parcelle</h2><p>En kilogrammes ; la plus productive est en or</p></div>
+      <div>
+        <h2 id="t-chart">Récolte par parcelle</h2>
+        <p>En kilogrammes ; la plus productive est en or</p>
+      </div>
     </div>
     @if (data.chargement()) {
       <span class="skeleton" style="height: 230px; border-radius: 14px"></span>
@@ -63,9 +95,23 @@
   <div class="card-head">
     <h2 id="t-hist">Historique</h2>
     <div class="chips" role="group" aria-label="Filtrer par parcelle">
-      <button type="button" class="chip" [attr.aria-pressed]="filtre() === null" (click)="filtre.set(null)">Toutes</button>
+      <button
+        type="button"
+        class="chip"
+        [attr.aria-pressed]="filtre() === null"
+        (click)="filtre.set(null)"
+      >
+        Toutes
+      </button>
       @for (x of data.parcelles(); track x.id) {
-        <button type="button" class="chip" [attr.aria-pressed]="filtre() === x.id" (click)="filtre.set(x.id)">{{ x.nom }}</button>
+        <button
+          type="button"
+          class="chip"
+          [attr.aria-pressed]="filtre() === x.id"
+          (click)="filtre.set(x.id)"
+        >
+          {{ x.nom }}
+        </button>
       }
     </div>
   </div>
@@ -73,7 +119,14 @@
     @if (historique().length) {
       <div class="table-wrap">
         <table class="table stack">
-          <thead><tr><th scope="col">Date</th><th scope="col">Parcelle</th><th scope="col">Variété</th><th scope="col" class="t-num">Quantité</th></tr></thead>
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Parcelle</th>
+              <th scope="col">Variété</th>
+              <th scope="col" class="t-num">Quantité</th>
+            </tr>
+          </thead>
           <tbody>
             @for (r of historique(); track r.id) {
               <tr>
@@ -87,7 +140,11 @@
         </table>
       </div>
     } @else {
-      <app-empty title="Aucune récolte pour cette parcelle" text="Saisissez la première récolte avec le formulaire ci-dessus." icon="panier" />
+      <app-empty
+        title="Aucune récolte pour cette parcelle"
+        text="Saisissez la première récolte avec le formulaire ci-dessus."
+        icon="panier"
+      />
     }
   </div>
 </section>

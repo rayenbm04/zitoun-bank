@@ -14,6 +14,7 @@ function ecrire(cle: string, valeur: string): void {
   try {
     localStorage.setItem(cle, valeur);
   } catch {
+    // Stockage indisponible (navigation privée, quota plein) : la préférence reste valable pour cette session.
   }
 }
 
@@ -23,7 +24,7 @@ export class PrefsService {
   readonly sombre = signal<boolean>(
     lire('zitoun_bank_sombre') !== null
       ? lire('zitoun_bank_sombre') === '1'
-      : typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: dark)').matches
+      : typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: dark)').matches,
   );
 
   constructor() {
@@ -41,13 +42,14 @@ export class PrefsService {
   }
 
   basculerLangue(): void {
-    this.langue.update(l => (l === 'fr' ? 'ar' : 'fr'));
+    this.langue.update((l) => (l === 'fr' ? 'ar' : 'fr'));
   }
 
   basculerTheme(): void {
-    this.sombre.update(s => !s);
+    this.sombre.update((s) => !s);
   }
 
+  /** Traduit une clé (français ou arabe) et remplace les variables {nom} par leur valeur. */
   t(cle: string, vars?: Record<string, string | number>): string {
     let texte = TEXTES[cle]?.[this.langue()] ?? cle;
     if (vars) {
@@ -59,6 +61,7 @@ export class PrefsService {
     return texte;
   }
 
+  /** Formate un nombre selon la langue : 1 234,5 en français, chiffres arabes en arabe. */
   nombre(valeur: number, decimales = 0): string {
     return new Intl.NumberFormat(this.langue() === 'ar' ? 'ar-TN' : 'fr-FR', {
       minimumFractionDigits: decimales,

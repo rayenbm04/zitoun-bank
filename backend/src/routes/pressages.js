@@ -4,6 +4,7 @@ const { requireAuth } = require('../middleware/auth');
 const { route, dateValide, entierPositif } = require('../outils');
 
 const router = express.Router();
+// Toutes les requêtes filtrent sur user_id : chaque agriculteur ne voit que ses propres données.
 router.use(requireAuth);
 
 const QUALITES = ['Extra vierge', 'Vierge', 'Ordinaire'];
@@ -12,6 +13,7 @@ function versPressage(row) {
   return { id: row.id, date: row.date, moulin: row.moulin, olivesKg: row.olives_kg, huileL: row.huile_l, qualite: row.qualite };
 }
 
+/** Olives disponibles = total récolté − total déjà pressé. Le contrôle est refait côté serveur. */
 async function stockOlives(userId) {
   const [[r]] = await pool.query(
     `SELECT (SELECT COALESCE(SUM(quantite_kg), 0) FROM recoltes WHERE user_id = ?)

@@ -4,6 +4,7 @@ const { requireAuth } = require('../middleware/auth');
 const { route, entierPositif } = require('../outils');
 
 const router = express.Router();
+// Toutes les requêtes filtrent sur user_id : chaque agriculteur ne voit que ses propres données.
 router.use(requireAuth);
 
 const REGIONS = ['Sfax', 'Sousse', 'Monastir', 'Mahdia', 'Kairouan'];
@@ -22,6 +23,7 @@ function versParcelle(row) {
   };
 }
 
+/** Valide le corps de la requête ; renvoie { parcelle } ou { erreur } (message affiché tel quel dans l’interface). */
 function lireParcelle(body) {
   const p = {
     nom: String(body.nom || '').trim(),

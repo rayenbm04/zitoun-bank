@@ -4,6 +4,7 @@ const { requireAuth } = require('../middleware/auth');
 const { route, dateValide } = require('../outils');
 
 const router = express.Router();
+// Toutes les requêtes filtrent sur user_id : chaque agriculteur ne voit que ses propres données.
 router.use(requireAuth);
 
 const QUALITES = ['Extra vierge', 'Vierge', 'Ordinaire'];
@@ -20,6 +21,7 @@ function versVente(row) {
   };
 }
 
+/** Huile disponible pour une qualité = huile pressée − huile vendue. */
 async function stockHuile(userId, qualite) {
   const [[r]] = await pool.query(
     `SELECT (SELECT COALESCE(SUM(huile_l), 0) FROM pressages WHERE user_id = ? AND qualite = ?)

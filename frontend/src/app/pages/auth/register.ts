@@ -1,6 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../core/auth.service';
@@ -43,10 +49,12 @@ export class Register {
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirm: ['', Validators.required],
     },
-    { validators: samePassword, updateOn: 'change' }
+    { validators: samePassword, updateOn: 'change' },
   );
 
-  private readonly valeurs = toSignal(this.form.valueChanges, { initialValue: this.form.getRawValue() });
+  private readonly valeurs = toSignal(this.form.valueChanges, {
+    initialValue: this.form.getRawValue(),
+  });
   private readonly statut = toSignal(this.form.statusChanges, { initialValue: this.form.status });
 
   readonly force = computed(() => {
@@ -58,7 +66,9 @@ export class Register {
     if (/[^A-Za-z0-9]/.test(p) || p.length >= 12) n++;
     return p ? Math.max(n, 1) : 0;
   });
-  readonly forceTexte = computed(() => ['', 'Trop faible', 'Moyen', 'Bon', 'Excellent'][this.force()]);
+  readonly forceTexte = computed(
+    () => ['', 'Trop faible', 'Moyen', 'Bon', 'Excellent'][this.force()],
+  );
 
   erreur(champ: Champ): string | null {
     this.statut();
@@ -72,7 +82,9 @@ export class Register {
     const messages: Record<Champ, string> = {
       prenom: 'Saisissez votre prénom.',
       nom: 'Saisissez votre nom.',
-      email: c.hasError('required') ? 'Saisissez votre adresse e-mail.' : 'Adresse e-mail invalide (exemple : nom@domaine.tn).',
+      email: c.hasError('required')
+        ? 'Saisissez votre adresse e-mail.'
+        : 'Adresse e-mail invalide (exemple : nom@domaine.tn).',
       telephone: 'Numéro tunisien à 8 chiffres, par exemple 98 123 456.',
       region: 'Choisissez la région de votre exploitation.',
       password: c.hasError('required') ? 'Choisissez un mot de passe.' : 'Au moins 8 caractères.',
@@ -95,7 +107,8 @@ export class Register {
     }
     this.loading.set(true);
     this.error.set('');
-    const { confirm, ...data } = this.form.getRawValue();
+    const { prenom, nom, email, telephone, region, password } = this.form.getRawValue();
+    const data = { prenom, nom, email, telephone, region, password };
 
     this.auth.register(data).subscribe({
       next: () => this.router.navigate(['/tableau-de-bord']),
@@ -104,7 +117,7 @@ export class Register {
         this.error.set(
           err.status === 0
             ? 'Le serveur ne répond pas. Vérifiez que le backend est démarré (npm run dev dans backend).'
-            : (err.error?.message ?? 'L’inscription a échoué. Réessayez.')
+            : (err.error?.message ?? 'L’inscription a échoué. Réessayez.'),
         );
       },
     });

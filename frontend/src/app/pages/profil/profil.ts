@@ -1,5 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../core/auth.service';
 import { PrefsService } from '../../core/prefs.service';
@@ -14,7 +20,9 @@ function memeMdp(g: AbstractControl): ValidationErrors | null {
 }
 
 function messageServeur(err: HttpErrorResponse, defaut: string): string {
-  return err.status === 0 ? 'Le serveur ne répond pas. Vérifiez que le backend est démarré.' : (err.error?.message ?? defaut);
+  return err.status === 0
+    ? 'Le serveur ne répond pas. Vérifiez que le backend est démarré.'
+    : (err.error?.message ?? defaut);
 }
 
 @Component({
@@ -40,7 +48,10 @@ export class Profil {
     prenom: [this.auth.user()?.prenom ?? '', Validators.required],
     nom: [this.auth.user()?.nom ?? '', Validators.required],
     email: [this.auth.user()?.email ?? '', [Validators.required, Validators.email]],
-    telephone: [this.auth.user()?.telephone ?? '', Validators.pattern(/^(\+216\s?)?[2-9]\d(\s?\d{3}){2}$/)],
+    telephone: [
+      this.auth.user()?.telephone ?? '',
+      Validators.pattern(/^(\+216\s?)?[2-9]\d(\s?\d{3}){2}$/),
+    ],
     region: [this.auth.user()?.region ?? '', Validators.required],
   });
 
@@ -50,7 +61,7 @@ export class Profil {
       nouveau: ['', [Validators.required, Validators.minLength(8)]],
       confirm: ['', Validators.required],
     },
-    { validators: memeMdp }
+    { validators: memeMdp },
   );
 
   erreurInfo(champ: 'prenom' | 'nom' | 'email' | 'telephone' | 'region'): string | null {
@@ -68,7 +79,12 @@ export class Profil {
   erreurMotDePasse(champ: 'actuel' | 'nouveau' | 'confirm'): string | null {
     const c = this.mdp.controls[champ];
     if (!c.touched) return null;
-    if (champ === 'confirm') return c.hasError('required') ? 'Confirmez le nouveau mot de passe.' : this.mdp.hasError('mismatch') ? 'Les deux mots de passe sont différents.' : null;
+    if (champ === 'confirm')
+      return c.hasError('required')
+        ? 'Confirmez le nouveau mot de passe.'
+        : this.mdp.hasError('mismatch')
+          ? 'Les deux mots de passe sont différents.'
+          : null;
     if (c.valid) return null;
     return champ === 'actuel' ? 'Saisissez votre mot de passe actuel.' : 'Au moins 8 caractères.';
   }

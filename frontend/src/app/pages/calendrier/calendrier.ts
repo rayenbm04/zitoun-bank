@@ -25,7 +25,11 @@ const CLASSES: Record<TypeTache, string> = {
 };
 
 const SAISON: { type: TypeTache; mois: number[]; detail: string }[] = [
-  { type: 'Récolte', mois: [10, 11, 0], detail: 'De novembre à janvier, pressage dans les 48 heures' },
+  {
+    type: 'Récolte',
+    mois: [10, 11, 0],
+    detail: 'De novembre à janvier, pressage dans les 48 heures',
+  },
   { type: 'Taille', mois: [0, 1, 2], detail: 'Après la récolte, avant la floraison' },
   { type: 'Fertilisation', mois: [1, 2, 3], detail: 'À la reprise de la végétation' },
   { type: 'Labour', mois: [1, 2, 9], detail: 'Désherbage et travail du sol' },
@@ -60,7 +64,20 @@ export class Calendrier {
   readonly joursSemaine = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
   readonly aujourdhui = new Date().toISOString().slice(0, 10);
   readonly moisCourant = new Date().getMonth();
-  readonly moisAnnee = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  readonly moisAnnee = [
+    'janvier',
+    'février',
+    'mars',
+    'avril',
+    'mai',
+    'juin',
+    'juillet',
+    'août',
+    'septembre',
+    'octobre',
+    'novembre',
+    'décembre',
+  ];
 
   readonly affiche = signal({ annee: new Date().getFullYear(), mois: new Date().getMonth() });
   readonly selection = signal(this.aujourdhui);
@@ -75,40 +92,52 @@ export class Calendrier {
 
   readonly titreMois = computed(() => {
     const { annee, mois } = this.affiche();
-    const nom = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(new Date(annee, mois, 1));
+    const nom = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(
+      new Date(annee, mois, 1),
+    );
     return nom.charAt(0).toUpperCase() + nom.slice(1);
   });
 
   readonly cases = computed<(Case | null)[]>(() => {
     const { annee, mois } = this.affiche();
+    // Cases vides avant le 1er du mois : la semaine commence le lundi (getDay() renvoie 0 pour dimanche).
     const decalage = (new Date(annee, mois, 1).getDay() + 6) % 7;
     const nbJours = new Date(annee, mois + 1, 0).getDate();
     const taches = this.data.taches();
     const liste: (Case | null)[] = Array.from({ length: decalage }, () => null);
     for (let j = 1; j <= nbJours; j++) {
       const iso = versIso(new Date(annee, mois, j));
-      liste.push({ iso, jour: j, taches: taches.filter(t => t.date === iso) });
+      liste.push({ iso, jour: j, taches: taches.filter((t) => t.date === iso) });
     }
     return liste;
   });
 
-  readonly tachesDuJour = computed(() => this.data.taches().filter(t => t.date === this.selection()));
+  readonly tachesDuJour = computed(() =>
+    this.data.taches().filter((t) => t.date === this.selection()),
+  );
 
   readonly aVenir = computed(() => {
     const limite = versIso(new Date(Date.now() + 30 * 86_400_000));
-    return this.data.taches()
-      .filter(t => !t.faite && t.date >= this.aujourdhui && t.date <= limite)
+    return this.data
+      .taches()
+      .filter((t) => !t.faite && t.date >= this.aujourdhui && t.date <= limite)
       .sort((a, b) => a.date.localeCompare(b.date));
   });
 
-  readonly enRetard = computed(() => [...this.data.tachesEnRetard()].sort((a, b) => a.date.localeCompare(b.date)));
+  readonly enRetard = computed(() =>
+    [...this.data.tachesEnRetard()].sort((a, b) => a.date.localeCompare(b.date)),
+  );
 
   classe(type: TypeTache): string {
     return CLASSES[type];
   }
 
   dateLongue(iso: string): string {
-    const texte = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }).format(versDate(iso));
+    const texte = new Intl.DateTimeFormat('fr-FR', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+    }).format(versDate(iso));
     return texte.charAt(0).toUpperCase() + texte.slice(1);
   }
 
@@ -153,7 +182,12 @@ export class Calendrier {
     const v = this.form.getRawValue();
     const parcelleId = Number(v.parcelleId) || null;
     this.envoi.set(true);
-    const erreur = await this.data.ajouterTache({ type: v.type, parcelleId, date: v.date, note: v.note.trim() });
+    const erreur = await this.data.ajouterTache({
+      type: v.type,
+      parcelleId,
+      date: v.date,
+      note: v.note.trim(),
+    });
     this.envoi.set(false);
     if (erreur) {
       this.toast.afficher('Tâche non ajoutée', erreur, 'danger');

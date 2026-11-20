@@ -4,6 +4,7 @@ const { requireAuth } = require('../middleware/auth');
 const { route, dateValide } = require('../outils');
 
 const router = express.Router();
+// Toutes les requêtes filtrent sur user_id : chaque agriculteur ne voit que ses propres données.
 router.use(requireAuth);
 
 const TYPES = ['Récolte', 'Taille', 'Traitement', 'Irrigation', 'Fertilisation', 'Labour'];

@@ -4,6 +4,7 @@ const { requireAuth } = require('../middleware/auth');
 const { route } = require('../outils');
 
 const router = express.Router();
+// Les offres du marché sont communes à tous les agriculteurs connectés.
 router.use(requireAuth);
 
 function versOffre(row) {

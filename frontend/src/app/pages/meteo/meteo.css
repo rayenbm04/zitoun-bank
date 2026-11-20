@@ -1,38 +1,155 @@
-.maintenant { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 20px; align-items: center; }
-.maintenant .grand { grid-row: 1 / 3; width: 76px; height: 76px; color: var(--or); }
-.temp { display: flex; align-items: baseline; gap: 6px; }
-.temp .num { font-size: 3.5rem; font-weight: 700; line-height: 1; color: var(--text-strong); letter-spacing: -0.03em; }
-.temp small { font-size: 1.25rem; font-weight: 700; color: var(--text-muted); }
-.ciel { color: var(--text-muted); font-weight: 600; }
-.details { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); row-gap: 12px; }
-.conseils { display: flex; flex-direction: column; gap: 10px; }
-
-.semaine { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 12px; }
-.jour {
-  position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;
-  padding: 16px 8px; border-radius: 14px; background: var(--surface-2); border: 2px solid transparent;
+.maintenant {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 20px;
+  align-items: center;
 }
-.jour.favorable { border-color: var(--feuille); }
-.nom { font-weight: 700; color: var(--text-strong); font-size: 0.9375rem; }
-.dt { color: var(--text-muted); font-size: var(--fs-xs); }
-.ic { width: 40px; height: 40px; color: var(--accent-text); margin: 4px 0; }
-.tmp strong { font-size: 1.125rem; color: var(--text-strong); }
-.tmp span { color: var(--text-muted); margin-inline-start: 4px; }
-.info { display: inline-flex; align-items: center; gap: 4px; color: var(--text-muted); font-size: var(--fs-xs); }
-.info app-icon { width: 14px; height: 14px; }
-.etoile { position: absolute; top: 8px; inset-inline-end: 8px; color: var(--feuille); }
-.etoile app-icon { width: 16px; height: 16px; }
-.source { margin-top: 20px; }
+.maintenant .grand {
+  grid-row: 1 / 3;
+  width: 76px;
+  height: 76px;
+  color: var(--or);
+}
+.temp {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.temp .num {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-strong);
+  letter-spacing: -0.03em;
+}
+.temp small {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.ciel {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.details {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  row-gap: 12px;
+}
+.conseils {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.semaine {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 12px;
+}
+.jour {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  padding: 16px 8px;
+  border-radius: 14px;
+  background: var(--surface-2);
+  border: 2px solid transparent;
+}
+.jour.favorable {
+  border-color: var(--feuille);
+}
+.nom {
+  font-weight: 700;
+  color: var(--text-strong);
+  font-size: 0.9375rem;
+}
+.dt {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+.ic {
+  width: 40px;
+  height: 40px;
+  color: var(--accent-text);
+  margin: 4px 0;
+}
+.tmp strong {
+  font-size: 1.125rem;
+  color: var(--text-strong);
+}
+.tmp span {
+  color: var(--text-muted);
+  margin-inline-start: 4px;
+}
+.info {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+.info app-icon {
+  width: 14px;
+  height: 14px;
+}
+.etoile {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  color: var(--feuille);
+}
+.etoile app-icon {
+  width: 16px;
+  height: 16px;
+}
+.source {
+  margin-top: 20px;
+}
 
 @media (max-width: 1100px) {
-  .semaine { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .semaine {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 @media (max-width: 720px) {
-  .semaine { grid-template-columns: minmax(0, 1fr); gap: 8px; }
-  .jour { flex-direction: row; flex-wrap: wrap; justify-content: space-between; text-align: start; padding: 12px 14px; gap: 4px 12px; }
-  .jour .nom { flex: 1 1 40%; }
-  .jour .dt { order: 2; flex-basis: 100%; display: none; }
-  .ic { width: 28px; height: 28px; margin: 0; }
-  .etoile { position: static; }
-  .temp .num { font-size: 2.75rem; }
+  .semaine {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  .jour {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    text-align: start;
+    padding: 12px 14px;
+    gap: 4px 12px;
+  }
+  .jour .nom {
+    flex: 1 1 40%;
+  }
+  .jour .dt {
+    order: 2;
+    flex-basis: 100%;
+    display: none;
+  }
+  .ic {
+    width: 28px;
+    height: 28px;
+    margin: 0;
+  }
+  .etoile {
+    position: static;
+  }
+  .temp .num {
+    font-size: 2.75rem;
+  }
 }

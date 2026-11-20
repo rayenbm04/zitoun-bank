@@ -26,15 +26,18 @@ export class Marche {
   readonly tri = signal<'prix' | 'date'>('prix');
 
   readonly offres = computed(() => {
-    const r = this.region(), q = this.qualite();
+    const r = this.region(),
+      q = this.qualite();
     return this.data
       .offres()
-      .filter(o => (r === 'toutes' || o.region === r) && (q === 'toutes' || o.qualite === q))
-      .sort((a, b) => (this.tri() === 'prix' ? b.prixParL - a.prixParL : b.date.localeCompare(a.date)));
+      .filter((o) => (r === 'toutes' || o.region === r) && (q === 'toutes' || o.qualite === q))
+      .sort((a, b) =>
+        this.tri() === 'prix' ? b.prixParL - a.prixParL : b.date.localeCompare(a.date),
+      );
   });
 
   readonly meilleure = computed(() =>
-    this.offres().reduce<Offre | null>((b, o) => (!b || o.prixParL > b.prixParL ? o : b), null)
+    this.offres().reduce<Offre | null>((b, o) => (!b || o.prixParL > b.prixParL ? o : b), null),
   );
 
   readonly ecartMeilleure = computed(() => {
@@ -49,10 +52,16 @@ export class Marche {
     return { litres, montant: litres * m.prixParL };
   });
 
-  readonly courbeQualite = computed<QualiteHuile>(() => (this.qualite() === 'toutes' ? 'Extra vierge' : (this.qualite() as QualiteHuile)));
-  readonly mois = computed(() => this.data.historiquePrix().map(x => this.p.mois(x.mois)));
+  readonly courbeQualite = computed<QualiteHuile>(() =>
+    this.qualite() === 'toutes' ? 'Extra vierge' : (this.qualite() as QualiteHuile),
+  );
+  readonly mois = computed(() => this.data.historiquePrix().map((x) => this.p.mois(x.mois)));
   readonly series = computed<Serie[]>(() => [
-    { nom: this.courbeQualite(), couleur: 'or', valeurs: this.data.historiquePrix().map(x => x[this.courbeQualite()]) },
+    {
+      nom: this.courbeQualite(),
+      couleur: 'or',
+      valeurs: this.data.historiquePrix().map((x) => x[this.courbeQualite()]),
+    },
   ]);
 
   ecart(prix: number, q: QualiteHuile): number {

@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -33,7 +42,9 @@ export class Ventes {
   readonly erreurStock = signal('');
   readonly envoi = signal(false);
   readonly filtre = signal<StatutVente | 'toutes'>('toutes');
-  readonly offreChoisie = computed(() => this.data.offres().find(o => o.id === Number(this.offre())) ?? null);
+  readonly offreChoisie = computed(
+    () => this.data.offres().find((o) => o.id === Number(this.offre())) ?? null,
+  );
 
   readonly form = this.fb.nonNullable.group({
     acheteur: ['', Validators.required],
@@ -49,14 +60,18 @@ export class Ventes {
     const v = this.valeurs();
     return (Number(v.quantiteL) || 0) * (Number(v.prixParL) || 0);
   });
-  readonly dispo = computed(() => this.data.stockParQualite()[(this.valeurs().qualite ?? 'Extra vierge') as QualiteHuile]);
+  readonly dispo = computed(
+    () => this.data.stockParQualite()[(this.valeurs().qualite ?? 'Extra vierge') as QualiteHuile],
+  );
   readonly depasse = computed(() => (Number(this.valeurs().quantiteL) || 0) > this.dispo());
 
   readonly huileVendue = computed(() => this.data.ventes().reduce((s, v) => s + v.quantiteL, 0));
 
   readonly historique = computed(() => {
     const f = this.filtre();
-    return [...this.data.ventes()].filter(v => f === 'toutes' || v.statut === f).sort((a, b) => b.date.localeCompare(a.date));
+    return [...this.data.ventes()]
+      .filter((v) => f === 'toutes' || v.statut === f)
+      .sort((a, b) => b.date.localeCompare(a.date));
   });
 
   constructor() {
@@ -77,9 +92,14 @@ export class Ventes {
 
   erreur(champ: 'acheteur' | 'quantiteL' | 'prixParL'): string | null {
     const c = this.form.controls[champ];
-    if (champ === 'quantiteL' && this.depasse()) return `Stock insuffisant : ${this.p.nombre(this.dispo())} L disponibles.`;
+    if (champ === 'quantiteL' && this.depasse())
+      return `Stock insuffisant : ${this.p.nombre(this.dispo())} L disponibles.`;
     if (!c.touched || c.valid) return null;
-    return { acheteur: 'Indiquez l’acheteur.', quantiteL: 'Quantité supérieure à 0 L.', prixParL: 'Prix par litre requis.' }[champ];
+    return {
+      acheteur: 'Indiquez l’acheteur.',
+      quantiteL: 'Quantité supérieure à 0 L.',
+      prixParL: 'Prix par litre requis.',
+    }[champ];
   }
 
   oublierOffre(): void {
@@ -96,14 +116,21 @@ export class Ventes {
     const v = this.form.getRawValue();
     this.envoi.set(true);
     const msg = await this.data.ajouterVente({
-      acheteur: v.acheteur, qualite: v.qualite, quantiteL: Number(v.quantiteL), prixParL: Number(v.prixParL), date: v.date,
+      acheteur: v.acheteur,
+      qualite: v.qualite,
+      quantiteL: Number(v.quantiteL),
+      prixParL: Number(v.prixParL),
+      date: v.date,
     });
     this.envoi.set(false);
     if (msg) {
       this.erreurStock.set(msg);
       return;
     }
-    this.toast.afficher('Vente enregistrée', `${this.p.nombre(Number(v.quantiteL))} L à ${v.acheteur}, ${this.p.nombre(this.total(), 2)} TND. Le stock d’huile est à jour.`);
+    this.toast.afficher(
+      'Vente enregistrée',
+      `${this.p.nombre(Number(v.quantiteL))} L à ${v.acheteur}, ${this.p.nombre(this.total(), 2)} TND. Le stock d’huile est à jour.`,
+    );
     this.router.navigate(['/ventes']);
     this.form.reset();
   }

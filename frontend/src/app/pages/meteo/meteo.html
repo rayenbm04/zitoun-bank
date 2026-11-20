@@ -1,22 +1,33 @@
 <div class="page-head">
-  <p>Prévisions sur 7 jours pour la région de votre exploitation, avec des conseils pour organiser la récolte et les traitements.</p>
+  <p>
+    Prévisions sur 7 jours pour la région de votre exploitation, avec des conseils pour organiser la
+    récolte et les traitements.
+  </p>
   <div class="chips" role="group" aria-label="Choisir la région">
     @for (r of regions; track r) {
-      <button type="button" class="chip" [attr.aria-pressed]="region() === r" (click)="choisir(r)">{{ r }}</button>
+      <button type="button" class="chip" [attr.aria-pressed]="region() === r" (click)="choisir(r)">
+        {{ r }}
+      </button>
     }
   </div>
 </div>
 
 @if (etat() === 'erreur') {
   <section class="card">
-    <app-empty title="Météo indisponible" text="Le service météo ne répond pas. Vérifiez votre connexion internet puis réessayez." icon="nuage">
+    <app-empty
+      title="Météo indisponible"
+      text="Le service météo ne répond pas. Vérifiez votre connexion internet puis réessayez."
+      icon="nuage"
+    >
       <button type="button" class="btn btn-secondary" (click)="charger()">Réessayer</button>
     </app-empty>
   </section>
 } @else {
   <div class="grid-main">
     <section class="card actuel" aria-labelledby="t-actuel" aria-live="polite">
-      <div class="card-head"><h2 id="t-actuel">En ce moment à {{ region() }}</h2></div>
+      <div class="card-head">
+        <h2 id="t-actuel">En ce moment à {{ region() }}</h2>
+      </div>
       @if (etat() === 'chargement' || !meteo()) {
         <span class="skeleton" style="height: 96px; width: 60%"></span>
         <span class="skeleton" style="height: 120px; margin-top: 20px"></span>
@@ -24,28 +35,42 @@
         @let m = meteo()!;
         <div class="maintenant">
           <app-icon class="grand" [name]="temps(m.maintenant.code).icone" />
-          <p class="temp"><span class="num">{{ arrondi(m.maintenant.temperature) }}</span><small>°C</small></p>
+          <p class="temp">
+            <span class="num">{{ arrondi(m.maintenant.temperature) }}</span
+            ><small>°C</small>
+          </p>
           <p class="ciel">{{ temps(m.maintenant.code).libelle }}</p>
         </div>
         <dl class="dl details">
-          <dt>Minimum / maximum</dt><dd>{{ arrondi(m.jours[0].tMin) }} / {{ arrondi(m.jours[0].tMax) }} °C</dd>
-          <dt>Pluie prévue aujourd’hui</dt><dd>{{ p.nombre(m.jours[0].pluieMm, 1) }} mm ({{ m.jours[0].probaPluie }} %)</dd>
-          <dt>Humidité</dt><dd>{{ m.maintenant.humidite }} %</dd>
-          <dt>Vent</dt><dd>{{ arrondi(m.maintenant.vent) }} km/h</dd>
+          <dt>Minimum / maximum</dt>
+          <dd>{{ arrondi(m.jours[0].tMin) }} / {{ arrondi(m.jours[0].tMax) }} °C</dd>
+          <dt>Pluie prévue aujourd’hui</dt>
+          <dd>{{ p.nombre(m.jours[0].pluieMm, 1) }} mm ({{ m.jours[0].probaPluie }} %)</dd>
+          <dt>Humidité</dt>
+          <dd>{{ m.maintenant.humidite }} %</dd>
+          <dt>Vent</dt>
+          <dd>{{ arrondi(m.maintenant.vent) }} km/h</dd>
         </dl>
       }
     </section>
 
     <section class="card" aria-labelledby="t-conseils">
       <div class="card-head">
-        <div><h2 id="t-conseils">Conseils pour vos travaux</h2><p>Calculés à partir des prévisions de la semaine</p></div>
+        <div>
+          <h2 id="t-conseils">Conseils pour vos travaux</h2>
+          <p>Calculés à partir des prévisions de la semaine</p>
+        </div>
       </div>
       <div class="conseils">
         @if (etat() === 'chargement') {
-          @for (i of [1, 2, 3]; track i) { <span class="skeleton" style="height: 72px; border-radius: 12px"></span> }
+          @for (i of [1, 2, 3]; track i) {
+            <span class="skeleton" style="height: 72px; border-radius: 12px"></span>
+          }
         } @else {
           @for (c of conseils(); track c.titre) {
-            <app-alert [tone]="c.ton" [icon]="c.icone" [title]="c.titre" [stacked]="true">{{ c.texte }}</app-alert>
+            <app-alert [tone]="c.ton" [icon]="c.icone" [title]="c.titre" [stacked]="true">{{
+              c.texte
+            }}</app-alert>
           }
         }
       </div>
@@ -54,7 +79,10 @@
 
   <section class="card" style="margin-top: 24px" aria-labelledby="t-semaine">
     <div class="card-head">
-      <div><h2 id="t-semaine">Prévisions sur 7 jours</h2><p>Les jours marqués d’une étoile sont favorables à la récolte</p></div>
+      <div>
+        <h2 id="t-semaine">Prévisions sur 7 jours</h2>
+        <p>Les jours marqués d’une étoile sont favorables à la récolte</p>
+      </div>
     </div>
     @if (etat() === 'chargement' || !meteo()) {
       <span class="skeleton" style="height: 190px; border-radius: 14px"></span>
@@ -66,11 +94,15 @@
             <p class="dt num">{{ jourMois(j.date) }}</p>
             <app-icon class="ic" [name]="temps(j.code).icone" />
             <p class="sr-only">{{ temps(j.code).libelle }}</p>
-            <p class="tmp num"><strong>{{ arrondi(j.tMax) }}°</strong> <span>{{ arrondi(j.tMin) }}°</span></p>
+            <p class="tmp num">
+              <strong>{{ arrondi(j.tMax) }}°</strong> <span>{{ arrondi(j.tMin) }}°</span>
+            </p>
             <p class="info num"><app-icon name="pluie" />{{ p.nombre(j.pluieMm, 1) }} mm</p>
             <p class="info num"><app-icon name="vent" />{{ arrondi(j.ventMax) }} km/h</p>
             @if (favorable(j)) {
-              <span class="etoile" title="Favorable à la récolte"><app-icon name="etoile" /><span class="sr-only">Favorable à la récolte</span></span>
+              <span class="etoile" title="Favorable à la récolte"
+                ><app-icon name="etoile" /><span class="sr-only">Favorable à la récolte</span></span
+              >
             }
           </li>
         }
@@ -78,5 +110,7 @@
     }
   </section>
 
-  <p class="note source">Prévisions fournies par Open-Meteo (open-meteo.com), mises à jour toutes les heures.</p>
+  <p class="note source">
+    Prévisions fournies par Open-Meteo (open-meteo.com), mises à jour toutes les heures.
+  </p>
 }

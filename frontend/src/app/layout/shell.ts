@@ -23,7 +23,14 @@ import { Topbar } from './topbar';
         @if (data.erreurChargement()) {
           <app-alert tone="danger" title="Impossible de charger vos données" class="erreur-api">
             Le serveur ne répond pas. Vérifiez que l’API et MySQL sont lancés, puis réessayez.
-            <button slot="action" type="button" class="btn btn-outline btn-sm" (click)="data.charger()">Réessayer</button>
+            <button
+              slot="action"
+              type="button"
+              class="btn btn-outline btn-sm"
+              (click)="data.charger()"
+            >
+              Réessayer
+            </button>
           </app-alert>
         }
         <router-outlet />
@@ -32,39 +39,105 @@ import { Topbar } from './topbar';
 
     <nav class="nav-bas" [attr.aria-label]="prefs.t('nav.principal')">
       @for (l of raccourcis; track l.path) {
-        <a [routerLink]="l.path" routerLinkActive="actif" #rla="routerLinkActive" [attr.aria-current]="rla.isActive ? 'page' : null">
+        <a
+          [routerLink]="l.path"
+          routerLinkActive="actif"
+          #rla="routerLinkActive"
+          [attr.aria-current]="rla.isActive ? 'page' : null"
+        >
           <app-icon [name]="l.icone" tone="mono" />
           <span>{{ prefs.t(l.cle) }}</span>
         </a>
       }
-      <button type="button" (click)="tiroir.set(true)" [attr.aria-expanded]="tiroir()" [attr.aria-label]="prefs.t('nav.ouvrir')">
+      <button
+        type="button"
+        (click)="tiroir.set(true)"
+        [attr.aria-expanded]="tiroir()"
+        [attr.aria-label]="prefs.t('nav.ouvrir')"
+      >
         <app-icon name="menu" />
         <span>{{ prefs.t('nav.plus') }}</span>
       </button>
     </nav>
   `,
   styles: `
-    :host { display: flex; min-height: 100vh; }
-    .principal { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-    .contenu { flex: 1; width: 100%; max-width: var(--content-max); padding: 32px 40px 64px; outline: none; view-transition-name: contenu; }
-    .nav-bas { display: none; }
-    .erreur-api { display: block; margin-bottom: 24px; }
-    @media (max-width: 1100px) { .contenu { padding: 28px 28px 56px; } }
+    :host {
+      display: flex;
+      min-height: 100vh;
+    }
+    .principal {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .contenu {
+      flex: 1;
+      width: 100%;
+      max-width: var(--content-max);
+      padding: 32px 40px 64px;
+      outline: none;
+      view-transition-name: contenu;
+    }
+    .nav-bas {
+      display: none;
+    }
+    .erreur-api {
+      display: block;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 1100px) {
+      .contenu {
+        padding: 28px 28px 56px;
+      }
+    }
     @media (max-width: 720px) {
-      .contenu { padding: 20px 16px 104px; }
+      .contenu {
+        padding: 20px 16px 104px;
+      }
       .nav-bas {
-        display: grid; grid-template-columns: repeat(4, 1fr); position: fixed; inset-inline: 0; bottom: 0; z-index: 35;
-        padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); background: var(--nav-bg);
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        position: fixed;
+        inset-inline: 0;
+        bottom: 0;
+        z-index: 35;
+        padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+        background: var(--nav-bg);
         box-shadow: 0 -6px 24px rgba(23, 28, 14, 0.2);
       }
-      .nav-bas a, .nav-bas button {
-        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 56px;
-        border: none; background: transparent; color: var(--nav-fg); text-decoration: none; border-radius: 12px;
-        font-size: 0.6875rem; font-weight: 600; cursor: pointer; padding: 4px 2px; text-align: center; line-height: 1.15;
+      .nav-bas a,
+      .nav-bas button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        min-height: 56px;
+        border: none;
+        background: transparent;
+        color: var(--nav-fg);
+        text-decoration: none;
+        border-radius: 12px;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 4px 2px;
+        text-align: center;
+        line-height: 1.15;
       }
-      .nav-bas app-icon { width: 22px; height: 22px; }
-      .nav-bas a.actif { color: var(--or-clair); background: rgba(201, 162, 39, 0.14); }
-      .nav-bas a:focus-visible, .nav-bas button:focus-visible { box-shadow: 0 0 0 3px var(--or-clair); }
+      .nav-bas app-icon {
+        width: 22px;
+        height: 22px;
+      }
+      .nav-bas a.actif {
+        color: var(--or-clair);
+        background: rgba(201, 162, 39, 0.14);
+      }
+      .nav-bas a:focus-visible,
+      .nav-bas button:focus-visible {
+        box-shadow: 0 0 0 3px var(--or-clair);
+      }
     }
   `,
 })
@@ -83,10 +156,10 @@ export class Shell {
 
   readonly titre = toSignal(
     this.router.events.pipe(
-      filter(e => e instanceof NavigationEnd),
-      map(() => this.titreCourant())
+      filter((e) => e instanceof NavigationEnd),
+      map(() => this.titreCourant()),
     ),
-    { initialValue: this.titreCourant() }
+    { initialValue: this.titreCourant() },
   );
 
   private titreCourant(): string {

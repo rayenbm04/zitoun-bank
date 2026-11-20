@@ -10,7 +10,8 @@ import { Icon } from '../../shared/ui/icon';
 import { Field } from '../../shared/ui/field';
 import { Alert } from '../../shared/ui/alert';
 
-type Champ = 'olivesKg' | 'rendement' | 'prixParL' | 'cueillette' | 'moulin' | 'transport' | 'autres';
+type Champ =
+  'olivesKg' | 'rendement' | 'prixParL' | 'cueillette' | 'moulin' | 'transport' | 'autres';
 
 const LIMITES: Record<Champ, [number, number]> = {
   olivesKg: [1, 200000],
@@ -22,7 +23,12 @@ const LIMITES: Record<Champ, [number, number]> = {
   autres: [0, 100000],
 };
 
-const COULEURS = ['var(--s-cueillette)', 'var(--s-moulin)', 'var(--s-transport)', 'var(--s-autres)'];
+const COULEURS = [
+  'var(--s-cueillette)',
+  'var(--s-moulin)',
+  'var(--s-transport)',
+  'var(--s-autres)',
+];
 
 @Component({
   selector: 'app-simulateur',
@@ -49,15 +55,21 @@ export class Simulateur {
     autres: [0, this.regles('autres')],
   });
 
-  private readonly valeurs = toSignal(this.form.valueChanges.pipe(map(() => this.form.getRawValue())), {
-    initialValue: this.form.getRawValue(),
+  private readonly valeurs = toSignal(
+    this.form.valueChanges.pipe(map(() => this.form.getRawValue())),
+    {
+      initialValue: this.form.getRawValue(),
+    },
+  );
+  private readonly valide = toSignal(this.form.statusChanges.pipe(map((s) => s === 'VALID')), {
+    initialValue: true,
   });
-  private readonly valide = toSignal(this.form.statusChanges.pipe(map(s => s === 'VALID')), { initialValue: true });
 
   readonly qualiteChoisie = computed(() => this.valeurs().qualite);
   readonly meilleurPrix = computed(() => this.meilleurPrixPour(this.qualiteChoisie()));
   readonly prixMoyen = computed(() => this.data.prixMoyen(this.qualiteChoisie()));
 
+  /** Tout le calcul est refait à chaque frappe : huile obtenue, chiffre d’affaires, coûts, bénéfice et scénarios de prix. */
   readonly resultat = computed(() => {
     const v = this.valeurs();
     const olives = Number(v.olivesKg) || 0;
@@ -76,21 +88,33 @@ export class Simulateur {
     const base = Math.max(chiffreAffaires, coutTotal) || 1;
     const segments = [
       ...couts.map((c, i) => ({ ...c, couleur: COULEURS[i], part: (c.montant / base) * 100 })),
-      { nom: 'Bénéfice', montant: Math.max(benefice, 0), couleur: 'var(--s-benefice)', part: (Math.max(benefice, 0) / base) * 100 },
-    ].filter(s => s.montant > 0);
-    const scenarios = [-10, -5, 0, 5, 10].map(pct => {
+      {
+        nom: 'Bénéfice',
+        montant: Math.max(benefice, 0),
+        couleur: 'var(--s-benefice)',
+        part: (Math.max(benefice, 0) / base) * 100,
+      },
+    ].filter((s) => s.montant > 0);
+    const scenarios = [-10, -5, 0, 5, 10].map((pct) => {
       const prixScenario = prix * (1 + pct / 100);
       return { pct, prix: prixScenario, benefice: huileL * prixScenario - coutTotal };
     });
     return {
-      huileL, chiffreAffaires, couts, coutTotal, benefice, coutParL, segments, scenarios,
+      huileL,
+      chiffreAffaires,
+      couts,
+      coutTotal,
+      benefice,
+      coutParL,
+      segments,
+      scenarios,
       marge: chiffreAffaires > 0 ? (benefice / chiffreAffaires) * 100 : 0,
     };
   });
 
   constructor() {
     this.reinitialiser();
-    this.form.controls.qualite.valueChanges.subscribe(q => {
+    this.form.controls.qualite.valueChanges.subscribe((q) => {
       const prix = this.meilleurPrixPour(q);
       if (prix) this.form.controls.prixParL.setValue(prix);
     });
@@ -102,7 +126,10 @@ export class Simulateur {
   }
 
   private meilleurPrixPour(q: QualiteHuile): number {
-    return this.data.offres().filter(o => o.qualite === q).reduce((m, o) => Math.max(m, o.prixParL), 0);
+    return this.data
+      .offres()
+      .filter((o) => o.qualite === q)
+      .reduce((m, o) => Math.max(m, o.prixParL), 0);
   }
 
   reinitialiser(): void {
@@ -123,7 +150,9 @@ export class Simulateur {
     const c = this.form.controls[champ];
     if (c.valid) return null;
     const [min, max] = LIMITES[champ];
-    return c.hasError('required') ? 'Champ obligatoire.' : `Entre ${this.p.nombre(min, min < 1 ? 1 : 0)} et ${this.p.nombre(max)}.`;
+    return c.hasError('required')
+      ? 'Champ obligatoire.'
+      : `Entre ${this.p.nombre(min, min < 1 ? 1 : 0)} et ${this.p.nombre(max)}.`;
   }
 
   variation(pct: number): string {

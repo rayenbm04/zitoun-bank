@@ -26,25 +26,38 @@ export class Dashboard {
   readonly p = inject(PrefsService);
 
   readonly meteo = toSignal(
-    inject(MeteoService).charger(regionValide(this.auth.user()?.region)).pipe(catchError(() => of(null))),
-    { initialValue: null }
+    inject(MeteoService)
+      .charger(regionValide(this.auth.user()?.region))
+      .pipe(catchError(() => of(null))),
+    { initialValue: null },
   );
   readonly temps = decrireTemps;
   readonly arrondi = Math.round;
 
-  readonly mois = computed(() => this.data.historiquePrix().map(x => this.p.mois(x.mois)));
+  readonly mois = computed(() => this.data.historiquePrix().map((x) => this.p.mois(x.mois)));
   readonly series = computed<Serie[]>(() => [
-    { nom: this.p.t('Extra vierge'), couleur: 'or', valeurs: this.data.historiquePrix().map(x => x['Extra vierge']) },
-    { nom: this.p.t('Vierge'), couleur: 'olive', valeurs: this.data.historiquePrix().map(x => x.Vierge) },
+    {
+      nom: this.p.t('Extra vierge'),
+      couleur: 'or',
+      valeurs: this.data.historiquePrix().map((x) => x['Extra vierge']),
+    },
+    {
+      nom: this.p.t('Vierge'),
+      couleur: 'olive',
+      valeurs: this.data.historiquePrix().map((x) => x.Vierge),
+    },
   ]);
 
   readonly variation = computed(() => {
     const h = this.data.historiquePrix();
-    const a = h.at(-2)?.['Extra vierge'] ?? 0, b = h.at(-1)?.['Extra vierge'] ?? 0;
+    const a = h.at(-2)?.['Extra vierge'] ?? 0,
+      b = h.at(-1)?.['Extra vierge'] ?? 0;
     return a ? ((b - a) / a) * 100 : 0;
   });
 
-  readonly dernieres = computed(() => [...this.data.ventes()].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5));
+  readonly dernieres = computed(() =>
+    [...this.data.ventes()].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5),
+  );
 
   readonly aujourdhui = computed(() => {
     const d = new Date();

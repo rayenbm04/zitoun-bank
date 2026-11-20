@@ -32,7 +32,10 @@ export class Login {
   erreur(champ: 'email' | 'password'): string | null {
     const c = this.form.controls[champ];
     if (!c.touched || c.valid) return null;
-    if (champ === 'email') return c.hasError('required') ? 'Saisissez votre adresse e-mail.' : 'Cette adresse e-mail n’est pas valide (exemple : nom@domaine.tn).';
+    if (champ === 'email')
+      return c.hasError('required')
+        ? 'Saisissez votre adresse e-mail.'
+        : 'Cette adresse e-mail n’est pas valide (exemple : nom@domaine.tn).';
     return 'Saisissez votre mot de passe.';
   }
 
@@ -52,7 +55,7 @@ export class Login {
         this.error.set(
           err.status === 0
             ? 'Le serveur ne répond pas. Vérifiez que le backend est démarré (npm run dev dans backend).'
-            : (err.error?.message ?? 'La connexion a échoué. Réessayez.')
+            : (err.error?.message ?? 'La connexion a échoué. Réessayez.'),
         );
       },
     });

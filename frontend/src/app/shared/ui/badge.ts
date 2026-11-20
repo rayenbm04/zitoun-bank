@@ -2,7 +2,11 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { Icon } from './icon';
 import { PrefsService } from '../../core/prefs.service';
 
-type Ton = { bg: string; fg: string; icone: string };
+interface Ton {
+  bg: string;
+  fg: string;
+  icone: string;
+}
 
 const TONS: Record<string, Ton> = {
   'Extra vierge': { bg: 'var(--q-extra-bg)', fg: 'var(--q-extra-fg)', icone: 'etoile' },
@@ -29,6 +33,8 @@ const TONS: Record<string, Ton> = {
 export class Badge {
   private readonly prefs = inject(PrefsService);
   readonly valeur = input.required<string>();
-  readonly ton = computed<Ton>(() => TONS[this.valeur()] ?? { bg: 'var(--info-bg)', fg: 'var(--info-fg)', icone: 'info' });
+  readonly ton = computed<Ton>(
+    () => TONS[this.valeur()] ?? { bg: 'var(--info-bg)', fg: 'var(--info-fg)', icone: 'info' },
+  );
   readonly libelle = computed(() => this.prefs.t(this.valeur()));
 }

@@ -2,8 +2,22 @@
   <p class="salut">{{ p.t('db.bonjour') }} {{ auth.user()?.prenom }}. {{ p.t('db.intro') }}</p>
   <div class="intro-droite">
     @if (meteo(); as m) {
-      <a routerLink="/meteo" class="meteo-mini" [attr.aria-label]="'Météo à ' + m.region + ' : ' + temps(m.maintenant.code).libelle + ', ' + arrondi(m.maintenant.temperature) + ' °C'">
-        <app-icon [name]="temps(m.maintenant.code).icone" /><span class="num">{{ arrondi(m.maintenant.temperature) }} °C</span>{{ m.region }}
+      <a
+        routerLink="/meteo"
+        class="meteo-mini"
+        [attr.aria-label]="
+          'Météo à ' +
+          m.region +
+          ' : ' +
+          temps(m.maintenant.code).libelle +
+          ', ' +
+          arrondi(m.maintenant.temperature) +
+          ' °C'
+        "
+      >
+        <app-icon [name]="temps(m.maintenant.code).icone" /><span class="num"
+          >{{ arrondi(m.maintenant.temperature) }} °C</span
+        >{{ m.region }}
       </a>
     }
     <p class="date"><app-icon name="calendrier" />{{ aujourdhui() }}</p>
@@ -11,16 +25,41 @@
 </div>
 
 <section class="kpi-grid" aria-label="Indicateurs clés">
-  <app-kpi [label]="p.t('db.huile')" [value]="p.nombre(data.stockHuileL())" [unit]="p.t('u.L')"
-           [hint]="p.t('db.huile.hint')" icon="goutte" [loading]="data.chargement()" />
-  <app-kpi [label]="p.t('db.olives')" [value]="p.nombre(data.stockOlivesKg())" [unit]="p.t('u.kg')"
-           [hint]="p.t('db.olives.hint')" icon="panier" [loading]="data.chargement()" />
-  <app-kpi [label]="p.t('db.prix')" [value]="p.nombre(data.prixMoyenDuJour(), 2)" [unit]="p.t('u.tndL')"
-           [hint]="p.t('Extra vierge')" icon="etiquette" [featured]="true"
-           [trend]="variation() >= 0 ? 'up' : 'down'" [trendLabel]="(variation() >= 0 ? '+' : '') + p.nombre(variation(), 1) + ' %'"
-           [loading]="data.chargement()" />
-  <app-kpi [label]="p.t('db.ventes')" [value]="p.nombre(data.montantDuMois())" [unit]="p.t('u.tnd')"
-           [hint]="p.t('db.ventes.hint', { n: data.ventesDuMois().length })" icon="billet" [loading]="data.chargement()" />
+  <app-kpi
+    [label]="p.t('db.huile')"
+    [value]="p.nombre(data.stockHuileL())"
+    [unit]="p.t('u.L')"
+    [hint]="p.t('db.huile.hint')"
+    icon="goutte"
+    [loading]="data.chargement()"
+  />
+  <app-kpi
+    [label]="p.t('db.olives')"
+    [value]="p.nombre(data.stockOlivesKg())"
+    [unit]="p.t('u.kg')"
+    [hint]="p.t('db.olives.hint')"
+    icon="panier"
+    [loading]="data.chargement()"
+  />
+  <app-kpi
+    [label]="p.t('db.prix')"
+    [value]="p.nombre(data.prixMoyenDuJour(), 2)"
+    [unit]="p.t('u.tndL')"
+    [hint]="p.t('Extra vierge')"
+    icon="etiquette"
+    [featured]="true"
+    [trend]="variation() >= 0 ? 'up' : 'down'"
+    [trendLabel]="(variation() >= 0 ? '+' : '') + p.nombre(variation(), 1) + ' %'"
+    [loading]="data.chargement()"
+  />
+  <app-kpi
+    [label]="p.t('db.ventes')"
+    [value]="p.nombre(data.montantDuMois())"
+    [unit]="p.t('u.tnd')"
+    [hint]="p.t('db.ventes.hint', { n: data.ventesDuMois().length })"
+    icon="billet"
+    [loading]="data.chargement()"
+  />
 </section>
 
 <div class="grid-main zone">
@@ -35,24 +74,42 @@
     @if (data.chargement()) {
       <span class="skeleton" style="height: 240px; border-radius: 14px"></span>
     } @else {
-      <app-line-chart [etiquettes]="mois()" [series]="series()" [label]="p.t('db.courbe')" [unite]="p.t('u.tndL')" [decimales]="2" [hauteur]="320" />
+      <app-line-chart
+        [etiquettes]="mois()"
+        [series]="series()"
+        [label]="p.t('db.courbe')"
+        [unite]="p.t('u.tndL')"
+        [decimales]="2"
+        [hauteur]="320"
+      />
     }
   </section>
 
   <section class="card" aria-labelledby="t-alertes">
     <div class="card-head">
       <h2 id="t-alertes">{{ p.t('db.alertes') }}</h2>
-      @if (data.alertes().length) { <span class="compteur">{{ data.alertes().length }}</span> }
+      @if (data.alertes().length) {
+        <span class="compteur">{{ data.alertes().length }}</span>
+      }
     </div>
     <div class="alertes">
       @if (data.chargement()) {
-        @for (i of [1, 2, 3]; track i) { <span class="skeleton" style="height: 72px; border-radius: 12px"></span> }
+        @for (i of [1, 2, 3]; track i) {
+          <span class="skeleton" style="height: 72px; border-radius: 12px"></span>
+        }
       } @else {
         @for (a of data.alertes(); track a.id) {
-          <app-alert [tone]="a.ton" [icon]="a.icone" [title]="p.t(a.titre, a.vars)" [stacked]="true">
+          <app-alert
+            [tone]="a.ton"
+            [icon]="a.icone"
+            [title]="p.t(a.titre, a.vars)"
+            [stacked]="true"
+          >
             <span class="txt">{{ p.t(a.texte, a.vars) }}</span>
             @if (a.lien && a.action) {
-              <a slot="action" [routerLink]="a.lien" class="lien-action">{{ p.t(a.action) }}<app-icon name="chevron-fin" /></a>
+              <a slot="action" [routerLink]="a.lien" class="lien-action"
+                >{{ p.t(a.action) }}<app-icon name="chevron-fin"
+              /></a>
             }
           </app-alert>
         } @empty {
@@ -66,11 +123,15 @@
 <section class="card card-flush zone" aria-labelledby="t-ventes">
   <div class="card-head">
     <h2 id="t-ventes">{{ p.t('db.dernieres') }}</h2>
-    <a routerLink="/ventes" class="btn btn-ghost btn-sm">{{ p.t('db.tout') }}<app-icon name="chevron-fin" /></a>
+    <a routerLink="/ventes" class="btn btn-ghost btn-sm"
+      >{{ p.t('db.tout') }}<app-icon name="chevron-fin"
+    /></a>
   </div>
   <div class="table-wrap pad">
     @if (data.chargement()) {
-      @for (i of [1, 2, 3]; track i) { <span class="skeleton" style="height: 44px; margin-bottom: 10px"></span> }
+      @for (i of [1, 2, 3]; track i) {
+        <span class="skeleton" style="height: 44px; margin-bottom: 10px"></span>
+      }
     } @else {
       <table class="table stack">
         <thead>
@@ -89,8 +150,12 @@
               <td [attr.data-label]="p.t('col.date')" class="num">{{ p.date(v.date) }}</td>
               <td [attr.data-label]="p.t('col.acheteur')" class="t-main">{{ v.acheteur }}</td>
               <td [attr.data-label]="p.t('col.qualite')"><app-badge [valeur]="v.qualite" /></td>
-              <td [attr.data-label]="p.t('col.quantite')" class="t-num">{{ p.nombre(v.quantiteL) }} {{ p.t('u.L') }}</td>
-              <td [attr.data-label]="p.t('col.montant')" class="t-num strong">{{ p.nombre(v.quantiteL * v.prixParL, 2) }} {{ p.t('u.tnd') }}</td>
+              <td [attr.data-label]="p.t('col.quantite')" class="t-num">
+                {{ p.nombre(v.quantiteL) }} {{ p.t('u.L') }}
+              </td>
+              <td [attr.data-label]="p.t('col.montant')" class="t-num strong">
+                {{ p.nombre(v.quantiteL * v.prixParL, 2) }} {{ p.t('u.tnd') }}
+              </td>
               <td [attr.data-label]="p.t('col.statut')"><app-badge [valeur]="v.statut" /></td>
             </tr>
           }
@@ -99,4 +164,3 @@
     }
   </div>
 </section>
-

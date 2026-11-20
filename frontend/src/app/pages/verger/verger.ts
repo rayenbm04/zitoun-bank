@@ -48,14 +48,20 @@ export class Verger {
   });
 
   readonly regionsTexte = computed(() => {
-    const r = [...new Set(this.data.parcelles().map(x => x.region))];
-    return r.length ? 'à ' + (r.length > 1 ? r.slice(0, -1).join(', ') + ' et ' + r.at(-1) : r[0]) : 'aucune pour l’instant';
+    const r = [...new Set(this.data.parcelles().map((x) => x.region))];
+    return r.length
+      ? 'à ' + (r.length > 1 ? r.slice(0, -1).join(', ') + ' et ' + r.at(-1) : r[0])
+      : 'aucune pour l’instant';
   });
 
   erreur(champ: 'nom' | 'superficieHa' | 'nbOliviers'): string | null {
     const c = this.form.controls[champ];
     if (!c.touched || c.valid) return null;
-    return { nom: 'Donnez un nom à la parcelle.', superficieHa: 'Superficie supérieure à 0 ha.', nbOliviers: 'Au moins 1 olivier.' }[champ];
+    return {
+      nom: 'Donnez un nom à la parcelle.',
+      superficieHa: 'Superficie supérieure à 0 ha.',
+      nbOliviers: 'Au moins 1 olivier.',
+    }[champ];
   }
 
   ouvrirAjout(): void {
@@ -66,7 +72,14 @@ export class Verger {
 
   ouvrirEdition(p: Parcelle): void {
     this.enEdition.set(p);
-    this.form.setValue({ nom: p.nom, region: p.region, superficieHa: p.superficieHa, variete: p.variete, nbOliviers: p.nbOliviers, etat: p.etat });
+    this.form.setValue({
+      nom: p.nom,
+      region: p.region,
+      superficieHa: p.superficieHa,
+      variete: p.variete,
+      nbOliviers: p.nbOliviers,
+      etat: p.etat,
+    });
     this.formOuvert.set(true);
   }
 
