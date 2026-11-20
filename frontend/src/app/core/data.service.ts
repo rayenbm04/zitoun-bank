@@ -1,4 +1,8 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
+import { firstValueFrom, forkJoin } from 'rxjs';
+import { AuthService } from './auth.service';
+import { API_URL } from './config';
 import {
   Mouvement, Offre, Parcelle, PointPrix, Pressage, QualiteHuile, Recolte, Tache, Vente,
 } from './models';
@@ -11,6 +15,14 @@ function ilYa(jours: number): string {
 
 function dans(jours: number): string {
   return ilYa(-jours);
+}
+
+export function messageErreur(e: unknown): string {
+  if (e instanceof HttpErrorResponse) {
+    if (e.status === 0) return 'Le serveur ne répond pas. Vérifiez que l’API est lancée.';
+    return e.error?.message ?? 'Une erreur est survenue, réessayez.';
+  }
+  return 'Une erreur est survenue, réessayez.';
 }
 
 export const DENSITE_HUILE = 0.916;
@@ -32,15 +44,14 @@ export interface Alerte {
 
 @Injectable({ providedIn: 'root' })
 export class DataService {
+  private readonly http = inject(HttpClient);
+  private readonly auth = inject(AuthService);
   private nextId = 100;
 
   readonly chargement = signal(true);
+  readonly erreurChargement = signal(false);
 
-  readonly parcelles = signal<Parcelle[]>([
-    { id: 1, nom: 'Henchir El Ain', region: 'Sfax', superficieHa: 4, variete: 'Chemlali', nbOliviers: 180, etat: 'Bon' },
-    { id: 2, nom: 'Bled Jedd', region: 'Sfax', superficieHa: 2.5, variete: 'Chemlali', nbOliviers: 90, etat: 'Moyen' },
-    { id: 3, nom: 'Parcelle Nord', region: 'Mahdia', superficieHa: 1.5, variete: 'Chetoui', nbOliviers: 30, etat: 'À surveiller' },
-  ]);
+  readonly parcelles = signal<Parcelle[]>([]);
 
   readonly recoltes = signal<Recolte[]>([
     { id: 1, date: ilYa(26), parcelleId: 1, quantiteKg: 1800 },
@@ -94,8 +105,34 @@ export class DataService {
     })
   );
 
+  private readonly utilisateur = computed(() => this.auth.user()?.id ?? null);
+
   constructor() {
-    setTimeout(() => this.chargement.set(false), 700);
+    effect(() => {
+      const id = this.utilisateur();
+      untracked(() => (id === null ? this.vider() : this.charger()));
+    });
+  }
+
+  charger(): void {
+    this.chargement.set(true);
+    this.erreurChargement.set(false);
+    forkJoin({
+      parcelles: this.http.get<Parcelle[]>(`${API_URL}/parcelles`),
+    }).subscribe({
+      next: d => {
+        this.parcelles.set(d.parcelles);
+        this.chargement.set(false);
+      },
+      error: () => {
+        this.erreurChargement.set(true);
+        this.chargement.set(false);
+      },
+    });
+  }
+
+  private vider(): void {
+    this.parcelles.set([]);
   }
 
   readonly superficieTotale = computed(() => this.parcelles().reduce((s, p) => s + p.superficieHa, 0));
@@ -213,16 +250,27 @@ export class DataService {
     return this.parcelles().find(p => p.id === id)?.nom ?? 'Parcelle supprimée';
   }
 
-  enregistrerParcelle(p: Omit<Parcelle, 'id'>, id?: number): void {
-    if (id) {
-      this.parcelles.update(list => list.map(x => (x.id === id ? { ...p, id } : x)));
-    } else {
-      this.parcelles.update(list => [...list, { ...p, id: this.nextId++ }]);
+  async enregistrerParcelle(p: Omit<Parcelle, 'id'>, id?: number): Promise<string | null> {
+    try {
+      const requete = id
+        ? this.http.put<Parcelle>(`${API_URL}/parcelles/${id}`, p)
+        : this.http.post<Parcelle>(`${API_URL}/parcelles`, p);
+      const enregistree = await firstValueFrom(requete);
+      this.parcelles.update(list => (id ? list.map(x => (x.id === id ? enregistree : x)) : [...list, enregistree]));
+      return null;
+    } catch (e) {
+      return messageErreur(e);
     }
   }
 
-  supprimerParcelle(id: number): void {
-    this.parcelles.update(list => list.filter(p => p.id !== id));
+  async supprimerParcelle(id: number): Promise<string | null> {
+    try {
+      await firstValueFrom(this.http.delete(`${API_URL}/parcelles/${id}`));
+      this.parcelles.update(list => list.filter(p => p.id !== id));
+      return null;
+    } catch (e) {
+      return messageErreur(e);
+    }
   }
 
   ajouterRecolte(r: Omit<Recolte, 'id'>): void {

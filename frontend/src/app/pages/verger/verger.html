@@ -103,7 +103,7 @@
   </form>
   <div slot="footer">
     <button type="button" class="btn btn-outline" (click)="formOuvert.set(false)">Annuler</button>
-    <button type="submit" form="form-parcelle" class="btn btn-secondary">{{ enEdition() ? 'Enregistrer les modifications' : 'Enregistrer la parcelle' }}</button>
+    <button type="submit" form="form-parcelle" class="btn btn-secondary" [disabled]="envoi()">{{ enEdition() ? 'Enregistrer les modifications' : 'Enregistrer la parcelle' }}</button>
   </div>
 </app-modal>
 
@@ -111,6 +111,6 @@
            [description]="'« ' + (aSupprimer()?.nom ?? '') + ' » et ses ' + (aSupprimer()?.nbOliviers ?? 0) + ' oliviers seront retirés du verger. Les récoltes déjà enregistrées restent dans l’historique.'">
   <div slot="footer">
     <button type="button" class="btn btn-outline" (click)="confirmOuvert.set(false)">Garder la parcelle</button>
-    <button type="button" class="btn btn-danger" (click)="supprimer()"><app-icon name="corbeille" />Supprimer</button>
+    <button type="button" class="btn btn-danger" (click)="supprimer()" [disabled]="envoi()"><app-icon name="corbeille" />Supprimer</button>
   </div>
 </app-modal>
