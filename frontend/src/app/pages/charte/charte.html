@@ -1,0 +1,233 @@
+<header class="entete">
+  <a routerLink="/" aria-label="Zitoun Bank, accueil"><app-logo /></a>
+  <div class="row-gap">
+    <button type="button" class="btn btn-outline btn-sm" (click)="prefs.basculerTheme()">
+      <app-icon [name]="prefs.sombre() ? 'soleil' : 'lune'" />{{ prefs.sombre() ? 'Mode clair' : 'Mode sombre' }}
+    </button>
+    <a routerLink="/" class="btn btn-ghost btn-sm"><app-icon name="retour" />Accueil</a>
+  </div>
+</header>
+
+<div class="cadre">
+  <nav class="sommaire" aria-label="Sommaire de la charte">
+    <p class="s-titre">Charte graphique</p>
+    <ul>
+      @for (s of sommaire; track s[0]) { <li><a [href]="'/charte#' + s[0]">{{ s[1] }}</a></li> }
+    </ul>
+  </nav>
+
+  <main class="contenu" id="contenu">
+    <div class="intro">
+      <h1>Système de design</h1>
+      <p>Les jetons et composants réutilisables de Zitoun Bank. Chaque écran de l’application est construit uniquement avec ces éléments, en clair comme en sombre, en français comme en arabe.</p>
+    </div>
+
+    <section id="couleurs" class="sec">
+      <h2>Couleurs</h2>
+      <p class="sec-p">Une palette tirée de l’oliveraie. L’or est rare : une seule action principale par écran, la page active du menu et les chiffres clés.</p>
+      <div class="nuancier">
+        @for (c of couleurs; track c.hex) {
+          <div class="nuance">
+            <div class="pastille" [style.background]="c.hex" [style.color]="c.texte"><span>Aa</span></div>
+            <strong>{{ c.nom }}</strong>
+            <code>{{ c.hex }}</code>
+            <span class="role">{{ c.role }}</span>
+            <span class="ctr">{{ c.contraste }}</span>
+          </div>
+        }
+      </div>
+      <h3 class="sous-titre">Texte et bordures</h3>
+      <div class="neutres">
+        @for (c of neutres; track c.hex) {
+          <div class="neutre"><span class="carre" [style.background]="c.hex"></span><div><strong>{{ c.nom }}</strong> <code>{{ c.hex }}</code><span class="role">{{ c.role }}</span></div></div>
+        }
+      </div>
+      <h3 class="sous-titre">Sémantique : toujours avec une icône et un libellé</h3>
+      <div class="semantique">
+        <app-alert tone="info" title="Information">Sauge clair et olive.</app-alert>
+        <app-alert tone="ok" title="Succès">Sauge clair et olive, icône cochée.</app-alert>
+        <app-alert tone="warn" title="Attention">Or pâle et brun doré.</app-alert>
+        <app-alert tone="danger" title="Erreur">Rose et rouge brique #B3261E.</app-alert>
+      </div>
+    </section>
+
+    <section id="typo" class="sec">
+      <h2>Typographie</h2>
+      <p class="sec-p">Playfair Display pour les titres, DM Sans pour les textes, les boutons et les chiffres (chiffres tabulaires dans les tableaux et indicateurs). En arabe, Noto Kufi Arabic prend le relais.</p>
+      <div class="echelle">
+        @for (t of typo; track t.nom) {
+          <div class="ech">
+            <span class="ech-nom">{{ t.nom }}<small>{{ t.spec }}</small></span>
+            <span class="ech-ex" [attr.style]="t.css">{{ t.ex }}</span>
+          </div>
+        }
+        <div class="ech">
+          <span class="ech-nom">Arabe<small>Noto Kufi Arabic 22 / 700</small></span>
+          <span class="ech-ex" lang="ar" dir="rtl" style="font-family: var(--font-ar); font-size: 1.375rem; font-weight: 700">لوحة القيادة</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="espaces" class="sec">
+      <h2>Espaces, rayons, ombres</h2>
+      <p class="sec-p">Grille de 4 px. Le rayon suit la taille de l’élément : plus il est grand, plus il est arrondi.</p>
+      <div class="trois">
+        <div class="card">
+          <h3>Espacements</h3>
+          <ul class="espaces">
+            @for (e of espaces; track e) { <li><span class="barre" [style.width.px]="e"></span><code>{{ e }} px</code></li> }
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Rayons</h3>
+          <ul class="rayons">
+            @for (r of rayons; track r[0]) { <li><span class="boite" [style.border-radius.px]="r[2]"></span><span><strong>{{ r[0] }}</strong> {{ r[1] }}</span></li> }
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Ombres teintées olive</h3>
+          <ul class="ombres">
+            @for (o of ombres; track o[0]) { <li><span class="plaque" [style.box-shadow]="o[2]"></span><span><strong>{{ o[0] }}</strong> {{ o[1] }}</span></li> }
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="boutons" class="sec">
+      <h2>Boutons</h2>
+      <p class="sec-p">Hauteur minimale de 44 px pour le toucher. Survol : teinte plus profonde. Focus clavier : double anneau visible.</p>
+      <div class="card demo">
+        <div class="ligne"><span class="lib">Principal (or), un seul par écran</span><button class="btn btn-primary">Vendre à Med Olive Export</button></div>
+        <div class="ligne"><span class="lib">Secondaire plein (olive)</span><button class="btn btn-secondary">Enregistrer</button><button class="btn btn-secondary"><app-icon name="plus" />Ajouter une récolte</button></div>
+        <div class="ligne"><span class="lib">Contour et discret</span><button class="btn btn-outline">Annuler</button><button class="btn btn-ghost"><app-icon name="crayon" />Modifier</button></div>
+        <div class="ligne"><span class="lib">Danger</span><button class="btn btn-danger"><app-icon name="corbeille" />Supprimer</button></div>
+        <div class="ligne"><span class="lib">Petite taille</span><button class="btn btn-outline btn-sm">Vendre</button><button class="btn btn-secondary btn-sm">Filtrer</button></div>
+        <div class="ligne"><span class="lib">Désactivé</span><button class="btn btn-primary" disabled>Valider la vente</button><button class="btn btn-secondary" disabled>Enregistrer</button></div>
+        <div class="ligne"><span class="lib">Chargement</span><button class="btn btn-primary" disabled aria-busy="true"><span class="spinner" aria-hidden="true"></span>Connexion en cours…</button></div>
+        <div class="ligne"><span class="lib">Icône seule (avec libellé caché)</span><button class="btn btn-outline btn-icon" aria-label="Notifications"><app-icon name="cloche" /></button><button class="btn btn-outline btn-icon" aria-label="Mode sombre"><app-icon name="lune" /></button></div>
+      </div>
+    </section>
+
+    <section id="champs" class="sec">
+      <h2>Champs de formulaire</h2>
+      <p class="sec-p">Libellé toujours visible, aide sous le champ, erreur à l’endroit du problème avec une icône.</p>
+      <div class="card form-grid">
+        <app-field label="Acheteur" for="d-1" hint="Choisissez dans la liste ou saisissez un nom">
+          <input id="d-1" value="Coopérative Ennour" />
+        </app-field>
+        <app-field label="Région" for="d-2">
+          <select id="d-2"><option>Sfax</option><option>Sousse</option></select>
+        </app-field>
+        <app-field label="Quantité" for="d-3" error="Stock insuffisant : 477 L disponibles.">
+          <div class="input-affix"><input id="d-3" type="number" value="600" aria-invalid="true" /><span class="affix">L</span></div>
+        </app-field>
+        <app-field label="Prix par litre" for="d-4" hint="Champ désactivé">
+          <div class="input-affix"><input id="d-4" value="14,20" disabled /><span class="affix">TND</span></div>
+        </app-field>
+        <app-field class="span-2" label="Message" for="d-5" [optional]="true">
+          <textarea id="d-5" rows="3" placeholder="Votre message"></textarea>
+        </app-field>
+      </div>
+    </section>
+
+    <section id="badges" class="sec">
+      <h2>Badges</h2>
+      <p class="sec-p">Couleur, icône et libellé : la couleur n’est jamais le seul signal.</p>
+      <div class="card demo">
+        <div class="ligne"><span class="lib">Qualité de l’huile</span><app-badge valeur="Extra vierge" /><app-badge valeur="Vierge" /><app-badge valeur="Ordinaire" /></div>
+        <div class="ligne"><span class="lib">État des parcelles</span><app-badge valeur="Bon" /><app-badge valeur="Moyen" /><app-badge valeur="À surveiller" /></div>
+        <div class="ligne"><span class="lib">Statut des ventes</span><app-badge valeur="Payée" /><app-badge valeur="Livrée" /><app-badge valeur="En attente" /></div>
+        <div class="ligne"><span class="lib">Mouvements</span><app-badge valeur="Entrée" /><app-badge valeur="Sortie" /><app-badge valeur="Meilleure offre" /></div>
+      </div>
+    </section>
+
+    <section id="cartes" class="sec">
+      <h2>Cartes et indicateurs</h2>
+      <p class="sec-p">Icône métier dans une pastille sauge, libellé court, chiffre en tabulaire. Le chiffre clé de l’écran passe en or.</p>
+      <div class="kpi-grid">
+        <app-kpi label="Huile en stock" value="600" unit="L" hint="prête à la vente" icon="goutte" />
+        <app-kpi label="Prix moyen du jour" value="13,83" unit="TND/L" hint="Extra vierge" icon="etiquette" [featured]="true" trend="up" trendLabel="+3,0 %" />
+        <app-kpi label="Olives en stock" value="1 200" unit="kg" hint="en attente du moulin" icon="panier" />
+        <app-kpi label="Chargement" value="" [loading]="true" />
+      </div>
+    </section>
+
+    <section id="tableau" class="sec">
+      <h2>Tableau de données</h2>
+      <p class="sec-p">En-tête discret, chiffres alignés à droite, survol de ligne. Sous 720 px, chaque ligne devient une carte empilée.</p>
+      <div class="card">
+        <table class="table stack">
+          <thead><tr><th scope="col">Acheteur</th><th scope="col">Qualité</th><th scope="col" class="t-num">Prix</th><th scope="col" class="t-actions"><span class="sr-only">Action</span></th></tr></thead>
+          <tbody>
+            <tr class="is-best"><td class="t-main" data-label="Acheteur">Med Olive Export<span class="t-sub">Exportateur, Sousse</span></td><td data-label="Qualité"><app-badge valeur="Extra vierge" /></td><td class="t-num" data-label="Prix"><span class="price">14,20 TND/L</span></td><td class="t-actions"><button class="btn btn-outline btn-sm">Vendre</button></td></tr>
+            <tr><td class="t-main" data-label="Acheteur">Huilerie El Amal<span class="t-sub">Moulin, Sfax</span></td><td data-label="Qualité"><app-badge valeur="Vierge" /></td><td class="t-num" data-label="Prix"><span class="price">11,10 TND/L</span></td><td class="t-actions"><button class="btn btn-outline btn-sm">Vendre</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="alertes" class="sec">
+      <h2>Alertes</h2>
+      <div class="semantique">
+        <app-alert tone="warn" title="Stock bas : huile vierge">Il reste 123 L, sous le seuil de 150 L.<a slot="action" class="btn btn-ghost btn-sm" href="/charte#alertes">Voir les stocks</a></app-alert>
+        <app-alert tone="ok" icon="hausse" title="Meilleur prix : 14,20 TND/L">Med Olive Export, Sousse. 6 % au-dessus de la moyenne.</app-alert>
+        <app-alert tone="info" icon="calendrier" title="Récolte à enregistrer : Bled Jedd">Dernière saisie il y a 22 jours.</app-alert>
+        <app-alert tone="danger" title="Connexion impossible">E-mail ou mot de passe incorrect.</app-alert>
+      </div>
+    </section>
+
+    <section id="icones" class="sec">
+      <h2>Icônes</h2>
+      <p class="sec-p">Icônes métier pleines aux couleurs de la palette (en une couleur dans le menu), icônes d’interface au trait de 2 px.</p>
+      <div class="card">
+        <h3 class="sous-titre" style="margin-top: 0">Métier</h3>
+        <ul class="icones">
+          @for (i of metier; track i) { <li><app-icon [name]="i" /><code>{{ i }}</code></li> }
+        </ul>
+        <h3 class="sous-titre">Métier, version menu</h3>
+        <ul class="icones sombre">
+          @for (i of metier; track i) { <li><app-icon [name]="i" tone="mono" /></li> }
+        </ul>
+        <h3 class="sous-titre">Interface</h3>
+        <ul class="icones petit">
+          @for (i of trait; track i) { <li><app-icon [name]="i" /><code>{{ i }}</code></li> }
+        </ul>
+      </div>
+    </section>
+
+    <section id="etats" class="sec">
+      <h2>États</h2>
+      <p class="sec-p">Chargement en squelettes, état vide qui propose l’action suivante, confirmation avant une suppression, message éphémère après une action.</p>
+      <div class="deux">
+        <div class="card">
+          <h3>Chargement</h3>
+          <div class="squelettes">
+            <span class="skeleton" style="height: 18px; width: 40%"></span>
+            <span class="skeleton" style="height: 38px; width: 70%"></span>
+            <span class="skeleton" style="height: 120px"></span>
+          </div>
+        </div>
+        <div class="card">
+          <app-empty title="Aucune parcelle pour l’instant" text="Ajoutez votre première parcelle pour suivre vos oliviers et vos récoltes." icon="arbre">
+            <button class="btn btn-secondary"><app-icon name="plus" />Ajouter une parcelle</button>
+          </app-empty>
+        </div>
+      </div>
+      <div class="card demo" style="margin-top: 16px">
+        <div class="ligne">
+          <span class="lib">Fenêtre de confirmation et message</span>
+          <button class="btn btn-outline" (click)="modal.set(true)"><app-icon name="corbeille" />Ouvrir la confirmation</button>
+          <button class="btn btn-outline" (click)="toastDemo()"><app-icon name="succes" />Afficher un message</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<app-modal [(open)]="modal" tone="danger" title="Supprimer cette parcelle ?"
+           description="« Parcelle Nord » et ses 30 oliviers seront retirés du verger. Les récoltes déjà enregistrées restent dans l’historique.">
+  <div slot="footer">
+    <button type="button" class="btn btn-outline" (click)="modal.set(false)">Garder la parcelle</button>
+    <button type="button" class="btn btn-danger" (click)="modal.set(false)"><app-icon name="corbeille" />Supprimer</button>
+  </div>
+</app-modal>
