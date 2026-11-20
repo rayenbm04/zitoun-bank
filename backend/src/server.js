@@ -8,6 +8,7 @@ const recoltesRoutes = require('./routes/recoltes');
 const pressagesRoutes = require('./routes/pressages');
 const offresRoutes = require('./routes/offres');
 const ventesRoutes = require('./routes/ventes');
+const tachesRoutes = require('./routes/taches');
 
 if (!process.env.JWT_SECRET) {
   console.error('JWT_SECRET manquant : copiez .env.example en .env et remplissez-le.');
@@ -33,6 +34,7 @@ app.use('/api/recoltes', recoltesRoutes);
 app.use('/api/pressages', pressagesRoutes);
 app.use('/api/offres', offresRoutes);
 app.use('/api/ventes', ventesRoutes);
+app.use('/api/taches', tachesRoutes);
 
 app.use((req, res) => res.status(404).json({ message: 'Route introuvable.' }));
 

@@ -24,8 +24,6 @@
   background: var(--surface-2); color: var(--text-strong); font-weight: 700; font-size: var(--fs-sm);
 }
 .pad { padding: 0 var(--sp-6) var(--sp-5); }
-.demo { display: flex; align-items: center; gap: 6px; margin-top: 20px; }
-.demo app-icon { width: 16px; height: 16px; }
 @media (max-width: 720px) {
   .pad { padding: 0 var(--sp-4) var(--sp-4); }
   .zone { margin-top: 16px; }
