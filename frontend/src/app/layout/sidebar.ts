@@ -8,6 +8,7 @@ import { Logo } from '../shared/ui/brand';
 export const LIENS = [
   { path: '/tableau-de-bord', cle: 'nav.dashboard', icone: 'grille' },
   { path: '/verger', cle: 'nav.verger', icone: 'arbre' },
+  { path: '/recoltes', cle: 'nav.recoltes', icone: 'panier' },
   { path: '/marche', cle: 'nav.marche', icone: 'etiquette' },
   { path: '/ventes', cle: 'nav.ventes', icone: 'billet' },
 ];

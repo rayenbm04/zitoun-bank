@@ -1,0 +1,93 @@
+<div class="page-head">
+  <p>Chaque récolte enregistrée s’ajoute au stock d’olives en attente du moulin.</p>
+</div>
+
+<section class="card" aria-labelledby="t-form">
+  <div class="card-head"><h2 id="t-form">Nouvelle récolte</h2></div>
+  @if (data.parcelles().length) {
+    <form class="form-row" [formGroup]="form" (ngSubmit)="enregistrer()" novalidate>
+      <app-field label="Parcelle" for="r-parcelle" [error]="erreur('parcelleId')">
+        <select id="r-parcelle" formControlName="parcelleId">
+          @for (x of data.parcelles(); track x.id) { <option [ngValue]="x.id">{{ x.nom }}</option> }
+        </select>
+      </app-field>
+      <app-field label="Date" for="r-date" [error]="erreur('date')">
+        <input id="r-date" type="date" formControlName="date" [max]="aujourdhui" />
+      </app-field>
+      <app-field label="Quantité" for="r-qte" [error]="erreur('quantiteKg')">
+        <div class="input-affix">
+          <input id="r-qte" type="number" min="1" step="10" formControlName="quantiteKg" inputmode="numeric" placeholder="1 200" aria-describedby="r-qte-msg" />
+          <span class="affix">kg</span>
+        </div>
+      </app-field>
+      <div class="form-submit"><button type="submit" class="btn btn-secondary"><app-icon name="plus" />Enregistrer la récolte</button></div>
+    </form>
+  } @else {
+    <app-empty title="Ajoutez d’abord une parcelle" text="Une récolte est toujours rattachée à une parcelle du verger." icon="arbre" />
+  }
+</section>
+
+<div class="grid-2" style="margin-top: 24px">
+  <section class="card total" aria-labelledby="t-total">
+    <h2 id="t-total" class="petit-titre">Total récolté cette saison</h2>
+    @if (data.chargement()) {
+      <span class="skeleton" style="height: 64px; width: 70%; margin-top: 8px"></span>
+    } @else {
+      <p class="chiffre"><span class="num">{{ p.nombre(data.totalRecolteKg()) }}</span><small>kg</small></p>
+      <p class="muted">{{ data.recoltes().length }} récoltes, soit {{ p.nombre(moyenneParArbre(), 1) }} kg par olivier en moyenne.</p>
+    }
+    <ul class="repartition">
+      @for (x of parParcelle(); track x.id) {
+        <li>
+          <span class="n">{{ x.nom }}</span>
+          <span class="barre" aria-hidden="true"><i [style.width.%]="data.totalRecolteKg() ? (x.kg / data.totalRecolteKg()) * 100 : 0"></i></span>
+          <span class="v num">{{ p.nombre(x.kg) }} kg</span>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <section class="card" aria-labelledby="t-chart">
+    <div class="card-head">
+      <div><h2 id="t-chart">Récolte par parcelle</h2><p>En kilogrammes ; la plus productive est en or</p></div>
+    </div>
+    @if (data.chargement()) {
+      <span class="skeleton" style="height: 230px; border-radius: 14px"></span>
+    } @else {
+      <app-bar-chart [donnees]="barres()" label="Récolte par parcelle, en kilogrammes" unite="kg" />
+    }
+  </section>
+</div>
+
+<section class="card card-flush" style="margin-top: 24px" aria-labelledby="t-hist">
+  <div class="card-head">
+    <h2 id="t-hist">Historique</h2>
+    <div class="chips" role="group" aria-label="Filtrer par parcelle">
+      <button type="button" class="chip" [attr.aria-pressed]="filtre() === null" (click)="filtre.set(null)">Toutes</button>
+      @for (x of data.parcelles(); track x.id) {
+        <button type="button" class="chip" [attr.aria-pressed]="filtre() === x.id" (click)="filtre.set(x.id)">{{ x.nom }}</button>
+      }
+    </div>
+  </div>
+  <div style="padding: 0 24px 20px">
+    @if (historique().length) {
+      <div class="table-wrap">
+        <table class="table stack">
+          <thead><tr><th scope="col">Date</th><th scope="col">Parcelle</th><th scope="col">Variété</th><th scope="col" class="t-num">Quantité</th></tr></thead>
+          <tbody>
+            @for (r of historique(); track r.id) {
+              <tr>
+                <td data-label="Date" class="num">{{ p.date(r.date) }}</td>
+                <td data-label="Parcelle" class="t-main">{{ data.nomParcelle(r.parcelleId) }}</td>
+                <td data-label="Variété">{{ variete(r.parcelleId) }}</td>
+                <td data-label="Quantité" class="t-num strong">{{ p.nombre(r.quantiteKg) }} kg</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <app-empty title="Aucune récolte pour cette parcelle" text="Saisissez la première récolte avec le formulaire ci-dessus." icon="panier" />
+    }
+  </div>
+</section>

@@ -175,7 +175,7 @@ export class DataService {
       if (jours !== null && jours > 14) {
         liste.push({
           id: 'recolte-' + p.id, ton: 'info', icone: 'calendrier', titre: 'al.recolte', texte: 'al.recolte.txt',
-          vars: { p: p.nom, j: jours },
+          vars: { p: p.nom, j: jours }, lien: '/recoltes', action: 'db.saisir',
         });
       }
     }
