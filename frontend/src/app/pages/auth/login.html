@@ -24,6 +24,7 @@
       <div class="field" [class.invalid]="!!erreur('password')">
         <div class="ligne-mdp">
           <label for="password">Mot de passe</label>
+          <a routerLink="/mot-de-passe-oublie">Mot de passe oublié ?</a>
         </div>
         <div class="input-affix">
           <input id="password" [type]="voirMdp() ? 'text' : 'password'" formControlName="password"
